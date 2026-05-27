@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   techName: { fontSize: 14, fontWeight: '600', color: colors.text },
   datesGrid: { flexDirection: 'row', gap: 8 },
   dateItem: {
-    flex: 1, backgroundColor: colors.surfaceElevated,
+    flex: 1, backgroundColor: colors.card,
     padding: spacing.sm, borderRadius: radii.md,
   },
   dateLabel: {
@@ -294,12 +294,10 @@ const styles = StyleSheet.create({
   startBtn: {
     backgroundColor: colors.success, borderRadius: radii.lg, height: 52,
     justifyContent: 'center', alignItems: 'center', marginBottom: spacing.md,
-    shadowColor: colors.success, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 4,
   },
   finishBtn: {
     backgroundColor: colors.primary, borderRadius: radii.lg, height: 52,
     justifyContent: 'center', alignItems: 'center', marginBottom: spacing.md,
-    shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 4,
   },
   btnRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   btnText: { fontSize: 15, fontWeight: '800', color: '#FFF', letterSpacing: 1 },

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 import { colors, radii, spacing } from '../theme/colors';
 
-export default function BarChart({ data = [], title, height = 200 }) {
+export default function BarChart({ data = [], title, height = 160 }) {
   const animRef = useRef([]);
 
   if (animRef.current.length !== data.length) {
@@ -13,11 +13,11 @@ export default function BarChart({ data = [], title, height = 200 }) {
   useEffect(() => {
     if (data.length > 0) {
       Animated.stagger(
-        100,
+        80,
         animations.map(anim =>
           Animated.timing(anim, {
             toValue: 1,
-            duration: 800,
+            duration: 600,
             useNativeDriver: false,
           })
         )
@@ -27,7 +27,7 @@ export default function BarChart({ data = [], title, height = 200 }) {
 
   if (!data || data.length === 0) {
     return (
-      <View style={[styles.container, { height }]}>
+      <View style={[styles.container, { height: height + 50 }]}>
         {title && <Text style={styles.title}>{title}</Text>}
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>Sem dados</Text>
@@ -83,10 +83,11 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   title: {
-    color: colors.text,
-    fontSize: 16,
+    color: colors.textSecondary,
+    fontSize: 13,
     fontWeight: '700',
-    marginBottom: 16,
+    letterSpacing: 0.3,
+    marginBottom: spacing.lg,
   },
   chartArea: {
     flexDirection: 'row',
@@ -100,26 +101,28 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   valueText: {
-    color: colors.text,
-    fontSize: 12,
-    fontWeight: '700',
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '600',
     marginBottom: 4,
   },
   barTrack: {
     flex: 1,
-    width: 24,
+    width: 16,
     justifyContent: 'flex-end',
-    backgroundColor: 'transparent',
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: 8,
+    overflow: 'hidden',
   },
   barFill: {
     width: '100%',
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6,
+    borderRadius: 8,
   },
   labelText: {
     color: colors.textMuted,
     fontSize: 11,
-    marginTop: 8,
+    fontWeight: '500',
+    marginTop: 6,
   },
   emptyContainer: {
     flex: 1,
@@ -128,6 +131,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: colors.textMuted,
-    fontSize: 14,
+    fontSize: 13,
   },
 });

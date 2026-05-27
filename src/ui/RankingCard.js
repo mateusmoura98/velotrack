@@ -1,31 +1,30 @@
 import { View, Text, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { colors, radii, spacing } from '../theme/colors';
 
-export default function RankingCard({ position, nome, total, isCurrentUser = false }) {
-  const renderPosition = () => {
-    switch (position) {
-      case 1: return <Text style={styles.medal}>🥇</Text>;
-      case 2: return <Text style={styles.medal}>🥈</Text>;
-      case 3: return <Text style={styles.medal}>🥉</Text>;
-      default:
-        return (
-          <View style={styles.positionCircle}>
-            <Text style={styles.positionText}>{position}</Text>
-          </View>
-        );
-    }
-  };
+const MEDAL_COLORS = ['#F59E0B', '#94A3B8', '#CD7F32'];
 
+export default function RankingCard({ position, nome, total, isCurrentUser = false }) {
   return (
     <View style={[styles.container, isCurrentUser && styles.currentUser]}>
-      <View style={styles.positionContainer}>
-        {renderPosition()}
+      <View style={[styles.positionBadge, position <= 3 && { backgroundColor: MEDAL_COLORS[position - 1] + '20' }]}>
+        <Text style={[styles.positionText, position <= 3 && { color: MEDAL_COLORS[position - 1] }]}>
+          {position}
+        </Text>
       </View>
       <Text style={styles.name} numberOfLines={1}>{nome}</Text>
-      <View style={styles.scoreContainer}>
-        <Text style={styles.score}>{total}</Text>
+      <View style={styles.score}>
+        <Text style={styles.scoreValue}>{total}</Text>
         <Text style={styles.scoreLabel}>serviços</Text>
       </View>
+      {position <= 3 && (
+        <Ionicons
+          name="trophy-outline"
+          size={14}
+          color={MEDAL_COLORS[position - 1]}
+          style={{ marginLeft: 6 }}
+        />
+      )}
     </View>
   );
 }
@@ -36,8 +35,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderRadius: radii.md,
-    padding: 14,
-    marginBottom: 8,
+    paddingVertical: 10,
+    paddingHorizontal: spacing.md,
+    marginBottom: 6,
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -45,44 +45,39 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     borderColor: colors.primary,
   },
-  positionContainer: {
-    width: 40,
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  medal: {
-    fontSize: 24,
-  },
-  positionCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+  positionBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10,
   },
   positionText: {
-    color: colors.textSecondary,
-    fontSize: 14,
-    fontWeight: '700',
+    color: colors.textMuted,
+    fontSize: 12,
+    fontWeight: '800',
   },
   name: {
     flex: 1,
     color: colors.text,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
   },
-  scoreContainer: {
-    alignItems: 'flex-end',
-  },
   score: {
+    alignItems: 'flex-end',
+    marginRight: 2,
+  },
+  scoreValue: {
     color: colors.primary,
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
   },
   scoreLabel: {
     color: colors.textMuted,
-    fontSize: 10,
-    marginTop: -2,
+    fontSize: 9,
+    fontWeight: '600',
+    marginTop: -1,
   },
 });

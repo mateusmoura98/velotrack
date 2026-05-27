@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
   logoutLabel: { fontSize: 12, fontWeight: '700', color: colors.error },
   counterRow: { flexDirection: 'row', gap: 8, paddingHorizontal: spacing.xl, marginBottom: spacing.md, marginTop: spacing.lg },
   counterCard: {
-    flex: 1, backgroundColor: colors.surface, borderRadius: radii.lg, padding: spacing.md,
+    flex: 1, backgroundColor: colors.card, borderRadius: radii.lg, padding: spacing.md,
     borderLeftWidth: 3, borderWidth: 1, borderColor: colors.border, gap: 3,
   },
   counterNum: { fontSize: 20, fontWeight: '900' },

@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   errorText: { color: colors.error, fontSize: 13, fontWeight: '500', flex: 1 },
   card: {
-    backgroundColor: colors.surface, borderRadius: radii.xl,
+    backgroundColor: colors.card, borderRadius: radii.xl,
     padding: spacing['2xl'], borderWidth: 1, borderColor: colors.border,
   },
   field: { marginBottom: spacing.xl },
@@ -179,8 +179,6 @@ const styles = StyleSheet.create({
   loginBtn: {
     backgroundColor: colors.primary, borderRadius: radii.md, height: 50,
     justifyContent: 'center', alignItems: 'center', marginTop: spacing.xs,
-    shadowColor: colors.primary, shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3, shadowRadius: 12, elevation: 4,
   },
   loginBtnDisabled: { opacity: 0.6 },
   loginRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },

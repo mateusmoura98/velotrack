@@ -48,10 +48,10 @@ export default function AdminDashboard() {
   const pct = metaMensal > 0 ? Math.min(100, Math.round((realizadoMes / metaMensal) * 100)) : 0;
 
   const statCards = stats ? [
-    { icon: 'documents-outline', value: stats.total, label: 'Total', color: colors.primary },
-    { icon: 'time-outline', value: stats.pendentes, label: 'Pendentes', color: colors.warning },
-    { icon: 'play-circle-outline', value: stats.emAndamento, label: 'Em Andamento', color: colors.primary },
-    { icon: 'checkmark-circle-outline', value: stats.finalizados, label: 'Finalizados', color: colors.success },
+    { icon: 'documents-outline', value: stats.total, label: 'TOTAL', color: colors.primary },
+    { icon: 'time-outline', value: stats.pendentes, label: 'PENDENTES', color: colors.warning },
+    { icon: 'play-circle-outline', value: stats.emAndamento, label: 'EM ANDAMENTO', color: colors.primary },
+    { icon: 'checkmark-circle-outline', value: stats.finalizados, label: 'FINALIZADOS', color: colors.success },
   ] : [];
 
   return (
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
           onPress={async () => { await signOut(); }}
           style={({ pressed }) => [styles.logoutBtn, pressed && styles.pressed]}
         >
-          <Ionicons name="log-out-outline" size={16} color={colors.error} />
+          <Ionicons name="log-out-outline" size={14} color={colors.error} />
           <Text style={styles.logoutLabel}>Sair</Text>
         </Pressable>
       </View>
@@ -82,9 +82,9 @@ export default function AdminDashboard() {
             <View style={styles.grid}>
               {[1, 2, 3, 4].map(i => (
                 <View key={i} style={styles.statCard}>
-                  <Skeleton width={36} height={36} borderRadius={radii.md} />
-                  <Skeleton width={40} height={26} style={{ marginTop: 4 }} />
-                  <Skeleton width={60} height={12} />
+                  <Skeleton width={28} height={28} borderRadius={radii.sm} />
+                  <Skeleton width={36} height={24} style={{ marginTop: 6 }} />
+                  <Skeleton width={52} height={10} />
                 </View>
               ))}
             </View>
@@ -96,8 +96,8 @@ export default function AdminDashboard() {
             <View style={styles.grid}>
               {statCards.map((s, i) => (
                 <View key={i} style={styles.statCard}>
-                  <View style={[styles.statIcon, { backgroundColor: s.color + '15' }]}>
-                    <Ionicons name={s.icon} size={18} color={s.color} />
+                  <View style={[styles.statIcon, { backgroundColor: colors.card }]}>
+                    <Ionicons name={s.icon} size={16} color={s.color} />
                   </View>
                   <Text style={styles.statValue}>{s.value}</Text>
                   <Text style={styles.statLabel}>{s.label}</Text>
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
             <Card>
               <CardSection label="Ranking de Técnicos">
                 {rankingLoading ? (
-                  [1, 2, 3].map(i => <Skeleton key={i} width="100%" height={52} style={{ marginBottom: 8, borderRadius: radii.md }} />)
+                  [1, 2, 3].map(i => <Skeleton key={i} width="100%" height={46} style={{ marginBottom: 8, borderRadius: radii.md }} />)
                 ) : ranking && ranking.length > 0 ? (
                   ranking.map((item, index) => (
                     <RankingCard key={index} position={index + 1} nome={item.nome} total={item.total} />
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
               </CardSection>
             </Card>
 
-            <View style={{ height: 30 }} />
+            <View style={styles.bottom} />
           </>
         )}
       </ScrollView>
@@ -152,35 +152,36 @@ const styles = StyleSheet.create({
   title: { ...typography.h2, color: colors.text },
   sub: { ...typography.caption, color: colors.textMuted, marginTop: 1 },
   logoutBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    paddingHorizontal: 12, paddingVertical: 7, borderRadius: radii.md,
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 10, paddingVertical: 6, borderRadius: radii.md,
     backgroundColor: colors.errorSoft, borderWidth: 1, borderColor: colors.error,
   },
-  logoutLabel: { fontSize: 12, fontWeight: '700', color: colors.error },
-  scroll: { padding: spacing.xl, paddingBottom: 30 },
+  logoutLabel: { fontSize: 11, fontWeight: '700', color: colors.error },
+  scroll: { padding: spacing.xl },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: spacing.lg },
   statCard: {
     width: '48%', flexGrow: 1,
-    backgroundColor: colors.surface, borderRadius: radii.lg,
+    backgroundColor: colors.card, borderRadius: radii.lg,
     padding: spacing.lg, borderWidth: 1, borderColor: colors.border,
     gap: spacing.sm,
   },
   statIcon: {
-    width: 36, height: 36, borderRadius: radii.md,
+    width: 32, height: 32, borderRadius: radii.md,
     justifyContent: 'center', alignItems: 'center',
   },
-  statValue: { fontSize: 24, fontWeight: '900', color: colors.text },
-  statLabel: { fontSize: 12, color: colors.textSecondary, fontWeight: '600' },
+  statValue: { fontSize: 28, fontWeight: '900', color: colors.text },
+  statLabel: { fontSize: 10, color: colors.textMuted, fontWeight: '700', letterSpacing: 0.8 },
   metaHead: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     marginBottom: spacing.md,
   },
-  metaPct: { fontSize: 24, fontWeight: '900', color: colors.primary },
-  metaCount: { fontSize: 13, color: colors.textSecondary, fontWeight: '600' },
+  metaPct: { fontSize: 28, fontWeight: '900', color: colors.primary },
+  metaCount: { fontSize: 12, color: colors.textSecondary, fontWeight: '600' },
   progressBg: {
-    height: 8, backgroundColor: colors.surfaceElevated,
-    borderRadius: 4, overflow: 'hidden',
+    height: 6, backgroundColor: colors.surfaceElevated,
+    borderRadius: 3, overflow: 'hidden',
   },
-  progressFill: { height: '100%', backgroundColor: colors.primary, borderRadius: 4 },
+  progressFill: { height: '100%', backgroundColor: colors.primary, borderRadius: 3 },
   emptyText: { color: colors.textMuted, fontSize: 13, fontStyle: 'italic' },
+  bottom: { height: 20 },
 });

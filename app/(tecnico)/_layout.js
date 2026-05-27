@@ -11,13 +11,12 @@ export default function TecnicoLayout() {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           borderTopWidth: 1,
-          height: 58,
-          paddingBottom: 5,
-          paddingTop: 5,
+          height: 54,
+          paddingVertical: 6,
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: { fontSize: 9, fontWeight: '700', letterSpacing: 0.2 },
+        tabBarLabelStyle: { fontSize: 9, fontWeight: '700', letterSpacing: 0.5 },
         tabBarHideOnKeyboard: true,
       }}
     >
@@ -26,7 +25,7 @@ export default function TecnicoLayout() {
         options={{
           title: 'Serviços',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'construct' : 'construct-outline'} size={20} color={color} />
+            <Ionicons name={focused ? 'wrench' : 'wrench-outline'} size={18} color={color} />
           ),
         }}
       />
@@ -35,7 +34,7 @@ export default function TecnicoLayout() {
         options={{
           title: 'Histórico',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'time' : 'time-outline'} size={20} color={color} />
+            <Ionicons name={focused ? 'time' : 'time-outline'} size={18} color={color} />
           ),
         }}
       />
@@ -44,7 +43,7 @@ export default function TecnicoLayout() {
         options={{
           title: 'Suporte',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'chatbubbles' : 'chatbubbles-outline'} size={20} color={color} />
+            <Ionicons name={focused ? 'lifebuoy' : 'lifebuoy-outline'} size={18} color={color} />
           ),
         }}
       />
