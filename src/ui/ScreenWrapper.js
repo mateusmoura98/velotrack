@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, useWindowDimensions, Platform } from 'react-native';
-import { colors, radii } from '../theme/colors';
+import { View, StyleSheet, useWindowDimensions, Platform } from 'react-native';
+import { colors } from '../theme/colors';
 
-export default function ScreenWrapper({ children, safe = true, scroll = false }) {
+export default function ScreenWrapper({ children }) {
   const { width } = useWindowDimensions();
   const isWeb = Platform.OS === 'web';
 
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
     alignSelf: 'center',
     backgroundColor: colors.bg,
+    paddingBottom: 52,
   },
   innerWide: {
     maxWidth: 1200,

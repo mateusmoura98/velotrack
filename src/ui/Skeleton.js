@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.skeleton,
   },
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
     borderRadius: radii.lg,
     padding: 16,
     marginBottom: 12,

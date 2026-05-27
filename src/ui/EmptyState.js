@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: radii.xl,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 4,

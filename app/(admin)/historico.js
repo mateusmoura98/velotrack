@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   list: { paddingHorizontal: spacing.xl, paddingBottom: 30, paddingTop: spacing.xs },
   loadMore: {
     alignItems: 'center', paddingVertical: spacing.md,
-    backgroundColor: colors.surface, borderRadius: radii.md,
+    backgroundColor: colors.card, borderRadius: radii.md,
     borderWidth: 1, borderColor: colors.border, marginTop: spacing.sm,
   },
   loadMoreText: { fontSize: 13, fontWeight: '600', color: colors.primary },
