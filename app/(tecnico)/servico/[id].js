@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   completedSection: {
     alignItems: 'center', backgroundColor: colors.successSoft, borderRadius: radii.xl,
     padding: spacing['2xl'], marginBottom: spacing.md, gap: 8,
-    borderWidth: 1, borderColor: colors.successBorder,
+    borderWidth: 1, borderColor: colors.success,
   },
   completedTitle: { fontSize: 19, fontWeight: '800', color: colors.success },
   completedMeta: { flexDirection: 'row', gap: 20, marginTop: 2 },

@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   errorBox: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: colors.errorSoft, padding: spacing.md, borderRadius: radii.md,
-    marginBottom: spacing.md, borderWidth: 1, borderColor: colors.errorBorder,
+    marginBottom: spacing.md, borderWidth: 1, borderColor: colors.error,
   },
   errorText: { color: colors.error, fontSize: 13, fontWeight: '600', flex: 1 },
 });

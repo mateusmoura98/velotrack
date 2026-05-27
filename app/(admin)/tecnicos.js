@@ -31,7 +31,7 @@ const TecnicoItem = memo(({ item, onEdit, onToggle }) => (
       </View>
       <View style={[styles.statusBadge, {
         backgroundColor: item.active ? colors.successSoft : colors.errorSoft,
-        borderColor: item.active ? colors.successBorder : colors.errorBorder,
+        borderColor: item.active ? colors.success : colors.error,
       }]}>
         <View style={[styles.statusDot, { backgroundColor: item.active ? colors.success : colors.error }]} />
         <Text style={[styles.statusText, { color: item.active ? colors.success : colors.error }]}>
@@ -47,7 +47,7 @@ const TecnicoItem = memo(({ item, onEdit, onToggle }) => (
         <Ionicons name="create-outline" size={15} color={colors.primary} />
         <Text style={[styles.actionText, { color: colors.primary }]}>Editar</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.actionBtn, { borderColor: item.active ? colors.errorBorder : colors.successBorder }]} onPress={() => onToggle(item)} activeOpacity={0.7}>
+      <TouchableOpacity style={[styles.actionBtn, { borderColor: item.active ? colors.error : colors.success }]} onPress={() => onToggle(item)} activeOpacity={0.7}>
         <Ionicons name={item.active ? 'eye-off-outline' : 'eye-outline'} size={15} color={item.active ? colors.error : colors.success} />
         <Text style={[styles.actionText, { color: item.active ? colors.error : colors.success }]}>
           {item.active ? 'Desativar' : 'Ativar'}
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   errorBox: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: colors.errorSoft, padding: spacing.md, borderRadius: radii.md,
-    marginTop: spacing.lg, borderWidth: 1, borderColor: colors.errorBorder,
+    marginTop: spacing.lg, borderWidth: 1, borderColor: colors.error,
   },
   errorText: { color: colors.error, fontSize: 13, fontWeight: '600', flex: 1 },
 });

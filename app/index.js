@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   errorBox: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
-    backgroundColor: colors.errorSoft, borderWidth: 1, borderColor: colors.errorBorder,
+    backgroundColor: colors.errorSoft, borderWidth: 1, borderColor: colors.error,
     borderRadius: radii.md, padding: spacing.md, marginBottom: spacing.xl,
   },
   errorText: { color: colors.error, fontSize: 13, fontWeight: '500', flex: 1 },

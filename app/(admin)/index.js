@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   logoutBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 12, paddingVertical: 7, borderRadius: radii.md,
-    backgroundColor: colors.errorSoft, borderWidth: 1, borderColor: colors.errorBorder,
+    backgroundColor: colors.errorSoft, borderWidth: 1, borderColor: colors.error,
   },
   logoutLabel: { fontSize: 12, fontWeight: '700', color: colors.error },
   scroll: { padding: spacing.xl, paddingBottom: 30 },
