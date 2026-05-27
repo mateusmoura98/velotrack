@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, typography, radii, spacing } from '../theme/colors';
+import { colors, radii, spacing } from '../theme/colors';
 import { historyService } from '../services/history';
 import { Skeleton } from '../ui/Skeleton';
 
 const ACTION_CONFIG = {
   created:               { color: colors.primary,        label: 'OS criada' },
-  technician_assigned:   { color: colors.accent,         label: 'Técnico atribuído' },
+  technician_assigned:   { color: colors.primary,        label: 'Técnico atribuído' },
   technician_changed:    { color: colors.warning,        label: 'Técnico alterado' },
   status_changed:        { color: colors.primary,        label: 'Status alterado' },
-  started:               { color: colors.accent,         label: 'Serviço iniciado' },
+  started:               { color: colors.success,        label: 'Serviço iniciado' },
   finished:              { color: colors.success,        label: 'Serviço finalizado' },
-  checklist_updated:     { color: colors.primary,        label: 'Checklist atualizado' },
-  observation_added:     { color: colors.textSecondary,  label: 'Observação registrada' },
-  photo_added:           { color: colors.textSecondary,  label: 'Foto adicionada' },
+  checklist_updated:     { color: colors.textSecondary,  label: 'Checklist atualizado' },
+  observation_added:     { color: colors.textMuted,      label: 'Observação registrada' },
+  photo_added:           { color: colors.textMuted,      label: 'Foto adicionada' },
   priority_changed:      { color: colors.warning,        label: 'Prioridade alterada' },
   edited:                { color: colors.textSecondary,  label: 'OS atualizada' },
 };
@@ -56,7 +56,7 @@ export default function ServiceTimeline({ serviceId }) {
     return (
       <View style={styles.wrapper}>
         <Text style={styles.sectionTitle}>Atividade</Text>
-        <View style={styles.loadingBlock}>
+        <View style={styles.card}>
           <Skeleton width="100%" height={10} style={{ marginBottom: 10 }} />
           <Skeleton width="75%" height={10} style={{ marginBottom: 10 }} />
           <Skeleton width="50%" height={10} />
@@ -70,7 +70,7 @@ export default function ServiceTimeline({ serviceId }) {
   return (
     <View style={styles.wrapper}>
       <Text style={styles.sectionTitle}>Atividade</Text>
-      <View style={styles.timeline}>
+      <View style={styles.card}>
         {events.map((event, i) => {
           const cfg = ACTION_CONFIG[event.action] || { color: colors.textMuted, label: event.action };
           const userName = event.users?.nome || '';
@@ -105,15 +105,8 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: spacing.md,
   },
-  loadingBlock: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.lg,
-    padding: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  timeline: {
-    backgroundColor: colors.surface,
+  card: {
+    backgroundColor: colors.card,
     borderRadius: radii.lg,
     padding: spacing.lg,
     borderWidth: 1,

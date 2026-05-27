@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   boxFocused: {
     borderColor: colors.primary,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
   },
   boxError: {
     borderColor: colors.error,

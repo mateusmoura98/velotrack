@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { colors } from '../theme/colors';
+import { colors, radii, spacing } from '../theme/colors';
 
 export default function BarChart({ data = [], title, height = 200 }) {
   const animRef = useRef([]);
@@ -36,18 +36,17 @@ export default function BarChart({ data = [], title, height = 200 }) {
     );
   }
 
-  const maxValue = Math.max(...data.map(d => d.value), 1); // Avoid div by zero
+  const maxValue = Math.max(...data.map(d => d.value), 1);
 
   return (
     <View style={styles.container}>
       {title && <Text style={styles.title}>{title}</Text>}
-      
+
       <View style={[styles.chartArea, { height }]} >
         {data.map((item, index) => {
-          // Fallback if animation array is mismatched
           const anim = animations[index];
           const percentage = (item.value / maxValue) * 100;
-          
+
           return (
             <View key={index} style={styles.barContainer}>
               <Text style={styles.valueText}>{item.value}</Text>
@@ -76,13 +75,15 @@ export default function BarChart({ data = [], title, height = 200 }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
+    backgroundColor: colors.card,
+    borderRadius: radii.lg,
+    padding: spacing.lg,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   title: {
-    color: '#FFF',
+    color: colors.text,
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 16,
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   valueText: {
-    color: '#FFF',
+    color: colors.text,
     fontSize: 12,
     fontWeight: '700',
     marginBottom: 4,

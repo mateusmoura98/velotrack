@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.card,
     borderTopLeftRadius: radii['2xl'],
     borderTopRightRadius: radii['2xl'],
     borderWidth: 1,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
   chipSelected: {
     backgroundColor: colors.primarySoft,
-    borderColor: colors.primaryBorder,
+    borderColor: colors.primary,
   },
   chipLabel: {
     fontSize: 13,
@@ -304,6 +304,9 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: radii.md,
     backgroundColor: colors.primary,
+  },
+  applyBtnDisabled: {
+    opacity: 0.5,
   },
   applyBtnText: {
     ...typography.subtitle,

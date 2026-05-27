@@ -30,7 +30,7 @@ export default memo(ServiceInfo);
 
 const styles = StyleSheet.create({
   headerCard: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
     borderRadius: radii.lg,
     padding: spacing.lg,
     marginBottom: spacing.md,

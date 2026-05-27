@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     justifyContent: 'center', alignItems: 'center',
     marginBottom: 16,
-    borderWidth: 1, borderColor: colors.primaryBorder,
+    borderWidth: 1, borderColor: colors.border,
   },
   logoText: {
     fontSize: 26, fontWeight: '900', letterSpacing: 5,

@@ -70,7 +70,7 @@ export default function TecnicoHome() {
 
   const countItems = [
     { value: counts.pendente, label: 'Pendentes', color: colors.warning, icon: 'time-outline' },
-    { value: counts.em_andamento, label: 'Em Andamento', color: colors.accent, icon: 'play-circle-outline' },
+    { value: counts.em_andamento, label: 'Em Andamento', color: colors.primary, icon: 'play-circle-outline' },
     { value: counts.concluido, label: 'Concluídos', color: colors.success, icon: 'checkmark-circle-outline' },
   ];
 

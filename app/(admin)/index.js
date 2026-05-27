@@ -9,8 +9,8 @@ import { dashboardService } from '../../src/services/dashboard';
 import { useQuery } from '../../src/hooks/useQuery';
 import { Card, CardSection } from '../../src/ui/Card';
 import { Skeleton, SkeletonCard } from '../../src/ui/Skeleton';
-import BarChart from '../../src/components/BarChart';
-import RankingCard from '../../src/components/RankingCard';
+import BarChart from '../../src/ui/BarChart';
+import RankingCard from '../../src/ui/RankingCard';
 
 export default function AdminDashboard() {
   const { signOut } = useAuth();
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
   const statCards = stats ? [
     { icon: 'documents-outline', value: stats.total, label: 'Total', color: colors.primary },
     { icon: 'time-outline', value: stats.pendentes, label: 'Pendentes', color: colors.warning },
-    { icon: 'play-circle-outline', value: stats.emAndamento, label: 'Em Andamento', color: colors.accent },
+    { icon: 'play-circle-outline', value: stats.emAndamento, label: 'Em Andamento', color: colors.primary },
     { icon: 'checkmark-circle-outline', value: stats.finalizados, label: 'Finalizados', color: colors.success },
   ] : [];
 

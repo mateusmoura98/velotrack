@@ -1,13 +1,13 @@
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
-import { colors, radii, shadows } from '../theme/colors';
+import { colors, radii } from '../theme/colors';
 
 const VARIANTS = {
-  primary: { bg: colors.primary, text: '#FFF', border: null, glow: true },
-  secondary: { bg: colors.surfaceLight, text: colors.text, border: colors.border, glow: false },
-  outline: { bg: 'transparent', text: colors.primary, border: colors.primaryBorder, glow: false },
-  success: { bg: colors.success, text: colors.textInverse, border: null, glow: false },
-  danger: { bg: colors.error, text: '#FFF', border: null, glow: false },
-  ghost: { bg: 'transparent', text: colors.textSecondary, border: null, glow: false },
+  primary: { bg: colors.primary, text: '#FFF', border: null },
+  secondary: { bg: colors.card, text: colors.text, border: colors.border },
+  outline: { bg: 'transparent', text: colors.primary, border: colors.primary },
+  success: { bg: colors.success, text: '#FFF', border: null },
+  danger: { bg: colors.error, text: '#FFF', border: null },
+  ghost: { bg: 'transparent', text: colors.textSecondary, border: null },
 };
 
 const SIZES = {
@@ -26,7 +26,6 @@ export default function Button({
   disabled = false,
   icon,
   fullWidth = false,
-  haptic,
 }) {
   const v = VARIANTS[variant] || VARIANTS.primary;
   const s = SIZES[size] || SIZES.lg;
@@ -42,7 +41,6 @@ export default function Button({
           borderRadius: s.borderRadius,
         },
         v.border && { borderWidth: 1, borderColor: v.border },
-        v.glow && !disabled && styles.glow,
         (disabled || loading) && styles.disabled,
         fullWidth && styles.fullWidth,
         style,
@@ -81,9 +79,6 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.5,
-  },
-  glow: {
-    ...shadows.glow,
   },
   iconWrap: {},
   label: {

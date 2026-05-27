@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.md, borderWidth: 1, borderColor: colors.border,
     backgroundColor: colors.surface,
   },
-  filterBtnActive: { borderColor: colors.primaryBorder, backgroundColor: colors.primarySoft },
+  filterBtnActive: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
   filterBtnText: { fontSize: 13, fontWeight: '600', color: colors.textMuted },
   filterDot: {
     width: 6, height: 6, borderRadius: 3,

@@ -1,39 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, radii, shadows, spacing } from '../theme/colors';
+import { colors, radii, spacing } from '../theme/colors';
 
-export function Card({ children, style, variant = 'default', padded = true }) {
-  const variantStyles = {
-    default: {
-      backgroundColor: colors.surface,
-      borderColor: colors.border,
-    },
-    elevated: {
-      backgroundColor: colors.surface,
-      borderColor: colors.borderLight,
-      ...shadows.md,
-    },
-    primary: {
-      backgroundColor: colors.primarySoft,
-      borderColor: colors.primaryBorder,
-    },
-    success: {
-      backgroundColor: colors.successSoft,
-      borderColor: colors.successBorder,
-    },
-    warning: {
-      backgroundColor: colors.warningSoft,
-      borderColor: colors.warningBorder,
-    },
-    error: {
-      backgroundColor: colors.errorSoft,
-      borderColor: colors.errorBorder,
-    },
-  };
-
-  const v = variantStyles[variant] || variantStyles.default;
-
+export function Card({ children, style, padded = true }) {
   return (
-    <View style={[styles.card, v, padded && styles.padded, style]}>
+    <View style={[styles.card, padded && styles.padded, style]}>
       {children}
     </View>
   );
@@ -50,8 +20,10 @@ export function CardSection({ label, children, style }) {
 
 const styles = StyleSheet.create({
   card: {
+    backgroundColor: colors.card,
     borderRadius: radii.lg,
     borderWidth: 1,
+    borderColor: colors.border,
     marginBottom: spacing.md,
   },
   padded: {

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../theme/colors';
+import { colors, radii, spacing } from '../theme/colors';
 
 export default function RankingCard({ position, nome, total, isCurrentUser = false }) {
   const renderPosition = () => {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: 12,
+    borderRadius: radii.md,
     padding: 14,
     marginBottom: 8,
     borderWidth: 1,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: colors.surfaceLight,
+    backgroundColor: colors.card,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   name: {
     flex: 1,
-    color: '#FFF',
+    color: colors.text,
     fontSize: 15,
     fontWeight: '600',
   },

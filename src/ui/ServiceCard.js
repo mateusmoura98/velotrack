@@ -79,7 +79,7 @@ export default memo(ServiceCard);
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.card,
     borderRadius: radii.lg,
     borderWidth: 1,
     borderColor: colors.border,

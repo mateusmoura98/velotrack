@@ -30,7 +30,7 @@ const PRIORITY_CONFIG = {
 };
 
 export function StatusBadge({ status, size = 'sm' }) {
-  const c = STATUS_CONFIG[status] || { bg: colors.surfaceLight, color: colors.textMuted, label: status, icon: 'help-circle-outline' };
+  const c = STATUS_CONFIG[status] || { bg: colors.card, color: colors.textMuted, label: status, icon: 'help-circle-outline' };
   const isLg = size === 'lg';
 
   return (
@@ -53,10 +53,10 @@ export function PriorityBadge({ priority, size = 'sm' }) {
   );
 }
 
-export function CountBadge({ count, color = colors.primary, bg }) {
+export function CountBadge({ count, color = colors.primary }) {
   if (count <= 0) return null;
   return (
-    <View style={[styles.countBadge, { backgroundColor: bg || color + '20' }]}>
+    <View style={[styles.countBadge, { backgroundColor: color + '18' }]}>
       <Text style={[styles.countText, { color }]}>{count > 99 ? '99+' : count}</Text>
     </View>
   );

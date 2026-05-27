@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
   },
-  sendBtnDisabled: { backgroundColor: colors.surfaceLight, opacity: 0.5 },
+  sendBtnDisabled: { backgroundColor: colors.card, opacity: 0.5 },
   emptyBox: { alignItems: 'center', paddingTop: 60, gap: 10 },
   emptyTitle: { fontSize: 17, fontWeight: '700', color: colors.textSecondary },
   emptySub: { fontSize: 13, color: colors.textMuted, textAlign: 'center' },

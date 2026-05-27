@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   techLeft: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   techAvatar: {
     width: 36, height: 36, borderRadius: radii.md,
-    backgroundColor: colors.surfaceLight, justifyContent: 'center', alignItems: 'center',
+    backgroundColor: colors.card, justifyContent: 'center', alignItems: 'center',
   },
   techAvatarActive: { backgroundColor: colors.primarySoft },
   techName: { color: colors.text, fontSize: 14, fontWeight: '600' },
