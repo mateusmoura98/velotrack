@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../../src/theme/colors';
 
 export default function TecnicoLayout() {
@@ -15,9 +15,11 @@ export default function TecnicoLayout() {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           borderTopWidth: 1,
-          height: 52,
-          paddingBottom: 4,
-          paddingTop: 6,
+          height: 54,
+          paddingBottom: 6,
+          paddingTop: 8,
+          elevation: 0,
+          shadowOpacity: 0,
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
@@ -30,7 +32,7 @@ export default function TecnicoLayout() {
         options={{
           title: 'Serviços',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'wrench' : 'wrench-outline'} size={16} color={color} />
+            <MaterialCommunityIcons name={focused ? 'wrench' : 'wrench-outline'} size={18} color={color} />
           ),
         }}
       />
@@ -39,7 +41,7 @@ export default function TecnicoLayout() {
         options={{
           title: 'Histórico',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'refresh' : 'refresh-outline'} size={16} color={color} />
+            <MaterialCommunityIcons name={focused ? 'clock' : 'clock-outline'} size={18} color={color} />
           ),
         }}
       />
@@ -48,7 +50,7 @@ export default function TecnicoLayout() {
         options={{
           title: 'Suporte',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'lifebuoy' : 'lifebuoy-outline'} size={16} color={color} />
+            <MaterialCommunityIcons name={focused ? 'lifebuoy' : 'lifebuoy'} size={18} color={color} />
           ),
         }}
       />

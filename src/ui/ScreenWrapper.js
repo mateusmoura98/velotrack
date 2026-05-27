@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
     alignSelf: 'center',
     backgroundColor: colors.bg,
-    paddingBottom: 52,
+    paddingBottom: 54,
   },
   innerWide: {
     maxWidth: 1200,
