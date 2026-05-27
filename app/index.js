@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import {
   KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
-  View, Text, Animated, TouchableOpacity, TextInput, ActivityIndicator, Image
+  View, Text, Animated, TouchableOpacity, TextInput, ActivityIndicator
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -51,9 +51,6 @@ export default function LoginScreen() {
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           <Animated.View style={[styles.logoBox, { opacity: fade, transform: [{ translateY: slide }] }]}>
-            <View style={styles.logoIcon}>
-              <Ionicons name="speedometer-outline" size={40} color={colors.primary} />
-            </View>
             <Text style={styles.logoText}>
               <Text style={{ color: colors.text }}>VELO</Text>
               <Text style={{ color: colors.primary }}>TRACK</Text>
@@ -145,20 +142,13 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
   },
-  logoBox: { alignItems: 'center', marginBottom: 40 },
-  logoIcon: {
-    width: 80, height: 80, borderRadius: radii['2xl'],
-    backgroundColor: colors.primarySoft,
-    justifyContent: 'center', alignItems: 'center',
-    marginBottom: 16,
-    borderWidth: 1, borderColor: colors.border,
-  },
+  logoBox: { alignItems: 'center', marginBottom: 32 },
   logoText: {
-    fontSize: 26, fontWeight: '900', letterSpacing: 5,
+    fontSize: 28, fontWeight: '900', letterSpacing: 6,
   },
   logoSub: {
-    fontSize: 10, color: colors.primary, letterSpacing: 3,
-    marginTop: 6, fontWeight: '600',
+    fontSize: 10, color: colors.primary, letterSpacing: 4,
+    marginTop: 8, fontWeight: '600',
   },
   errorBox: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
