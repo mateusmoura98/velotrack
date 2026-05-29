@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, radii, spacing } from '../theme/colors';
 
 function PhotosSection({ photos, onAdd, uploading, canEdit }) {
-  if (!photos && !canEdit) return null;
+  if (!photos?.length && !canEdit) return null;
 
   return (
     <View style={styles.card}>

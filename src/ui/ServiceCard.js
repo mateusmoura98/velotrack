@@ -56,10 +56,10 @@ function ServiceCard({ service, onPress, compact = false }) {
         </View>
       ) : null}
 
-      {!compact && service.users?.nome && (
+      {!compact && (service.technician_name || service.users?.nome) && (
         <View style={styles.detailRow}>
           <Ionicons name="person-outline" size={12} color={colors.textMuted} />
-          <Text style={styles.detailText} numberOfLines={1}>{service.users.nome}</Text>
+          <Text style={styles.detailText} numberOfLines={1}>{service.technician_name || service.users?.nome}</Text>
         </View>
       )}
 

@@ -1,31 +1,21 @@
-import { useState, useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity } from 'react-native';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { colors, typography, radii, spacing } from '../../src/theme/colors';
 import { supabase } from '../../src/lib/supabase';
-import { Card } from '../../src/ui/Card';
 import ServiceCard from '../../src/ui/ServiceCard';
 import { EmptyState } from '../../src/ui/EmptyState';
 import { Skeleton, SkeletonCard } from '../../src/ui/Skeleton';
 
-const TABS = [
-  { key: 'ativos', label: 'Ativos', icon: 'construct-outline' },
-  { key: 'pendentes', label: 'Pendentes', icon: 'time-outline' },
-  { key: 'andamento', label: 'Em Andamento', icon: 'play-circle-outline' },
-  { key: 'concluidos', label: 'Concluídos', icon: 'checkmark-circle-outline' },
-];
-
 export default function TecnicoHome() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile } = useAuth();
   const router = useRouter();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState('ativos');
-  const [counts, setCounts] = useState({ pendente: 0, em_andamento: 0, concluido: 0 });
 
   const fetchServices = useCallback(async () => {
     try {
@@ -35,62 +25,86 @@ export default function TecnicoHome() {
         .eq('technician_id', user?.id)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      const list = data || [];
-      setServices(list);
-      setCounts({
-        pendente: list.filter(s => s.status === 'pendente').length,
-        em_andamento: list.filter(s => s.status === 'em_andamento').length,
-        concluido: list.filter(s => s.status === 'concluido').length,
-      });
+      setServices(data || []);
     } catch {} finally {
       setLoading(false);
       setRefreshing(false);
     }
   }, [user?.id]);
 
-  useFocusEffect(useCallback(() => { fetchServices(); }, [fetchServices]));
-
-  const filteredServices = useMemo(() => {
-    switch (activeTab) {
-      case 'pendentes':
-        return services.filter(s => s.status === 'pendente');
-      case 'andamento':
-        return services.filter(s => s.status === 'em_andamento');
-      case 'concluidos':
-        return services.filter(s => s.status === 'concluido');
-      case 'ativos':
-      default:
-        return services.filter(s => s.status === 'pendente' || s.status === 'em_andamento');
-    }
-  }, [services, activeTab]);
+  useEffect(() => { fetchServices(); }, [user?.id]);
 
   const today = useMemo(() =>
     new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }),
   []);
 
-  const countItems = [
-    { value: counts.pendente, label: 'Pendentes', color: colors.warning, icon: 'time-outline' },
-    { value: counts.em_andamento, label: 'Em Andamento', color: colors.primary, icon: 'play-circle-outline' },
-    { value: counts.concluido, label: 'Concluídos', color: colors.success, icon: 'checkmark-circle-outline' },
-  ];
+  const counts = useMemo(() => {
+    const hoje = services.filter(s => {
+      const d = new Date(s.created_at);
+      const now = new Date();
+      return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    return {
+      total: hoje.length,
+      pendente: hoje.filter(s => s.status === 'pendente').length,
+      andamento: hoje.filter(s => s.status === 'em_andamento').length,
+      concluido: hoje.filter(s => s.status === 'concluido').length,
+    };
+  }, [services]);
+
+  const activeUrgent = useMemo(() =>
+    services.filter(s => s.status !== 'concluido').slice(0, 3),
+  [services]);
 
   const renderCard = useCallback(({ item }) => (
     <ServiceCard
       service={item}
       onPress={() => router.push(`/(tecnico)/servico/${item.id}`)}
     />
-  ), []);
+  ), [router]);
 
-  const getEmptyMessage = () => {
-    switch (activeTab) {
-      case 'pendentes': return { icon: 'time-outline', title: 'Nenhum pendente', message: 'Você não tem serviços pendentes no momento.' };
-      case 'andamento': return { icon: 'play-circle-outline', title: 'Nada em andamento', message: 'Você não tem serviços em andamento.' };
-      case 'concluidos': return { icon: 'checkmark-circle-outline', title: 'Nenhum concluído', message: 'Você ainda não finalizou nenhum serviço.' };
-      default: return { icon: 'checkmark-circle', title: 'Tudo em dia!', message: 'Você não tem serviços pendentes no momento.' };
-    }
-  };
+  const renderHeader = () => (
+    <>
+      <TouchableOpacity
+        style={styles.heroCard}
+        onPress={() => router.push('/(tecnico)/os-do-dia')}
+        activeOpacity={0.7}
+      >
+        <View style={styles.heroLeft}>
+          <Text style={styles.heroTitle}>OS do Dia</Text>
+          <Text style={styles.heroDesc}>
+            {counts.total} OS • {counts.pendente} pendentes • {counts.andamento} em andamento
+          </Text>
+        </View>
+        <View style={styles.heroRight}>
+          <Text style={styles.heroCount}>{counts.total}</Text>
+          <Ionicons name="arrow-forward" size={16} color={colors.primary} />
+        </View>
+      </TouchableOpacity>
 
-  const empty = getEmptyMessage();
+      <View style={styles.counterRow}>
+        <View style={[styles.counterCard, { borderLeftColor: colors.warning }]}>
+          <Ionicons name="time-outline" size={14} color={colors.warning} />
+          <Text style={[styles.counterNum, { color: colors.warning }]}>{counts.pendente}</Text>
+          <Text style={styles.counterLabel}>Pendentes</Text>
+        </View>
+        <View style={[styles.counterCard, { borderLeftColor: colors.primary }]}>
+          <Ionicons name="play-circle-outline" size={14} color={colors.primary} />
+          <Text style={[styles.counterNum, { color: colors.primary }]}>{counts.andamento}</Text>
+          <Text style={styles.counterLabel}>Em Andamento</Text>
+        </View>
+        <View style={[styles.counterCard, { borderLeftColor: colors.success }]}>
+          <Ionicons name="checkmark-circle-outline" size={14} color={colors.success} />
+          <Text style={[styles.counterNum, { color: colors.success }]}>{counts.concluido}</Text>
+          <Text style={styles.counterLabel}>Concluídos</Text>
+        </View>
+      </View>
+
+      {activeUrgent.length > 0 && (
+        <Text style={styles.sectionTitle}>OS Ativas</Text>
+      )}
+    </>
+  );
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -99,98 +113,42 @@ export default function TecnicoHome() {
           <Text style={styles.greeting}>Olá, {profile?.nome?.split(' ')[0] || 'Técnico'}</Text>
           <Text style={styles.date}>{today}</Text>
         </View>
-        <Pressable
-          onPress={async () => { await signOut(); }}
-          style={({ pressed }) => [styles.logoutBtn, pressed && { opacity: 0.7 }]}
-        >
-          <Ionicons name="log-out-outline" size={16} color={colors.error} />
-          <Text style={styles.logoutLabel}>Sair</Text>
-        </Pressable>
       </View>
 
       {loading ? (
         <View style={styles.center}>
-          <View style={styles.counterRow}>
-            {[1, 2, 3].map(i => (
-              <View key={i} style={styles.counterCard}>
-                <Skeleton width={16} height={16} borderRadius={8} />
-                <Skeleton width={28} height={20} />
-                <Skeleton width={45} height={10} />
-              </View>
-            ))}
-          </View>
-          {[1, 2].map(i => <SkeletonCard key={i} lines={4} />)}
+          <Skeleton width={200} height={20} />
+          <View style={{ height: 12 }} />
+          {[1, 2].map(i => <SkeletonCard key={i} lines={3} />)}
         </View>
       ) : (
-        <>
-          <View style={styles.counterRow}>
-            {countItems.map((c, i) => (
-              <TouchableOpacity
-                key={i}
-                style={[styles.counterCard, { borderLeftColor: c.color }, activeTab === TABS[i + 1]?.key && { backgroundColor: c.color + '10' }]}
-                onPress={() => setActiveTab(TABS[i + 1]?.key || 'ativos')}
-                activeOpacity={0.7}
-              >
-                <Ionicons name={c.icon} size={16} color={c.color} />
-                <Text style={[styles.counterNum, { color: c.color }]}>{c.value}</Text>
-                <Text style={styles.counterLabel}>{c.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={TABS}
-            contentContainerStyle={styles.tabList}
-            renderItem={({ item }) => {
-              const isActive = activeTab === item.key;
-              let count = 0;
-              if (item.key === 'ativos') count = counts.pendente + counts.em_andamento;
-              else if (item.key === 'pendentes') count = counts.pendente;
-              else if (item.key === 'andamento') count = counts.em_andamento;
-              else if (item.key === 'concluidos') count = counts.concluido;
-              return (
-                <TouchableOpacity
-                  style={[styles.tab, isActive && styles.tabActive]}
-                  onPress={() => setActiveTab(item.key)}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons name={item.icon} size={14} color={isActive ? colors.primary : colors.textMuted} />
-                  <Text style={[styles.tabText, isActive && styles.tabTextActive]}>{item.label}</Text>
-                  <View style={[styles.tabCount, isActive && styles.tabCountActive]}>
-                    <Text style={[styles.tabCountText, isActive && styles.tabCountTextActive]}>{count}</Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-            keyExtractor={(i) => i.key}
-          />
-
-          <FlatList
-            data={filteredServices}
-            keyExtractor={(item) => item.id}
-            renderItem={renderCard}
-            contentContainerStyle={styles.list}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await fetchServices(); }} tintColor={colors.primary} colors={[colors.primary]} />
-            }
-            ListEmptyComponent={
-              <EmptyState icon={empty.icon} title={empty.title} message={empty.message} />
-            }
-            showsVerticalScrollIndicator={false}
-          />
-        </>
+        <FlatList
+          style={{ flex: 1 }}
+          data={activeUrgent}
+          keyExtractor={(item) => item.id}
+          renderItem={renderCard}
+          contentContainerStyle={styles.listContent}
+          ListHeaderComponent={renderHeader}
+          ListEmptyComponent={
+            <EmptyState
+              icon="home-outline"
+              title="Bem-vindo!"
+              message="Você não tem serviços ativos no momento. Acesse a OS do Dia para ver suas ordens."
+            />
+          }
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await fetchServices(); }} tintColor={colors.primary} colors={[colors.primary]} />
+          }
+          showsVerticalScrollIndicator={false}
+        />
       )}
     </SafeAreaView>
   );
 }
 
-import { Pressable } from 'react-native';
-
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  center: { flex: 1, padding: spacing.xl },
+  center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start',
     paddingHorizontal: spacing.xl, paddingVertical: spacing.md,
@@ -198,33 +156,30 @@ const styles = StyleSheet.create({
   },
   greeting: { ...typography.h2, color: colors.text },
   date: { ...typography.caption, color: colors.textMuted, marginTop: 2, textTransform: 'capitalize' },
-  logoutBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    paddingVertical: 7, paddingHorizontal: 11, borderRadius: radii.md,
-    borderWidth: 1, borderColor: colors.border,
+  heroCard: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    backgroundColor: colors.primarySoft, marginHorizontal: spacing.xl, marginTop: spacing.lg,
+    borderRadius: radii.xl, padding: spacing.lg, borderWidth: 1, borderColor: colors.primary + '30',
   },
-  logoutLabel: { fontSize: 12, fontWeight: '700', color: colors.error },
-  counterRow: { flexDirection: 'row', gap: 8, paddingHorizontal: spacing.xl, marginBottom: spacing.md, marginTop: spacing.lg },
+  heroLeft: { flex: 1 },
+  heroTitle: { fontSize: 16, fontWeight: '700', color: colors.primary },
+  heroDesc: { fontSize: 11, color: colors.textSecondary, marginTop: 3 },
+  heroRight: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  heroCount: {
+    fontSize: 28, fontWeight: '900', color: colors.primary,
+  },
+  counterRow: { flexDirection: 'row', gap: 8, paddingHorizontal: spacing.xl, marginTop: spacing.md },
   counterCard: {
-    flex: 1, backgroundColor: colors.card, borderRadius: radii.lg, padding: spacing.md,
-    borderLeftWidth: 3, borderWidth: 1, borderColor: colors.border, gap: 3,
+    flex: 1, backgroundColor: colors.card, borderRadius: radii.lg, padding: spacing.sm,
+    borderLeftWidth: 3, borderWidth: 1, borderColor: colors.border, gap: 2,
+    alignItems: 'center',
   },
-  counterNum: { fontSize: 20, fontWeight: '900' },
-  counterLabel: { fontSize: 10, color: colors.textSecondary, marginTop: 1, fontWeight: '600' },
-  tabList: { paddingHorizontal: spacing.xl, gap: 6, marginBottom: spacing.md },
-  tab: {
-    flexDirection: 'row', alignItems: 'center', gap: 5,
-    paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border,
+  counterNum: { fontSize: 16, fontWeight: '900' },
+  counterLabel: { fontSize: 9, color: colors.textSecondary, fontWeight: '600' },
+  listContent: { paddingHorizontal: spacing.xl, paddingBottom: spacing.lg },
+  sectionTitle: {
+    fontSize: 13, fontWeight: '700', color: colors.textSecondary,
+    marginBottom: spacing.sm, marginTop: spacing.lg,
+    textTransform: 'uppercase', letterSpacing: 0.8,
   },
-  tabActive: { backgroundColor: colors.primarySoft, borderColor: colors.primary },
-  tabText: { fontSize: 12, fontWeight: '600', color: colors.textSecondary },
-  tabTextActive: { color: colors.primary },
-  tabCount: {
-    backgroundColor: colors.surfaceElevated, paddingHorizontal: 6, paddingVertical: 1, borderRadius: 4,
-  },
-  tabCountActive: { backgroundColor: colors.primary + '30' },
-  tabCountText: { fontSize: 10, fontWeight: '700', color: colors.textMuted },
-  tabCountTextActive: { color: colors.primary },
-  list: { paddingHorizontal: spacing.xl, paddingBottom: 20 },
 });

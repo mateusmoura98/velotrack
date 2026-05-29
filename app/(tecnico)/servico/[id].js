@@ -1,7 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Platform } from 'react-native';
+import { useState, useCallback, useEffect } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../src/contexts/AuthContext';
 import { colors, typography, radii, spacing } from '../../../src/theme/colors';
@@ -63,19 +63,24 @@ export default function ServiceDetail() {
       setService(data);
       setObservations(data.observations || '');
       setPhotos(data.fotos || []);
-      if (data.checklist && data.checklist.length > 0) setChecklist(data.checklist);
+      if (data.checklist && data.checklist.length > 0) {
+        const merged = CHECKLIST_ITEMS.map((label, i) => ({
+          label,
+          checked: data.checklist[i]?.checked === true,
+        }));
+        setChecklist(merged);
+      }
     } catch {} finally {
       setLoading(false);
     }
   }, [id]);
 
-  useFocusEffect(useCallback(() => { fetchService(); }, [fetchService]));
+  useEffect(() => { fetchService(); }, [id]);
 
   const handleStart = async () => {
     setUpdating(true);
     try {
-      await servicosService.startService(id);
-      await historyService.log(id, user?.id, historyService.ACTIONS.STARTED, 'Serviço iniciado pelo técnico');
+      await servicosService.startService(id, user?.id);
       await fetchService();
     } catch { alert('Erro', 'Não foi possível iniciar o serviço.'); } finally { setUpdating(false); }
   };
@@ -83,8 +88,7 @@ export default function ServiceDetail() {
   const handleFinish = async () => {
     setUpdating(true);
     try {
-      await servicosService.finishService(id, { checklist, observations, fotos: photos });
-      await historyService.log(id, user?.id, historyService.ACTIONS.FINISHED, 'Serviço finalizado');
+      await servicosService.finishService(id, { checklist, observations, fotos: photos }, user?.id);
       alert('Sucesso', 'Serviço finalizado com sucesso!');
       router.back();
     } catch { alert('Erro', 'Não foi possível finalizar o serviço.'); } finally { setUpdating(false); }
@@ -170,103 +174,105 @@ export default function ServiceDetail() {
     <SafeAreaView style={styles.safe} edges={['top']}>
       <Header title="Ordem de Serviço" onBack={() => router.back()} />
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <ServiceInfo service={service} />
-        <ServiceVehicle service={service} />
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+          <ServiceInfo service={service} />
+          <ServiceVehicle service={service} />
 
-        <Card>
-          <CardSection label="Técnico e Datas">
-            <View style={styles.techRow}>
-              <Ionicons name="person-outline" size={15} color={colors.textSecondary} />
-              <Text style={styles.techName}>{service.users?.nome || user?.email || '—'}</Text>
-            </View>
-            <View style={styles.datesGrid}>
-              <View style={styles.dateItem}>
-                <Text style={styles.dateLabel}>Criação</Text>
-                <Text style={styles.dateValue}>{formatDate(service.created_at)}</Text>
-              </View>
-              <View style={styles.dateItem}>
-                <Text style={styles.dateLabel}>Início</Text>
-                <Text style={styles.dateValue}>{formatDate(service.tempo_inicio) || '—'}</Text>
-              </View>
-              <View style={styles.dateItem}>
-                <Text style={styles.dateLabel}>Término</Text>
-                <Text style={styles.dateValue}>{formatDate(service.tempo_fim) || '—'}</Text>
-              </View>
-            </View>
-          </CardSection>
-        </Card>
-
-        <ServiceTimeline serviceId={id} />
-
-        {isActive && <Timer startTime={service.tempo_inicio} />}
-
-        {service.status === 'pendente' && (
-          <TouchableOpacity style={styles.startBtn} onPress={handleStart} disabled={updating} activeOpacity={0.8}>
-            {updating ? <ActivityIndicator color="#FFF" /> : (
-              <View style={styles.btnRow}>
-                <Ionicons name="play-circle" size={22} color="#FFF" />
-                <Text style={styles.btnText}>INICIAR ATENDIMENTO</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        )}
-
-        {(isActive || isConcluido) && (
-          <Checklist checklist={checklist} onToggle={toggleChecklist} canEdit={canEdit} />
-        )}
-
-        {(isActive || isConcluido) && (
-          <PhotosSection photos={photos} onAdd={pickAndUploadPhoto} uploading={uploadingPhoto} canEdit={canEdit} />
-        )}
-
-        {(isActive || isConcluido) && (
           <Card>
-            <Text style={styles.sectionLabel}>OBSERVAÇÕES</Text>
-            <TextInput
-              style={styles.obsInput}
-              placeholder="Notas sobre o serviço..."
-              placeholderTextColor={colors.textMuted}
-              value={observations}
-              onChangeText={setObservations}
-              onBlur={saveObservations}
-              multiline
-              numberOfLines={4}
-              editable={canEdit}
-            />
+            <CardSection label="Técnico e Datas">
+              <View style={styles.techRow}>
+                <Ionicons name="person-outline" size={15} color={colors.textSecondary} />
+                <Text style={styles.techName}>{service.technician_name || service.users?.nome || user?.email || '—'}</Text>
+              </View>
+              <View style={styles.datesGrid}>
+                <View style={styles.dateItem}>
+                  <Text style={styles.dateLabel}>Criação</Text>
+                  <Text style={styles.dateValue}>{formatDate(service.created_at)}</Text>
+                </View>
+                <View style={styles.dateItem}>
+                  <Text style={styles.dateLabel}>Início</Text>
+                  <Text style={styles.dateValue}>{formatDate(service.started_at) || '—'}</Text>
+                </View>
+                <View style={styles.dateItem}>
+                  <Text style={styles.dateLabel}>Término</Text>
+                  <Text style={styles.dateValue}>{formatDate(service.finished_at) || '—'}</Text>
+                </View>
+              </View>
+            </CardSection>
           </Card>
-        )}
 
-        {isActive && (
-          <TouchableOpacity style={styles.finishBtn} onPress={handleFinish} disabled={updating} activeOpacity={0.8}>
-            {updating ? <ActivityIndicator color="#FFF" /> : (
-              <View style={styles.btnRow}>
-                <Ionicons name="checkmark-done-circle" size={22} color="#FFF" />
-                <Text style={styles.btnText}>FINALIZAR SERVIÇO</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        )}
+          <ServiceTimeline serviceId={id} />
 
-        {isConcluido && (
-          <View style={styles.completedSection}>
-            <Ionicons name="checkmark-circle" size={36} color={colors.success} />
-            <Text style={styles.completedTitle}>Serviço Concluído</Text>
-            <View style={styles.completedMeta}>
-              <View style={styles.completedItem}>
-                <Text style={styles.completedLabel}>Duração</Text>
-                <Text style={styles.completedValue}>{formatDuration(service.tempo_inicio, service.tempo_fim)}</Text>
-              </View>
-              <View style={styles.completedItem}>
-                <Text style={styles.completedLabel}>Finalizado</Text>
-                <Text style={styles.completedValue}>{formatDate(service.tempo_fim)}</Text>
+          {isActive && <Timer startTime={service.started_at} />}
+
+          {service.status === 'pendente' && (
+            <TouchableOpacity style={styles.startBtn} onPress={handleStart} disabled={updating} activeOpacity={0.8}>
+              {updating ? <ActivityIndicator color="#FFF" /> : (
+                <View style={styles.btnRow}>
+                  <Ionicons name="play-circle" size={22} color="#FFF" />
+                  <Text style={styles.btnText}>INICIAR ATENDIMENTO</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          )}
+
+          {(isActive || isConcluido) && (
+            <Checklist checklist={checklist} onToggle={toggleChecklist} canEdit={canEdit} />
+          )}
+
+          {(isActive || isConcluido) && (
+            <PhotosSection photos={photos} onAdd={pickAndUploadPhoto} uploading={uploadingPhoto} canEdit={canEdit} />
+          )}
+
+          {(isActive || isConcluido) && (
+            <Card>
+              <Text style={styles.sectionLabel}>OBSERVAÇÕES</Text>
+              <TextInput
+                style={styles.obsInput}
+                placeholder="Notas sobre o serviço..."
+                placeholderTextColor={colors.textMuted}
+                value={observations}
+                onChangeText={setObservations}
+                onBlur={saveObservations}
+                multiline
+                numberOfLines={4}
+                editable={canEdit}
+              />
+            </Card>
+          )}
+
+          {isActive && (
+            <TouchableOpacity style={styles.finishBtn} onPress={handleFinish} disabled={updating} activeOpacity={0.8}>
+              {updating ? <ActivityIndicator color="#FFF" /> : (
+                <View style={styles.btnRow}>
+                  <Ionicons name="checkmark-done-circle" size={22} color="#FFF" />
+                  <Text style={styles.btnText}>FINALIZAR SERVIÇO</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          )}
+
+          {isConcluido && (
+            <View style={styles.completedSection}>
+              <Ionicons name="checkmark-circle" size={36} color={colors.success} />
+              <Text style={styles.completedTitle}>Serviço Concluído</Text>
+              <View style={styles.completedMeta}>
+                <View style={styles.completedItem}>
+                  <Text style={styles.completedLabel}>Duração</Text>
+                  <Text style={styles.completedValue}>{formatDuration(service.started_at, service.finished_at)}</Text>
+                </View>
+                <View style={styles.completedItem}>
+                  <Text style={styles.completedLabel}>Finalizado</Text>
+                  <Text style={styles.completedValue}>{formatDate(service.finished_at)}</Text>
+                </View>
               </View>
             </View>
-          </View>
-        )}
+          )}
 
-        <View style={{ height: 40 }} />
-      </ScrollView>
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

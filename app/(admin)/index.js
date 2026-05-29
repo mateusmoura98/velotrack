@@ -64,6 +64,7 @@ export default function AdminDashboard() {
         <Pressable
           onPress={async () => { await signOut(); }}
           style={({ pressed }) => [styles.logoutBtn, pressed && styles.pressed]}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
           <Ionicons name="log-out-outline" size={14} color={colors.error} />
           <Text style={styles.logoutLabel}>Sair</Text>

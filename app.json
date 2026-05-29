@@ -15,11 +15,11 @@
       "shortName": "VELOTRACK",
       "description": "Gestão Técnica de Oficina Mecânica",
       "lang": "pt-BR",
-      "themeColor": "#06060C",
-      "backgroundColor": "#06060C"
+      "themeColor": "#050816",
+      "backgroundColor": "#050816"
     },
     "ios": {
-      "supportsTablet": false,
+      "supportsTablet": true,
       "bundleIdentifier": "com.velotrack.app",
       "infoPlist": {
         "UIViewControllerBasedStatusBarAppearance": true

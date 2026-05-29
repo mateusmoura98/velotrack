@@ -1,37 +1,50 @@
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../../src/theme/colors';
+import TabBarButton from '../../src/ui/TabBarButton';
 
 const TABS = [
-  { name: 'index', title: 'Dashboard', icon: 'home-outline', active: 'home' },
-  { name: 'criar-servico', title: 'Novo', icon: 'plus-circle-outline', active: 'plus-circle' },
-  { name: 'tecnicos', title: 'Técnicos', icon: 'account-group-outline', active: 'account-group' },
-  { name: 'historico', title: 'Histórico', icon: 'clock-outline', active: 'clock' },
+  { name: 'index', title: 'Início', icon: 'home-outline', active: 'home' },
+  { name: 'criar-servico', title: 'Criar', icon: 'plus-circle-outline', active: 'plus-circle' },
+  { name: 'tecnicos', title: 'Equipe', icon: 'account-group-outline', active: 'account-group' },
+  { name: 'produtividade', title: 'Prod.', icon: 'chart-bar', active: 'chart-bar' },
+  { name: 'historico', title: 'Hist.', icon: 'clock-outline', active: 'clock' },
   { name: 'suporte', title: 'Suporte', icon: 'lifebuoy', active: 'lifebuoy' },
 ];
 
 export default function AdminLayout() {
+  const insets = useSafeAreaInsets();
+  const bottomInset = insets.bottom || 8;
+
   return (
     <Tabs
+      lazy={false}
+      detachInactiveScreens={false}
       screenOptions={{
         headerShown: false,
+        sceneContainerStyle: { backgroundColor: colors.bg },
         tabBarStyle: {
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           borderTopWidth: 1,
-          height: 54,
-          paddingBottom: 6,
-          paddingTop: 8,
+          height: 54 + bottomInset,
+          paddingBottom: bottomInset,
+          paddingTop: 4,
           elevation: 0,
           shadowOpacity: 0,
+          maxWidth: 500,
+          alignSelf: 'center',
+          width: '100%',
+        },
+        tabBarItemStyle: {
+          paddingHorizontal: 0,
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: { fontSize: 9, fontWeight: '700', letterSpacing: 0.8 },
+        tabBarIconStyle: { marginBottom: 2 },
+        tabBarLabelStyle: { fontSize: 9, fontWeight: '600', letterSpacing: 0.4 },
+        tabBarButton: TabBarButton,
         tabBarHideOnKeyboard: true,
       }}
     >

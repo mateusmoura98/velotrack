@@ -11,7 +11,7 @@ const VARIANTS = {
 };
 
 const SIZES = {
-  sm: { height: 38, paddingHorizontal: 16, fontSize: 13, borderRadius: radii.md },
+  sm: { height: 44, paddingHorizontal: 16, fontSize: 13, borderRadius: radii.md },
   md: { height: 46, paddingHorizontal: 20, fontSize: 14, borderRadius: radii.lg },
   lg: { height: 54, paddingHorizontal: 24, fontSize: 15, borderRadius: radii.lg },
 };

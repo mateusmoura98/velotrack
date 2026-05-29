@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, radii, spacing } from '../../src/theme/colors';
 import { suporteService } from '../../src/services/suporte';
 import { useQuery } from '../../src/hooks/useQuery';
+import Header from '../../src/ui/Header';
 import { Card } from '../../src/ui/Card';
 import { Skeleton, SkeletonCard } from '../../src/ui/Skeleton';
 

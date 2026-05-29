@@ -1,12 +1,13 @@
 export const colors = {
   bg: '#050816',
-  surface: '#0B1020',
+  surface: '#0C1124',
   card: '#101826',
-  surfaceElevated: '#151B30',
+  surfaceElevated: '#181E35',
 
   primary: '#EC167F',
   primaryHover: '#D41472',
   primarySoft: 'rgba(236,22,127,0.10)',
+  tabActiveBg: 'rgba(236,22,127,0.12)',
 
   text: '#FFFFFF',
   textSecondary: '#CBD5E1',
@@ -19,12 +20,12 @@ export const colors = {
   error: '#EF4444',
   errorSoft: 'rgba(239,68,68,0.10)',
 
-  border: 'rgba(255,255,255,0.06)',
-  borderLight: 'rgba(255,255,255,0.10)',
+  border: 'rgba(255,255,255,0.08)',
+  borderLight: 'rgba(255,255,255,0.12)',
 
   overlay: 'rgba(0,0,0,0.75)',
-  skeleton: '#151B30',
-  skeletonHighlight: '#1C2238',
+  skeleton: '#181E35',
+  skeletonHighlight: '#1E2440',
 };
 
 export const shadows = {

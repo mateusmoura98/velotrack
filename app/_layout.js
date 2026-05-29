@@ -2,9 +2,28 @@ import { useEffect } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
+import { ThemeProvider } from '@react-navigation/native';
 import { AuthProvider, useAuth } from '../src/contexts/AuthContext';
 import { colors } from '../src/theme/colors';
 import ScreenWrapper from '../src/ui/ScreenWrapper';
+
+const navTheme = {
+  dark: true,
+  colors: {
+    primary: colors.primary,
+    background: colors.bg,
+    card: colors.surface,
+    text: colors.text,
+    border: colors.border,
+    notification: colors.primary,
+  },
+  fonts: {
+    regular: { fontFamily: 'System', fontWeight: '400' },
+    medium: { fontFamily: 'System', fontWeight: '500' },
+    bold: { fontFamily: 'System', fontWeight: '700' },
+    heavy: { fontFamily: 'System', fontWeight: '900' },
+  },
+};
 
 if (Platform.OS !== 'web') {
   const SplashScreen = require('expo-splash-screen');
@@ -48,7 +67,7 @@ function RootLayoutNav() {
     <>
       <StatusBar style="light" />
       <ScreenWrapper>
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg }, animation: 'fade' }}>
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(admin)" />
           <Stack.Screen name="(tecnico)" />
@@ -60,9 +79,11 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <ThemeProvider value={navTheme}>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

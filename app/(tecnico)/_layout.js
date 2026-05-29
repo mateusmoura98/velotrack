@@ -1,38 +1,59 @@
 import { Tabs } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../../src/theme/colors';
+import TabBarButton from '../../src/ui/TabBarButton';
 
 export default function TecnicoLayout() {
+  const insets = useSafeAreaInsets();
+  const bottomInset = insets.bottom || 8;
+
   return (
     <Tabs
+      lazy={false}
+      detachInactiveScreens={false}
       screenOptions={{
         headerShown: false,
+        sceneContainerStyle: { backgroundColor: colors.bg },
         tabBarStyle: {
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           borderTopWidth: 1,
-          height: 54,
-          paddingBottom: 6,
-          paddingTop: 8,
+          height: 54 + bottomInset,
+          paddingBottom: bottomInset,
+          paddingTop: 4,
           elevation: 0,
           shadowOpacity: 0,
+          maxWidth: 500,
+          alignSelf: 'center',
+          width: '100%',
+        },
+        tabBarItemStyle: {
+          paddingHorizontal: 0,
         },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: { fontSize: 9, fontWeight: '700', letterSpacing: 0.8 },
+        tabBarIconStyle: { marginBottom: 2 },
+        tabBarLabelStyle: { fontSize: 9, fontWeight: '600', letterSpacing: 0.4 },
+        tabBarButton: TabBarButton,
         tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Serviços',
+          title: 'Início',
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons name={focused ? 'wrench' : 'wrench-outline'} size={18} color={color} />
+            <MaterialCommunityIcons name={focused ? 'home' : 'home-outline'} size={18} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="os-do-dia"
+        options={{
+          title: 'OS do Dia',
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons name={focused ? 'clipboard-text' : 'clipboard-text-outline'} size={18} color={color} />
           ),
         }}
       />
@@ -46,15 +67,16 @@ export default function TecnicoLayout() {
         }}
       />
       <Tabs.Screen
-        name="suporte"
+        name="perfil"
         options={{
-          title: 'Suporte',
+          title: 'Perfil',
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons name={focused ? 'lifebuoy' : 'lifebuoy'} size={18} color={color} />
+            <MaterialCommunityIcons name={focused ? 'account' : 'account-outline'} size={18} color={color} />
           ),
         }}
       />
       <Tabs.Screen name="servico/[id]" options={{ href: null }} />
+      <Tabs.Screen name="suporte" options={{ href: null }} />
     </Tabs>
   );
 }

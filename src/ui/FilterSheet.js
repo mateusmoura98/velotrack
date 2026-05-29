@@ -72,7 +72,7 @@ export default function FilterSheet({ visible, onClose, onApply, initialPeriod, 
           duration: 200,
           useNativeDriver: true,
         }),
-      ]).start(() => onClose && onClose());
+      ]).start();
     }
   }, [visible]);
 
@@ -304,9 +304,6 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: radii.md,
     backgroundColor: colors.primary,
-  },
-  applyBtnDisabled: {
-    opacity: 0.5,
   },
   applyBtnText: {
     ...typography.subtitle,
