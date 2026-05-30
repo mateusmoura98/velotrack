@@ -5,9 +5,10 @@ import { colors, spacing, radii } from '../../src/theme/colors';
 import { useAuth } from '../../src/contexts/AuthContext';
 
 const TABS = [
-  { name: 'index', title: 'Serviços', icon: 'wrench-outline', active: 'wrench' },
+  { name: 'index', title: 'OS do Dia', icon: 'wrench-outline', active: 'wrench' },
+  { name: 'agenda', title: 'Agenda', icon: 'calendar-blank-outline', active: 'calendar' },
   { name: 'historico', title: 'Histórico', icon: 'clock-outline', active: 'clock' },
-  { name: 'suporte', title: 'Suporte', icon: 'lifebuoy', active: 'lifebuoy' },
+  { name: 'perfil', title: 'Perfil', icon: 'account-outline', active: 'account' },
 ];
 
 export default function TecnicoLayout() {
@@ -19,8 +20,9 @@ export default function TecnicoLayout() {
   const isDesktop = Platform.OS === 'web' && width > 768;
 
   // Track the active segment path safely
-  const currentTab = segments.includes('historico') ? 'historico' :
-                     segments.includes('suporte') ? 'suporte' : 'index';
+  const currentTab = segments.includes('agenda') ? 'agenda' :
+                     segments.includes('historico') ? 'historico' :
+                     segments.includes('perfil') ? 'perfil' : 'index';
 
   const handleTabPress = (name) => {
     if (name === 'index') {
@@ -108,18 +110,14 @@ export default function TecnicoLayout() {
             // Hide bottom tab bar on desktop web
             tabBarStyle: {
               display: isDesktop ? 'none' : 'flex',
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
               backgroundColor: colors.surface,
               borderTopColor: colors.border,
               borderTopWidth: 1,
-              height: 56,
-              paddingBottom: 6,
+              height: 64,
+              paddingBottom: 8,
               paddingTop: 8,
-              elevation: 0,
-              shadowOpacity: 0,
+              elevation: 8,
+              shadowOpacity: 0.1,
             },
             tabBarActiveTintColor: colors.primary,
             tabBarInactiveTintColor: colors.textMuted,
@@ -127,33 +125,18 @@ export default function TecnicoLayout() {
             tabBarHideOnKeyboard: true,
           }}
         >
-          <Tabs.Screen
-            name="index"
-            options={{
-              title: 'Serviços',
-              tabBarIcon: ({ color, focused }) => (
-                <MaterialCommunityIcons name={focused ? 'wrench' : 'wrench-outline'} size={18} color={color} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="historico"
-            options={{
-              title: 'Histórico',
-              tabBarIcon: ({ color, focused }) => (
-                <MaterialCommunityIcons name={focused ? 'clock' : 'clock-outline'} size={18} color={color} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="suporte"
-            options={{
-              title: 'Suporte',
-              tabBarIcon: ({ color, focused }) => (
-                <MaterialCommunityIcons name={focused ? 'lifebuoy' : 'lifebuoy'} size={18} color={color} />
-              ),
-            }}
-          />
+          {TABS.map((tab) => (
+            <Tabs.Screen
+              key={tab.name}
+              name={tab.name}
+              options={{
+                title: tab.title,
+                tabBarIcon: ({ color, focused }) => (
+                  <MaterialCommunityIcons name={focused ? tab.active : tab.icon} size={18} color={color} />
+                ),
+              }}
+            />
+          ))}
           <Tabs.Screen name="servico/[id]" options={{ href: null }} />
         </Tabs>
       </View>

@@ -24,13 +24,10 @@ import Input from '../../src/ui/Input';
 import Button from '../../src/ui/Button';
 
 const TIPOS_TAREFA = [
-  'LIMPEZA OFICIAL',
-  'Manutenção Preventiva',
-  'Manutenção Corretiva',
   'Instalação',
+  'Instalação com Bloqueio',
+  'Manutenção',
   'Retirada',
-  'Visita para Orçamento',
-  'Outro',
 ];
 
 const REPETECOS = ['Não se repete', 'Diário', 'Semanal', 'Mensal'];
@@ -349,7 +346,53 @@ export default function CriarServico() {
         await servicosService.create(payload);
         alert('Sucesso', 'Serviço cadastrado e técnico notificado instantaneamente!');
       }
-      router.back();
+      
+      // Clear form completely, reset state, and return to creation mode
+      setForm({
+        cliente: '',
+        endereco: '',
+        telefone: '',
+        veiculo: '',
+        placa: '',
+        tipo: 'Instalação',
+        tipoOutro: '',
+        observacoes: '',
+        tecnico_id: null,
+        priority: 'media',
+        date: new Date().toLocaleDateString('pt-BR'),
+        time: '14:00',
+        duration: '01:30',
+        satisfactionSurvey: true,
+        whatsappOS: true,
+        externalCode: '',
+        keyword: '',
+        cidade: '',
+        googleMapsUrl: '',
+        latitude: '-23.55052',
+        longitude: '-46.63330',
+        equipments: [],
+        attachments: [
+          { id: 'a-1', name: 'foto_checklist_frontal.jpg', size: '280 KB', type: 'image' },
+          { id: 'a-2', name: 'termo_instalacao_assinado.pdf', size: '1.4 MB', type: 'doc' },
+        ],
+        repType: 'Não se repete',
+        repDays: ['Seg', 'Qua', 'Sex'],
+        valServico: '180,00',
+        formaPagamento: 'Pix',
+        isFaturado: true,
+        isPago: false,
+        notifAgendamento: true,
+        notifConclusao: true,
+        notifPush: true,
+      });
+      setActiveTab('geral');
+      setErrorMsg(null);
+
+      if (isEditing) {
+        router.replace('/(admin)/criar-servico');
+      } else {
+        router.back();
+      }
     } catch (err) {
       setErrorMsg(err.message || 'Falha ao salvar serviço.');
       alert('Erro', err.message || 'Falha ao salvar serviço.');

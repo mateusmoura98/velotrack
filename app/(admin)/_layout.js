@@ -6,11 +6,10 @@ import { useAuth } from '../../src/contexts/AuthContext';
 
 const TABS = [
   { name: 'index', title: 'Dashboard', icon: 'view-dashboard-outline', active: 'view-dashboard' },
-  { name: 'criar-servico', title: 'Novo Serviço', icon: 'plus-circle-outline', active: 'plus-circle' },
-  { name: 'agenda', title: 'Calendário', icon: 'calendar-blank-outline', active: 'calendar' },
+  { name: 'criar-servico', title: 'Ordens', icon: 'plus-circle-outline', active: 'plus-circle' },
+  { name: 'agenda', title: 'Agenda', icon: 'calendar-blank-outline', active: 'calendar' },
   { name: 'tecnicos', title: 'Técnicos', icon: 'account-group-outline', active: 'account-group' },
-  { name: 'historico', title: 'Histórico', icon: 'clock-outline', active: 'clock' },
-  { name: 'suporte', title: 'Suporte', icon: 'lifebuoy', active: 'lifebuoy' },
+  { name: 'configuracoes', title: 'Configurações', icon: 'cog-outline', active: 'cog' },
 ];
 
 export default function AdminLayout() {
@@ -24,9 +23,8 @@ export default function AdminLayout() {
   // Detect which tab is currently active
   const currentTab = segments.includes('criar-servico') ? 'criar-servico' :
                      segments.includes('tecnicos') ? 'tecnicos' :
-                     segments.includes('historico') ? 'historico' :
                      segments.includes('agenda') ? 'agenda' :
-                     segments.includes('suporte') ? 'suporte' : 'index';
+                     segments.includes('configuracoes') ? 'configuracoes' : 'index';
 
   const handleTabPress = (name) => {
     if (name === 'index') {
@@ -114,18 +112,14 @@ export default function AdminLayout() {
             // Hide bottom tab bar in desktop web mode
             tabBarStyle: {
               display: isDesktop ? 'none' : 'flex',
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
               backgroundColor: colors.surface,
               borderTopColor: colors.border,
               borderTopWidth: 1,
-              height: 56,
-              paddingBottom: 6,
+              height: 64,
+              paddingBottom: 8,
               paddingTop: 8,
-              elevation: 0,
-              shadowOpacity: 0,
+              elevation: 8,
+              shadowOpacity: 0.1,
             },
             tabBarActiveTintColor: colors.primary,
             tabBarInactiveTintColor: colors.textMuted,

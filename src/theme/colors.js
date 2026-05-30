@@ -1,30 +1,45 @@
+let currentTheme = 'dark';
+if (typeof window !== 'undefined') {
+  try {
+    currentTheme = window.localStorage.getItem('velotrack_theme') || 'dark';
+  } catch (e) {}
+}
+
+export function setTheme(mode) {
+  currentTheme = mode;
+  if (typeof window !== 'undefined') {
+    try {
+      window.localStorage.setItem('velotrack_theme', mode);
+    } catch (e) {}
+  }
+}
+
+export function getTheme() {
+  return currentTheme;
+}
+
 export const colors = {
-  bg: '#090A0F',             // Premium charcoal black (Stripe/Linear look)
-  surface: '#12131C',        // Clean dashboard container background
-  card: '#171926',           // Beautiful card surface
-  surfaceElevated: '#1E2133',// Elevated context surface
-
-  primary: '#635BFF',        // Velotrack premium purple accent (Stripe/Linear style)
-  primaryHover: '#5145E5',   // Focused/Hover states
-  primarySoft: 'rgba(99,91,255,0.08)',
-
-  text: '#F8FAFC',           // Pure high-contrast off-white
-  textSecondary: '#E2E8F0',  // Muted body text
-  textMuted: '#94A3B8',      // Subdued metadata text
-
-  success: '#10B981',        // Emerald success
-  successSoft: 'rgba(16,185,129,0.08)',
-  warning: '#F59E0B',        // Tangerine warning
-  warningSoft: 'rgba(245,158,11,0.08)',
-  error: '#EF4444',          // Crimson error
-  errorSoft: 'rgba(239,68,68,0.08)',
-
-  border: 'rgba(255,255,255,0.06)',      // Ultra-thin crisp borders
-  borderLight: 'rgba(255,255,255,0.12)', // Subtle highlight border
-
-  overlay: 'rgba(0,0,0,0.85)',
-  skeleton: '#1F2235',
-  skeletonHighlight: '#2A2E4B',
+  get bg() { return currentTheme === 'dark' ? '#090A0F' : '#F8FAFC'; },
+  get surface() { return currentTheme === 'dark' ? '#12131C' : '#FFFFFF'; },
+  get card() { return currentTheme === 'dark' ? '#171926' : '#F1F5F9'; },
+  get surfaceElevated() { return currentTheme === 'dark' ? '#1E2133' : '#CBD5E1'; },
+  get primary() { return '#E60050'; },
+  get primaryHover() { return '#C20043'; },
+  get primarySoft() { return currentTheme === 'dark' ? 'rgba(230,0,80,0.08)' : 'rgba(230,0,80,0.15)'; },
+  get text() { return currentTheme === 'dark' ? '#F8FAFC' : '#090A0F'; },
+  get textSecondary() { return currentTheme === 'dark' ? '#E2E8F0' : '#334155'; },
+  get textMuted() { return currentTheme === 'dark' ? '#94A3B8' : '#64748B'; },
+  get success() { return '#10B981'; },
+  get successSoft() { return currentTheme === 'dark' ? 'rgba(16,185,129,0.08)' : 'rgba(16,185,129,0.1)'; },
+  get warning() { return '#F59E0B'; },
+  get warningSoft() { return currentTheme === 'dark' ? 'rgba(245,158,11,0.08)' : 'rgba(245,158,11,0.1)'; },
+  get error() { return '#EF4444'; },
+  get errorSoft() { return currentTheme === 'dark' ? 'rgba(239,68,68,0.08)' : 'rgba(239,68,68,0.1)'; },
+  get border() { return currentTheme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.08)'; },
+  get borderLight() { return currentTheme === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.15)'; },
+  get overlay() { return currentTheme === 'dark' ? 'rgba(0,0,0,0.85)' : 'rgba(0,0,0,0.4)'; },
+  get skeleton() { return currentTheme === 'dark' ? '#1F2235' : '#E2E8F0'; },
+  get skeletonHighlight() { return currentTheme === 'dark' ? '#2A2E4B' : '#CBD5E1'; },
 };
 
 export const shadows = {
