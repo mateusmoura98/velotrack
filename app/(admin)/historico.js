@@ -54,7 +54,7 @@ export default function HistoricoAdmin() {
   const renderCard = useCallback(({ item }) => (
     <ServiceCard
       service={item}
-      onPress={() => router.push(`/(admin)/criar-servico?id=${item.service_id}`)}
+      onPress={() => router.push(`/(admin)/criar-servico?id=${item.id}`)}
     />
   ), []);
 
@@ -114,7 +114,7 @@ export default function HistoricoAdmin() {
       ) : (
         <FlatList
           data={data}
-          keyExtractor={(item) => item.service_id}
+          keyExtractor={(item) => item.id}
           renderItem={renderCard}
           contentContainerStyle={styles.list}
           refreshControl={

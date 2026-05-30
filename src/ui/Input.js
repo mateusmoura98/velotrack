@@ -54,11 +54,11 @@ export default function Input({
 const styles = StyleSheet.create({
   container: { marginBottom: spacing.lg },
   label: {
-    fontSize: 11,
-    fontWeight: '700',
+    fontSize: 10,
+    fontWeight: '800',
     color: colors.textMuted,
     marginBottom: spacing.sm,
-    letterSpacing: 0.8,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
   },
   labelFocused: {
@@ -67,16 +67,16 @@ const styles = StyleSheet.create({
   box: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
     borderColor: colors.border,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderRadius: radii.md,
     paddingHorizontal: spacing.md,
-    height: 50,
+    height: 46,
   },
   boxFocused: {
     borderColor: colors.primary,
-    backgroundColor: colors.card,
+    backgroundColor: 'rgba(99,91,255,0.03)',
   },
   boxError: {
     borderColor: colors.error,
@@ -97,6 +97,8 @@ const styles = StyleSheet.create({
     height: '100%',
     outlineStyle: 'none',
     outlineWidth: 0,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
   },
   multiline: {
     minHeight: 80,

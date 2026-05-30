@@ -24,20 +24,21 @@ const styles = StyleSheet.create({
     borderRadius: radii.lg,
     borderWidth: 1,
     borderColor: colors.border,
-    marginBottom: spacing.md,
+    marginBottom: spacing.lg,
+    alignSelf: 'stretch',
   },
   padded: {
-    padding: spacing.lg,
+    padding: spacing.xl,
   },
   section: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing.xs,
   },
   sectionLabel: {
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '800',
     color: colors.textMuted,
-    letterSpacing: 1.2,
+    letterSpacing: 1.5,
     textTransform: 'uppercase',
-    marginBottom: spacing.md,
+    marginBottom: spacing.lg,
   },
 });

@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { colors, typography, radii, spacing } from '../../src/theme/colors';
 import { suporteService } from '../../src/services/suporte';
-import Header from '../../src/ui/Header';
 import { Card } from '../../src/ui/Card';
 import { SkeletonCard } from '../../src/ui/Skeleton';
 
@@ -92,7 +91,7 @@ export default function TecnicoSuporte() {
         keyExtractor={(item) => item.id}
         renderItem={renderMessage}
         contentContainerStyle={styles.list}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await fetchMessages(); }} tintColor={colors.primary} colors={[colors.primary]} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetchMessages(); }} tintColor={colors.primary} colors={[colors.primary]} />}
         ListEmptyComponent={
           <View style={styles.emptyBox}>
             <Ionicons name="chatbubble-ellipses-outline" size={48} color={colors.textMuted} />

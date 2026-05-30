@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { colors, typography, radii, spacing } from '../../src/theme/colors';
@@ -27,8 +27,8 @@ export default function TecnicoHistorico() {
   const fetchHistorico = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('v_service_metrics')
-        .select('*')
+        .from('servicos')
+        .select('*, users(nome)')
         .eq('technician_id', user?.id)
         .order('created_at', { ascending: false });
       if (error) throw error;
@@ -38,7 +38,7 @@ export default function TecnicoHistorico() {
     }
   }, [user?.id]);
 
-  useEffect(() => { fetchHistorico(); }, [user?.id]);
+  useFocusEffect(useCallback(() => { fetchHistorico(); }, [fetchHistorico]));
 
   const filtered = useMemo(() => {
     let list = servicos;
@@ -89,10 +89,10 @@ export default function TecnicoHistorico() {
   const renderCard = useCallback(({ item }) => (
     <ServiceCard
       service={item}
-      onPress={() => router.push(`/(tecnico)/servico/${item.service_id}`)}
+      onPress={() => router.push(`/(tecnico)/servico/${item.id}`)}
       compact
     />
-  ), [router]);
+  ), []);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -137,7 +137,7 @@ export default function TecnicoHistorico() {
       ) : (
         <FlatList
           data={filtered}
-          keyExtractor={(item) => item.service_id}
+          keyExtractor={(item) => item.id}
           renderItem={renderCard}
           contentContainerStyle={styles.list}
           refreshControl={

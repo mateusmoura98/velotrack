@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Platform } from 'react-native';
 import { colors, typography, radii, spacing } from '../../src/theme/colors';
 import { servicosService } from '../../src/services/servicos';
 import { tecnicosService } from '../../src/services/tecnicos';
@@ -136,133 +137,131 @@ export default function CriarServico() {
         title={isEditing ? 'Editar Serviço' : 'Novo Serviço'}
         onBack={() => router.back()}
       />
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          <Card>
-            <CardSection label="Dados do Cliente">
-              <Input label="Nome" placeholder="João da Silva" value={form.cliente} onChangeText={(v) => updateForm('cliente', v)} icon="person-outline" />
-              <Input label="Endereço" placeholder="Rua, número, bairro" value={form.endereco} onChangeText={(v) => updateForm('endereco', v)} icon="location-outline" />
-              <View style={styles.row}>
-                <Input label="Telefone" placeholder="(00) 00000-0000" value={form.telefone} onChangeText={(v) => updateForm('telefone', v)} keyboardType="phone-pad" icon="call-outline" style={{ flex: 1 }} />
-              </View>
-              <View style={styles.row}>
-                <Input label="Veículo" placeholder="Gol" value={form.veiculo} onChangeText={(v) => updateForm('veiculo', v)} style={{ flex: 1, marginRight: 8 }} />
-                <Input label="Placa" placeholder="ABC-1234" value={form.placa} onChangeText={(v) => updateForm('placa', v)} style={{ flex: 1 }} />
-              </View>
-            </CardSection>
-          </Card>
-
-          <Card>
-            <CardSection label="Tipo de Serviço">
-              <View style={styles.chipRow}>
-                {TIPOS.map((t) => (
-                  <TouchableOpacity
-                    key={t}
-                    style={[styles.chip, form.tipo === t && styles.chipActive]}
-                    onPress={() => updateForm('tipo', t)}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={[styles.chipText, form.tipo === t && styles.chipTextActive]}>{t}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              {form.tipo === 'Outro' && (
-                <Input placeholder="Especifique o tipo" value={form.tipoOutro} onChangeText={(v) => updateForm('tipoOutro', v)} style={{ marginTop: 8 }} />
-              )}
-            </CardSection>
-          </Card>
-
-          <Card>
-            <CardSection label="Prioridade">
-              <View style={styles.chipRow}>
-                {PRIORIDADES.map((p) => (
-                  <TouchableOpacity
-                    key={p.key}
-                    style={[styles.chip, form.priority === p.key && { backgroundColor: p.color + '20', borderColor: p.color }]}
-                    onPress={() => updateForm('priority', p.key)}
-                    activeOpacity={0.7}
-                  >
-                    <View style={[styles.dot, { backgroundColor: p.color }]} />
-                    <Text style={[styles.chipText, form.priority === p.key && { color: p.color, fontWeight: '700' }]}>{p.label}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              {isEditing && (
-                <View style={{ marginTop: spacing.md }}>
-                  <PriorityBadge priority={form.priority} size="lg" />
-                </View>
-              )}
-            </CardSection>
-          </Card>
-
-          <Card>
-            <CardSection label="Técnico Responsável">
-              {loadingTecnicos ? (
-                <ActivityIndicator color={colors.primary} />
-              ) : tecnicos.length === 0 ? (
-                <Text style={styles.emptyText}>Nenhum técnico ativo. Cadastre em "Técnicos".</Text>
-              ) : (
-                tecnicos.map((tec) => (
-                  <TouchableOpacity
-                    key={tec.id}
-                    style={[styles.techCard, form.tecnico_id === tec.id && styles.techCardActive]}
-                    onPress={() => updateForm('tecnico_id', form.tecnico_id === tec.id ? null : tec.id)}
-                    activeOpacity={0.7}
-                  >
-                    <View style={styles.techLeft}>
-                      <View style={[styles.techAvatar, form.tecnico_id === tec.id && styles.techAvatarActive]}>
-                        <Ionicons name="person" size={18} color={form.tecnico_id === tec.id ? colors.primary : colors.textMuted} />
-                      </View>
-                      <View>
-                        <Text style={styles.techName}>{tec.nome}</Text>
-                        <Text style={styles.techPhone}>{tec.telefone || 'Sem telefone'}</Text>
-                      </View>
-                    </View>
-                    {form.tecnico_id === tec.id && <Ionicons name="checkmark-circle" size={22} color={colors.primary} />}
-                  </TouchableOpacity>
-                ))
-              )}
-            </CardSection>
-          </Card>
-
-          <Card>
-            <CardSection label="Observações">
-              <Input
-                placeholder="Detalhes adicionais..."
-                value={form.observacoes}
-                onChangeText={(v) => updateForm('observacoes', v)}
-                multiline
-              />
-            </CardSection>
-          </Card>
-
-          {errorMsg && (
-            <View style={styles.errorBox}>
-              <Ionicons name="alert-circle" size={16} color={colors.error} />
-              <Text style={styles.errorText}>{errorMsg}</Text>
+      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <Card>
+          <CardSection label="Dados do Cliente">
+            <Input label="Nome" placeholder="João da Silva" value={form.cliente} onChangeText={(v) => updateForm('cliente', v)} icon="person-outline" />
+            <Input label="Endereço" placeholder="Rua, número, bairro" value={form.endereco} onChangeText={(v) => updateForm('endereco', v)} icon="location-outline" />
+            <View style={styles.row}>
+              <Input label="Telefone" placeholder="(00) 00000-0000" value={form.telefone} onChangeText={(v) => updateForm('telefone', v)} keyboardType="phone-pad" icon="call-outline" style={{ flex: 1 }} />
             </View>
-          )}
+            <View style={styles.row}>
+              <Input label="Veículo" placeholder="Gol" value={form.veiculo} onChangeText={(v) => updateForm('veiculo', v)} style={{ flex: 1, marginRight: 8 }} />
+              <Input label="Placa" placeholder="ABC-1234" value={form.placa} onChangeText={(v) => updateForm('placa', v)} style={{ flex: 1 }} />
+            </View>
+          </CardSection>
+        </Card>
 
-          <Button
-            title={isEditing ? 'SALVAR ALTERAÇÕES' : 'CRIAR SERVIÇO'}
-            onPress={handleSubmit}
-            loading={submitting}
-            variant="primary"
-            fullWidth
-            style={{ marginTop: spacing.xs }}
-          />
-          {isEditing && (
-            <Button
-              title="CANCELAR"
-              variant="ghost"
-              onPress={() => router.back()}
-              fullWidth
-              style={{ marginTop: spacing.sm }}
+        <Card>
+          <CardSection label="Tipo de Serviço">
+            <View style={styles.chipRow}>
+              {TIPOS.map((t) => (
+                <TouchableOpacity
+                  key={t}
+                  style={[styles.chip, form.tipo === t && styles.chipActive]}
+                  onPress={() => updateForm('tipo', t)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.chipText, form.tipo === t && styles.chipTextActive]}>{t}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            {form.tipo === 'Outro' && (
+              <Input placeholder="Especifique o tipo" value={form.tipoOutro} onChangeText={(v) => updateForm('tipoOutro', v)} style={{ marginTop: 8 }} />
+            )}
+          </CardSection>
+        </Card>
+
+        <Card>
+          <CardSection label="Prioridade">
+            <View style={styles.chipRow}>
+              {PRIORIDADES.map((p) => (
+                <TouchableOpacity
+                  key={p.key}
+                  style={[styles.chip, form.priority === p.key && { backgroundColor: p.color + '20', borderColor: p.color }]}
+                  onPress={() => updateForm('priority', p.key)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.dot, { backgroundColor: p.color }]} />
+                  <Text style={[styles.chipText, form.priority === p.key && { color: p.color, fontWeight: '700' }]}>{p.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            {isEditing && (
+              <View style={{ marginTop: spacing.md }}>
+                <PriorityBadge priority={form.priority} size="lg" />
+              </View>
+            )}
+          </CardSection>
+        </Card>
+
+        <Card>
+          <CardSection label="Técnico Responsável">
+            {loadingTecnicos ? (
+              <ActivityIndicator color={colors.primary} />
+            ) : tecnicos.length === 0 ? (
+              <Text style={styles.emptyText}>Nenhum técnico ativo. Cadastre em "Técnicos".</Text>
+            ) : (
+              tecnicos.map((tec) => (
+                <TouchableOpacity
+                  key={tec.id}
+                  style={[styles.techCard, form.tecnico_id === tec.id && styles.techCardActive]}
+                  onPress={() => updateForm('tecnico_id', form.tecnico_id === tec.id ? null : tec.id)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.techLeft}>
+                    <View style={[styles.techAvatar, form.tecnico_id === tec.id && styles.techAvatarActive]}>
+                      <Ionicons name="person" size={18} color={form.tecnico_id === tec.id ? colors.primary : colors.textMuted} />
+                    </View>
+                    <View>
+                      <Text style={styles.techName}>{tec.nome}</Text>
+                      <Text style={styles.techPhone}>{tec.telefone || 'Sem telefone'}</Text>
+                    </View>
+                  </View>
+                  {form.tecnico_id === tec.id && <Ionicons name="checkmark-circle" size={22} color={colors.primary} />}
+                </TouchableOpacity>
+              ))
+            )}
+          </CardSection>
+        </Card>
+
+        <Card>
+          <CardSection label="Observações">
+            <Input
+              placeholder="Detalhes adicionais..."
+              value={form.observacoes}
+              onChangeText={(v) => updateForm('observacoes', v)}
+              multiline
             />
-          )}
-          <View style={{ height: 40 }} />
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </CardSection>
+        </Card>
+
+        {errorMsg && (
+          <View style={styles.errorBox}>
+            <Ionicons name="alert-circle" size={16} color={colors.error} />
+            <Text style={styles.errorText}>{errorMsg}</Text>
+          </View>
+        )}
+
+        <Button
+          title={isEditing ? 'SALVAR ALTERAÇÕES' : 'CRIAR SERVIÇO'}
+          onPress={handleSubmit}
+          loading={submitting}
+          variant="primary"
+          fullWidth
+          style={{ marginTop: spacing.xs }}
+        />
+        {isEditing && (
+          <Button
+            title="CANCELAR"
+            variant="ghost"
+            onPress={() => router.back()}
+            fullWidth
+            style={{ marginTop: spacing.sm }}
+          />
+        )}
+        <View style={{ height: 40 }} />
+      </ScrollView>
     </SafeAreaView>
   );
 }

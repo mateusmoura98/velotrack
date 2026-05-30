@@ -3,17 +3,17 @@ import { colors, radii } from '../theme/colors';
 
 const VARIANTS = {
   primary: { bg: colors.primary, text: '#FFF', border: null },
-  secondary: { bg: colors.card, text: colors.text, border: colors.border },
-  outline: { bg: 'transparent', text: colors.primary, border: colors.primary },
+  secondary: { bg: 'rgba(255, 255, 255, 0.04)', text: colors.text, border: colors.border },
+  outline: { bg: 'transparent', text: colors.text, border: colors.border },
   success: { bg: colors.success, text: '#FFF', border: null },
   danger: { bg: colors.error, text: '#FFF', border: null },
   ghost: { bg: 'transparent', text: colors.textSecondary, border: null },
 };
 
 const SIZES = {
-  sm: { height: 44, paddingHorizontal: 16, fontSize: 13, borderRadius: radii.md },
-  md: { height: 46, paddingHorizontal: 20, fontSize: 14, borderRadius: radii.lg },
-  lg: { height: 54, paddingHorizontal: 24, fontSize: 15, borderRadius: radii.lg },
+  sm: { height: 36, paddingHorizontal: 12, fontSize: 13, borderRadius: radii.md },
+  md: { height: 44, paddingHorizontal: 18, fontSize: 14, borderRadius: radii.md },
+  lg: { height: 50, paddingHorizontal: 22, fontSize: 14, borderRadius: radii.md },
 };
 
 export default function Button({
@@ -67,6 +67,8 @@ const styles = StyleSheet.create({
   base: {
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   row: {
     flexDirection: 'row',
@@ -78,11 +80,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   disabled: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
   iconWrap: {},
   label: {
     fontWeight: '700',
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
   },
 });

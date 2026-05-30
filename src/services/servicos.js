@@ -3,15 +3,11 @@ import { historyService } from './history';
 
 const PAGE_SIZE = 20;
 
-function nowISO() {
-  return new Date().toISOString();
-}
-
 export const servicosService = {
   list: async ({ page = 0, search = '', dateFilter = 'todas', technicianId = null, status = null } = {}) => {
     let query = supabase
-      .from('v_service_metrics')
-      .select('*', { count: 'exact' });
+      .from('servicos')
+      .select('*, users(nome)', { count: 'exact' });
 
     if (technicianId) {
       query = query.eq('technician_id', technicianId);
@@ -65,194 +61,118 @@ export const servicosService = {
 
   getById: async (id) => {
     const { data, error } = await supabase
-      .from('v_service_metrics')
-      .select('*')
-      .eq('service_id', id)
+      .from('servicos')
+      .select('*, users(nome)')
+      .eq('id', id)
       .single();
     if (error) throw error;
     return data;
   },
 
   create: async (payload) => {
-    const metadata = {
-      cliente: payload.cliente || '',
-      endereco: payload.endereco || '',
-      veiculo: payload.veiculo || '',
-      placa: payload.placa || '',
-      telefone: payload.telefone || '',
-      tipo: payload.tipo || 'Instalação',
-      descricao: payload.descricao || '',
-      priority: payload.priority || 'media',
-      checklist: payload.checklist || [],
-      observations: payload.observations || '',
-      fotos: payload.fotos || [],
-    };
-
     const { data, error } = await supabase
-      .from('service_events')
-      .insert({
-        service_id: crypto.randomUUID ? crypto.randomUUID() : self.crypto.randomUUID(),
-        technician_id: payload.technician_id || null,
-        event_type: 'created',
-        metadata,
-        created_at: nowISO(),
-      })
-      .select('service_id')
+      .from('servicos')
+      .insert({ ...payload, status: 'pendente' })
+      .select('id')
       .single();
     if (error) throw error;
 
-    if (data?.service_id) {
-      await historyService.log(data.service_id, payload.user_id || payload.created_by,
+    if (data?.id) {
+      await historyService.log(data.id, payload.user_id || payload.created_by,
         historyService.ACTIONS.CREATED,
         `OS criada para ${payload.cliente} - ${payload.veiculo}`
       );
+      if (payload.technician_id) {
+        await historyService.log(data.id, payload.user_id || payload.created_by,
+          historyService.ACTIONS.TECHNICIAN_ASSIGNED,
+          `Técnico atribuído`
+        );
+      }
     }
-    return { id: data.service_id };
+    return data;
   },
 
   update: async (id, payload) => {
-    const { data: current } = await supabase
-      .from('v_service_metrics')
-      .select('status, technician_id, priority')
-      .eq('service_id', id)
+    const { data: old } = await supabase
+      .from('servicos')
+      .select('technician_id, priority, status')
+      .eq('id', id)
       .single();
+
+    const { error } = await supabase
+      .from('servicos')
+      .update(payload)
+      .eq('id', id);
+    if (error) throw error;
 
     const userId = payload.user_id || payload.updated_by;
 
-    if (payload.technician_id && payload.technician_id !== current?.technician_id) {
-      await supabase.from('service_events').insert({
-        service_id: id,
-        technician_id: payload.technician_id,
-        event_type: 'progress',
-        metadata: { technician_changed: true, previous_technician: current?.technician_id },
-        created_at: nowISO(),
-      });
+    if (old && payload.status && payload.status !== old.status) {
       await historyService.log(id, userId,
-        historyService.ACTIONS.TECHNICIAN_CHANGED, 'Técnico alterado');
+        historyService.ACTIONS.STATUS_CHANGED,
+        `Status alterado de ${old.status} para ${payload.status}`
+      );
     }
-
-    if (payload.status && payload.status !== current?.status) {
-      if (payload.status === 'em_andamento') {
-        await supabase.from('service_events').insert({
-          service_id: id,
-          technician_id: payload.technician_id || current?.technician_id,
-          event_type: 'started',
-          metadata: {},
-          created_at: nowISO(),
-        });
-        await historyService.log(id, userId,
-          historyService.ACTIONS.STARTED, 'Serviço iniciado');
-      } else if (payload.status === 'concluido') {
-        await supabase.from('service_events').insert({
-          service_id: id,
-          technician_id: payload.technician_id || current?.technician_id,
-          event_type: 'finished',
-          metadata: {
-            checklist: payload.checklist || [],
-            observations: payload.observations || '',
-          },
-          created_at: nowISO(),
-        });
-        await historyService.log(id, userId,
-          historyService.ACTIONS.FINISHED, 'Serviço finalizado');
-      }
-    }
-
-    if (payload.cliente || payload.priority) {
-      const metadataUpdates = {};
-      if (payload.cliente) metadataUpdates.cliente = payload.cliente;
-      if (payload.endereco) metadataUpdates.endereco = payload.endereco;
-      if (payload.veiculo) metadataUpdates.veiculo = payload.veiculo;
-      if (payload.placa) metadataUpdates.placa = payload.placa;
-      if (payload.telefone) metadataUpdates.telefone = payload.telefone;
-      if (payload.tipo) metadataUpdates.tipo = payload.tipo;
-      if (payload.descricao) metadataUpdates.descricao = payload.descricao;
-      if (payload.priority) metadataUpdates.priority = payload.priority;
-      if (Object.keys(metadataUpdates).length > 0) {
-        await supabase.from('service_events').insert({
-          service_id: id,
-          technician_id: userId,
-          event_type: 'progress',
-          metadata: { ...metadataUpdates, edit: true },
-          created_at: nowISO(),
-        });
-      }
-    }
-
-    if (userId && !payload.status) {
+    if (old && payload.technician_id && payload.technician_id !== old.technician_id) {
       await historyService.log(id, userId,
-        historyService.ACTIONS.EDITED, 'OS atualizada');
+        historyService.ACTIONS.TECHNICIAN_CHANGED,
+        `Técnico alterado`
+      );
     }
+    if (old && payload.priority && payload.priority !== old.priority) {
+      await historyService.log(id, userId,
+        historyService.ACTIONS.PRIORITY_CHANGED,
+        `Prioridade alterada para ${payload.priority}`
+      );
+    }
+
+    await historyService.log(id, userId,
+      historyService.ACTIONS.EDITED,
+      'OS atualizada'
+    );
   },
 
-  startService: async (id, userId) => {
+  startService: async (id) => {
     const { error } = await supabase
-      .from('service_events')
-      .insert({
-        service_id: id,
-        technician_id: userId,
-        event_type: 'started',
-        metadata: {},
-        created_at: nowISO(),
-      });
+      .from('servicos')
+      .update({ status: 'em_andamento', tempo_inicio: new Date().toISOString() })
+      .eq('id', id);
     if (error) throw error;
-    if (userId) {
-      await historyService.log(id, userId, historyService.ACTIONS.STARTED, 'Serviço iniciado');
-    }
   },
 
-  finishService: async (id, data, userId) => {
+  finishService: async (id, data) => {
     const { error } = await supabase
-      .from('service_events')
-      .insert({
-        service_id: id,
-        technician_id: userId,
-        event_type: 'finished',
-        metadata: {
-          checklist: data.checklist || [],
-          observations: data.observations || '',
-        },
-        created_at: nowISO(),
-      });
+      .from('servicos')
+      .update({
+        status: 'concluido',
+        tempo_fim: new Date().toISOString(),
+        ...data,
+      })
+      .eq('id', id);
     if (error) throw error;
-    if (userId) {
-      await historyService.log(id, userId, historyService.ACTIONS.FINISHED, 'Serviço finalizado');
-    }
   },
 
   updateChecklist: async (id, checklist) => {
     const { error } = await supabase
-      .from('service_events')
-      .insert({
-        service_id: id,
-        event_type: 'progress',
-        metadata: { checklist },
-        created_at: nowISO(),
-      });
+      .from('servicos')
+      .update({ checklist })
+      .eq('id', id);
     if (error) throw error;
   },
 
   updateObservations: async (id, observations) => {
     const { error } = await supabase
-      .from('service_events')
-      .insert({
-        service_id: id,
-        event_type: 'progress',
-        metadata: { observations },
-        created_at: nowISO(),
-      });
+      .from('servicos')
+      .update({ observations })
+      .eq('id', id);
     if (error) throw error;
   },
 
   addPhoto: async (id, fotos) => {
     const { error } = await supabase
-      .from('service_events')
-      .insert({
-        service_id: id,
-        event_type: 'progress',
-        metadata: { fotos },
-        created_at: nowISO(),
-      });
+      .from('servicos')
+      .update({ fotos })
+      .eq('id', id);
     if (error) throw error;
   },
 };

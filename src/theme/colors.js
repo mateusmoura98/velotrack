@@ -1,46 +1,45 @@
 export const colors = {
-  bg: '#050816',
-  surface: '#0C1124',
-  card: '#101826',
-  surfaceElevated: '#181E35',
+  bg: '#090A0F',             // Premium charcoal black (Stripe/Linear look)
+  surface: '#12131C',        // Clean dashboard container background
+  card: '#171926',           // Beautiful card surface
+  surfaceElevated: '#1E2133',// Elevated context surface
 
-  primary: '#EC167F',
-  primaryHover: '#D41472',
-  primarySoft: 'rgba(236,22,127,0.10)',
-  tabActiveBg: 'rgba(236,22,127,0.12)',
+  primary: '#635BFF',        // Stripe premium Indigo/Purple
+  primaryHover: '#4F46E5',   // Focused/Hover states
+  primarySoft: 'rgba(99,91,255,0.08)',
 
-  text: '#FFFFFF',
-  textSecondary: '#CBD5E1',
-  textMuted: '#94A3B8',
+  text: '#F8FAFC',           // Pure high-contrast off-white
+  textSecondary: '#E2E8F0',  // Muted body text
+  textMuted: '#94A3B8',      // Subdued metadata text
 
-  success: '#10B981',
-  successSoft: 'rgba(16,185,129,0.10)',
-  warning: '#F59E0B',
-  warningSoft: 'rgba(245,158,11,0.10)',
-  error: '#EF4444',
-  errorSoft: 'rgba(239,68,68,0.10)',
+  success: '#10B981',        // Emerald success
+  successSoft: 'rgba(16,185,129,0.08)',
+  warning: '#F59E0B',        // Tangerine warning
+  warningSoft: 'rgba(245,158,11,0.08)',
+  error: '#EF4444',          // Crimson error
+  errorSoft: 'rgba(239,68,68,0.08)',
 
-  border: 'rgba(255,255,255,0.08)',
-  borderLight: 'rgba(255,255,255,0.12)',
+  border: 'rgba(255,255,255,0.06)',      // Ultra-thin crisp borders
+  borderLight: 'rgba(255,255,255,0.12)', // Subtle highlight border
 
-  overlay: 'rgba(0,0,0,0.75)',
-  skeleton: '#181E35',
-  skeletonHighlight: '#1E2440',
+  overlay: 'rgba(0,0,0,0.85)',
+  skeleton: '#1F2235',
+  skeletonHighlight: '#2A2E4B',
 };
 
 export const shadows = {
   sm: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
     elevation: 2,
   },
   md: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
     elevation: 4,
   },
 };
@@ -58,9 +57,9 @@ export const spacing = {
 
 export const radii = {
   sm: 6,
-  md: 10,
-  lg: 14,
-  xl: 18,
+  md: 8,
+  lg: 12,
+  xl: 16,
   '2xl': 24,
   full: 9999,
 };

@@ -6,9 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, radii, spacing } from '../../src/theme/colors';
 import { suporteService } from '../../src/services/suporte';
 import { useQuery } from '../../src/hooks/useQuery';
-import Header from '../../src/ui/Header';
 import { Card } from '../../src/ui/Card';
 import { Skeleton, SkeletonCard } from '../../src/ui/Skeleton';
+import Header from '../../src/ui/Header';
 
 export default function SuporteAdmin() {
   const { data: mensagens, loading, refetch } = useQuery(
@@ -25,13 +25,16 @@ export default function SuporteAdmin() {
   };
 
   const renderItem = useCallback(({ item }) => (
-    <Card style={{ marginBottom: spacing.sm }}>
+    <Card style={{ marginBottom: spacing.sm, padding: spacing.xl }}>
       <View style={styles.cardHead}>
         <View style={styles.senderRow}>
           <View style={styles.avatar}>
-            <Ionicons name="person" size={16} color={colors.primary} />
+            <Ionicons name="person-outline" size={15} color={colors.primary} />
           </View>
-          <Text style={styles.senderName}>{item.users?.nome || 'Desconhecido'}</Text>
+          <View>
+            <Text style={styles.senderName}>{item.users?.nome || 'Desconhecido'}</Text>
+            <Text style={styles.senderRole}>Técnico especializado</Text>
+          </View>
         </View>
         <Text style={styles.date}>{formatDate(item.created_at)}</Text>
       </View>
@@ -59,10 +62,10 @@ export default function SuporteAdmin() {
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>Suporte</Text>
-          <Text style={styles.sub}>{mensagens?.length || 0} mensagens</Text>
+          <Text style={styles.sub}>{mensagens?.length || 0} comunicados de suporte</Text>
         </View>
         <View style={styles.countBadge}>
-          <Ionicons name="chatbubbles" size={16} color={colors.primary} />
+          <Ionicons name="chatbubbles-outline" size={15} color={colors.primary} />
           <Text style={styles.countText}>{mensagens?.length || 0}</Text>
         </View>
       </View>
@@ -76,9 +79,9 @@ export default function SuporteAdmin() {
         }
         ListEmptyComponent={
           <View style={styles.emptyBox}>
-            <Ionicons name="chatbubble-ellipses-outline" size={48} color={colors.textMuted} />
+            <Ionicons name="chatbubble-ellipses-outline" size={44} color={colors.textMuted} />
             <Text style={styles.emptyTitle}>Nenhuma mensagem</Text>
-            <Text style={styles.emptySub}>As mensagens dos técnicos aparecerão aqui.</Text>
+            <Text style={styles.emptySub}>As mensagens e chamados dos técnicos de campo aparecerão aqui.</Text>
           </View>
         }
         showsVerticalScrollIndicator={false}
@@ -92,29 +95,43 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   header: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: spacing.xl, paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl, paddingVertical: spacing.xl,
     borderBottomWidth: 1, borderBottomColor: colors.border,
+    backgroundColor: colors.bg,
   },
-  title: { ...typography.h2, color: colors.text },
-  sub: { ...typography.caption, color: colors.textMuted, marginTop: 1 },
+  title: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: colors.text,
+    letterSpacing: -0.5,
+  },
+  sub: {
+    fontSize: 13,
+    color: colors.textMuted,
+    marginTop: 2,
+    fontWeight: '500',
+  },
   countBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: colors.primarySoft, paddingHorizontal: 12, paddingVertical: 7, borderRadius: radii.md,
+    backgroundColor: 'rgba(99,91,255,0.06)', paddingHorizontal: 11, paddingVertical: 6, borderRadius: radii.md,
+    borderWidth: 1, borderColor: 'rgba(99,91,255,0.12)',
   },
-  countText: { fontSize: 12, fontWeight: '700', color: colors.primary },
-  list: { paddingHorizontal: spacing.xl, paddingBottom: 30 },
+  countText: { fontSize: 12, fontWeight: '800', color: colors.primary },
+  list: { paddingHorizontal: spacing.xl, paddingBottom: 40, paddingTop: spacing.md },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.md },
-  senderRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  senderRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   avatar: {
-    width: 30, height: 30, borderRadius: radii.sm,
+    width: 34, height: 34, borderRadius: radii.md,
     backgroundColor: colors.primarySoft, justifyContent: 'center', alignItems: 'center',
+    borderWidth: 1, borderColor: 'rgba(99,91,255,0.15)',
   },
   senderName: { color: colors.text, fontWeight: '700', fontSize: 13 },
-  date: { color: colors.textMuted, fontSize: 10 },
+  senderRole: { color: colors.textMuted, fontSize: 11, marginTop: 1, fontWeight: '500' },
+  date: { color: colors.textMuted, fontSize: 11, fontWeight: '500' },
   divider: { height: 1, backgroundColor: colors.border, marginBottom: spacing.md },
-  message: { color: colors.textSecondary, fontSize: 14, lineHeight: 21 },
-  image: { width: '100%', height: 180, borderRadius: radii.md, marginTop: spacing.md },
-  emptyBox: { alignItems: 'center', paddingTop: 60, gap: 10 },
-  emptyTitle: { fontSize: 17, fontWeight: '700', color: colors.textSecondary },
-  emptySub: { fontSize: 13, color: colors.textMuted, textAlign: 'center' },
+  message: { color: colors.textSecondary, fontSize: 14, lineHeight: 21, fontWeight: '500' },
+  image: { width: '100%', height: 200, borderRadius: radii.lg, marginTop: spacing.md },
+  emptyBox: { alignItems: 'center', paddingTop: 80, gap: 12 },
+  emptyTitle: { fontSize: 16, fontWeight: '800', color: colors.textSecondary },
+  emptySub: { fontSize: 13, color: colors.textMuted, textAlign: 'center', maxWidth: 280, lineHeight: 18 },
 });

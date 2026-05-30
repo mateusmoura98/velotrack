@@ -1,6 +1,7 @@
-import { useState, useCallback, useEffect, memo } from 'react';
-import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { useState, useCallback, memo } from 'react';
+import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography, radii, spacing } from '../../src/theme/colors';
 import { tecnicosService } from '../../src/services/tecnicos';
@@ -8,6 +9,7 @@ import { Card } from '../../src/ui/Card';
 import Input from '../../src/ui/Input';
 import Button from '../../src/ui/Button';
 import { Skeleton, SkeletonCard } from '../../src/ui/Skeleton';
+import { Platform } from 'react-native';
 
 const alert = (title, msg) => {
   if (Platform.OS === 'web') window.alert(`${title}\n\n${msg}`);
@@ -41,11 +43,11 @@ const TecnicoItem = memo(({ item, onEdit, onToggle }) => (
       <Text style={styles.metaText}>Cadastrado em {new Date(item.created_at).toLocaleDateString('pt-BR')}</Text>
     </View>
     <View style={styles.cardActions}>
-      <TouchableOpacity style={styles.actionBtn} onPress={() => onEdit(item)} activeOpacity={0.7} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+      <TouchableOpacity style={styles.actionBtn} onPress={() => onEdit(item)} activeOpacity={0.7}>
         <Ionicons name="create-outline" size={15} color={colors.primary} />
         <Text style={[styles.actionText, { color: colors.primary }]}>Editar</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.actionBtn, { borderColor: item.active ? colors.error : colors.success }]} onPress={() => onToggle(item)} activeOpacity={0.7} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+      <TouchableOpacity style={[styles.actionBtn, { borderColor: item.active ? colors.error : colors.success }]} onPress={() => onToggle(item)} activeOpacity={0.7}>
         <Ionicons name={item.active ? 'eye-off-outline' : 'eye-outline'} size={15} color={item.active ? colors.error : colors.success} />
         <Text style={[styles.actionText, { color: item.active ? colors.error : colors.success }]}>
           {item.active ? 'Desativar' : 'Ativar'}
@@ -75,7 +77,7 @@ export default function GestaoTecnicos() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchTecnicos(); }, []);
+  useFocusEffect(useCallback(() => { fetchTecnicos(); }, []));
 
   const handleRegister = async () => {
     setErrorMsg(null);
@@ -154,26 +156,24 @@ export default function GestaoTecnicos() {
       </View>
 
       {showForm ? (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-          <ScrollView contentContainerStyle={styles.formContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-            <Text style={styles.formTitle}>{editingTecnico ? 'Editar Técnico' : 'Novo Técnico'}</Text>
-            <Input label="Nome Completo *" value={form.nome} onChangeText={(v) => setForm({...form, nome: v})} icon="person-outline" />
-            {!editingTecnico && (
-              <>
-                <Input label="E-mail *" value={form.email} onChangeText={(v) => setForm({...form, email: v})} keyboardType="email-address" autoCapitalize="none" icon="mail-outline" />
-                <Input label="Senha Provisória *" value={form.password} onChangeText={(v) => setForm({...form, password: v})} secureTextEntry icon="lock-closed-outline" />
-              </>
-            )}
-            <Input label="Telefone" value={form.telefone} onChangeText={(v) => setForm({...form, telefone: v})} keyboardType="phone-pad" icon="call-outline" />
-            {errorMsg && (
-              <View style={styles.errorBox}>
-                <Ionicons name="alert-circle" size={16} color={colors.error} />
-                <Text style={styles.errorText}>{errorMsg}</Text>
-              </View>
-            )}
-            <Button title={editingTecnico ? 'SALVAR ALTERAÇÕES' : 'CADASTRAR TÉCNICO'} onPress={editingTecnico ? handleUpdate : handleRegister} loading={submitting} fullWidth style={{ marginTop: spacing.xl }} />
-          </ScrollView>
-        </KeyboardAvoidingView>
+        <ScrollView contentContainerStyle={styles.formContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          <Text style={styles.formTitle}>{editingTecnico ? 'Editar Técnico' : 'Novo Técnico'}</Text>
+          <Input label="Nome Completo *" value={form.nome} onChangeText={(v) => setForm({...form, nome: v})} icon="person-outline" />
+          {!editingTecnico && (
+            <>
+              <Input label="E-mail *" value={form.email} onChangeText={(v) => setForm({...form, email: v})} keyboardType="email-address" autoCapitalize="none" icon="mail-outline" />
+              <Input label="Senha Provisória *" value={form.password} onChangeText={(v) => setForm({...form, password: v})} secureTextEntry icon="lock-closed-outline" />
+            </>
+          )}
+          <Input label="Telefone" value={form.telefone} onChangeText={(v) => setForm({...form, telefone: v})} keyboardType="phone-pad" icon="call-outline" />
+          {errorMsg && (
+            <View style={styles.errorBox}>
+              <Ionicons name="alert-circle" size={16} color={colors.error} />
+              <Text style={styles.errorText}>{errorMsg}</Text>
+            </View>
+          )}
+          <Button title={editingTecnico ? 'SALVAR ALTERAÇÕES' : 'CADASTRAR TÉCNICO'} onPress={editingTecnico ? handleUpdate : handleRegister} loading={submitting} fullWidth style={{ marginTop: spacing.xl }} />
+        </ScrollView>
       ) : loading ? (
         <View style={styles.center}>
           {[1, 2, 3].map(i => <SkeletonCard key={i} lines={3} />)}

@@ -3,40 +3,45 @@ import { supabase } from '../lib/supabase';
 export const dashboardService = {
   getStats: async () => {
     const { data, error } = await supabase
-      .rpc('get_dashboard_metrics', { p_dias: 30 });
+      .from('servicos')
+      .select('status, tempo_fim, created_at', { count: 'exact' });
 
     if (error) throw error;
 
-    const row = Array.isArray(data) ? data[0] : data;
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const services = data || [];
 
-    const stats = {
-      total: row?.total_os || 0,
-      pendentes: Math.max(0, (row?.total_os || 0) - (row?.concluidas || 0) - (row?.em_andamento || 0)),
-      emAndamento: row?.em_andamento || 0,
-      finalizados: row?.concluidas || 0,
-    };
-
-    const monthCompleted = row?.concluidas || 0;
-
-    const { data: trend } = await supabase
-      .rpc('get_daily_trend', { p_dias: 180 });
+    const stats = { total: services.length, pendentes: 0, emAndamento: 0, finalizados: 0 };
+    let monthCompleted = 0;
 
     const monthsData = {};
-    const now = new Date();
     for (let i = 5; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const d = new Date(currentYear, currentMonth - i, 1);
       const label = d.toLocaleString('pt-BR', { month: 'short' }).substring(0, 3);
       monthsData[`${d.getFullYear()}-${d.getMonth()}`] = { label: label.toUpperCase(), value: 0 };
     }
 
-    (trend || []).forEach(t => {
-      if (!t.data) return;
-      const d = new Date(t.data + 'T00:00:00');
-      const key = `${d.getFullYear()}-${d.getMonth()}`;
-      if (monthsData[key]) monthsData[key].value += Number(t.concluidas);
+    services.forEach(s => {
+      if (s.status === 'pendente') stats.pendentes++;
+      else if (s.status === 'em_andamento') stats.emAndamento++;
+      else if (s.status === 'concluido') {
+        stats.finalizados++;
+        if (s.tempo_fim) {
+          const fd = new Date(s.tempo_fim);
+          if (fd.getMonth() === currentMonth && fd.getFullYear() === currentYear) monthCompleted++;
+          const key = `${fd.getFullYear()}-${fd.getMonth()}`;
+          if (monthsData[key]) monthsData[key].value++;
+        }
+      }
     });
 
-    return { stats, monthCompleted, chartData: Object.values(monthsData) };
+    return {
+      stats,
+      monthCompleted,
+      chartData: Object.values(monthsData),
+    };
   },
 
   getMeta: async () => {
@@ -49,12 +54,23 @@ export const dashboardService = {
 
   getRanking: async (limit = 5) => {
     const { data, error } = await supabase
-      .rpc('get_tecnico_ranking', { p_dias: 30 });
+      .from('servicos')
+      .select('technician_id, users!inner(nome)')
+      .eq('status', 'concluido');
 
     if (error) throw error;
 
-    return (data || [])
-      .slice(0, limit)
-      .map(t => ({ nome: t.nome, total: Number(t.concluidas) }));
+    const counts = {};
+    (data || []).forEach(s => {
+      if (!s.technician_id) return;
+      if (!counts[s.technician_id]) {
+        counts[s.technician_id] = { nome: s.users?.nome || 'Desconhecido', total: 0 };
+      }
+      counts[s.technician_id].total++;
+    });
+
+    return Object.values(counts)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, limit);
   },
 };

@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   backBtn: {
-    width: 44,
-    height: 44,
+    width: 36,
+    height: 36,
     borderRadius: radii.md,
     backgroundColor: colors.surface,
     justifyContent: 'center',
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   rightBtn: {
-    width: 44,
-    height: 44,
+    width: 36,
+    height: 36,
     borderRadius: radii.md,
     backgroundColor: colors.surface,
     justifyContent: 'center',

@@ -17,7 +17,17 @@ export function usePagination(fetchFn, { pageSize = 20, initialPage = 0 } = {}) 
     try {
       const result = await fetchFn({ page, pageSize });
       if (mountedRef.current) {
-        setData(prev => append ? [...prev, ...result.data] : result.data);
+        setData(prev => {
+          const raw = append ? [...prev, ...result.data] : result.data;
+          const seen = new Set();
+          return raw.filter(item => {
+            if (!item?.id) return true;
+            if (seen.has(item.id)) return false;
+            seen.add(item.id);
+            return true;
+          });
+        });
+        pageRef.current = page;
         setTotal(result.count || 0);
         setHasMore(result.hasMore !== false);
         setLoading(false);
