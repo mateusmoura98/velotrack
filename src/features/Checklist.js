@@ -1,9 +1,13 @@
 import { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 function Checklist({ checklist, onToggle, canEdit }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
+
   if (!checklist || checklist.length === 0) return null;
 
   const checked = checklist.filter(c => c.checked).length;
@@ -37,7 +41,7 @@ function Checklist({ checklist, onToggle, canEdit }) {
 
 export default memo(Checklist);
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,
@@ -71,3 +75,4 @@ const styles = StyleSheet.create({
   checkLabel: { fontSize: 13, color: colors.text, flex: 1 },
   checkLabelDone: { textDecorationLine: 'line-through', color: colors.textMuted },
 });
+

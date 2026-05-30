@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export function Card({ children, style, padded = true }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   return (
     <View style={[
       styles.card, 
-      { backgroundColor: colors.card, borderColor: colors.border },
       padded && styles.padded, 
       style
     ]}>
@@ -15,6 +17,8 @@ export function Card({ children, style, padded = true }) {
 }
 
 export function CardSection({ label, children, style }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   return (
     <View style={[styles.section, style]}>
       {label && <Text style={styles.sectionLabel}>{label}</Text>}
@@ -23,7 +27,7 @@ export function CardSection({ label, children, style }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,
@@ -47,3 +51,4 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
 });
+

@@ -12,7 +12,8 @@ import {
   Platform,
 } from 'react-native';
 import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../../src/theme/colors';
+import { radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
 import { supabase } from '../../src/lib/supabase';
 import { servicosService } from '../../src/services/servicos';
 import { tecnicosService } from '../../src/services/tecnicos';
@@ -27,7 +28,8 @@ const MONTHS = [
 ];
 
 export default function CalendarScreen() {
-  const styles = getStyles(colors, radii, spacing);
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width > 768;
   const { user } = useAuth();
@@ -770,17 +772,17 @@ export default function CalendarScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#090A0F',
+    backgroundColor: colors.bg,
   },
   headerPanel: {
-    backgroundColor: '#12131C',
+    backgroundColor: colors.surface,
     paddingVertical: spacing.xl,
     paddingHorizontal: spacing.xl,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
+    borderBottomColor: colors.border,
   },
   headerTitleRow: {
     flexDirection: 'row',

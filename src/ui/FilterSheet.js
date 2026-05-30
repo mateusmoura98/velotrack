@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Animated, ScrollView, Pressable, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, typography, radii, spacing } from '../theme/colors';
+import { typography, radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const MAX_SHEET_HEIGHT = SCREEN_HEIGHT * 0.72;
@@ -21,6 +22,8 @@ const STATUS_OPTIONS = [
 ];
 
 function Chip({ label, selected, onPress }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   return (
     <TouchableOpacity
       style={[styles.chip, selected && styles.chipSelected]}
@@ -33,6 +36,8 @@ function Chip({ label, selected, onPress }) {
 }
 
 export default function FilterSheet({ visible, onClose, onApply, initialPeriod, initialStatus, initialTech, tecnicos }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const translateY = useRef(new Animated.Value(MAX_SHEET_HEIGHT)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
   const sheetHeightRef = useRef(MAX_SHEET_HEIGHT);
@@ -195,7 +200,7 @@ export default function FilterSheet({ visible, onClose, onApply, initialPeriod, 
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.65)',
@@ -314,3 +319,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+

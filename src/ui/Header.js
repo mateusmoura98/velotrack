@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing, typography } from '../theme/colors';
+import { radii, spacing, typography } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function Header({
   title,
@@ -11,6 +12,8 @@ export default function Header({
   onRightPress,
   style,
 }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   return (
     <View style={[styles.container, style]}>
       <View style={styles.left}>
@@ -35,7 +38,7 @@ export default function Header({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -78,3 +81,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+

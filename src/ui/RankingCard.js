@@ -1,10 +1,14 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 const MEDAL_COLORS = ['#F59E0B', '#94A3B8', '#CD7F32'];
 
 export default function RankingCard({ position, nome, total, isCurrentUser = false }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
+
   return (
     <View style={[styles.container, isCurrentUser && styles.currentUser]}>
       <View style={[styles.positionBadge, position <= 3 && { backgroundColor: MEDAL_COLORS[position - 1] + '20' }]}>
@@ -29,7 +33,7 @@ export default function RankingCard({ position, nome, total, isCurrentUser = fal
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -81,3 +85,4 @@ const styles = StyleSheet.create({
     marginTop: -1,
   },
 });
+

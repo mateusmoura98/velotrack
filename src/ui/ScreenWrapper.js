@@ -1,15 +1,17 @@
 import { View, StyleSheet, useWindowDimensions, Platform } from 'react-native';
-import { colors } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function ScreenWrapper({ children }) {
   const { width } = useWindowDimensions();
   const isWeb = Platform.OS === 'web';
   const isDesktop = isWeb && width > 768;
+  const colors = useThemeColors();
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: colors.bg }]}>
       <View style={[
-        styles.inner, 
+        styles.inner,
+        { backgroundColor: colors.bg },
         isDesktop ? styles.innerWide : { paddingBottom: isWeb ? 0 : 56 }
       ]}>
         {children}
@@ -21,14 +23,12 @@ export default function ScreenWrapper({ children }) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.bg,
   },
   inner: {
     flex: 1,
     width: '100%',
     maxWidth: '100%',
     alignSelf: 'center',
-    backgroundColor: colors.bg,
   },
   innerWide: {
     maxWidth: 1100,
@@ -37,3 +37,4 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
   },
 });
+

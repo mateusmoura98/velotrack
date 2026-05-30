@@ -1,9 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function BarChart({ data = [], title, height = 160 }) {
   const animRef = useRef([]);
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
 
   if (animRef.current.length !== data.length) {
     animRef.current = data.map((_, i) => animRef.current[i] || new Animated.Value(0));
@@ -73,7 +76,7 @@ export default function BarChart({ data = [], title, height = 160 }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,
@@ -134,3 +137,4 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 });
+

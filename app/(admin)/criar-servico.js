@@ -15,7 +15,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, typography, radii, spacing, shadows } from '../../src/theme/colors';
+import { typography, radii, spacing, shadows } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { servicosService } from '../../src/services/servicos';
 import { tecnicosService } from '../../src/services/tecnicos';
 import { Card, CardSection } from '../../src/ui/Card';
@@ -56,6 +58,8 @@ const alert = (title, msg) => {
 };
 
 export default function CriarServico() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const isEditing = !!id;
@@ -1252,7 +1256,7 @@ export default function CriarServico() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg, padding: spacing.xl },
   loadingText: { color: colors.textSecondary, fontSize: 13, marginTop: spacing.md, fontWeight: '500' },

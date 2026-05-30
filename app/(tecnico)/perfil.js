@@ -13,7 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { colors, spacing, radii } from '../../src/theme/colors';
+import { spacing, radii } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { servicosService } from '../../src/services/servicos';
 import { Card, CardSection } from '../../src/ui/Card';
 import Button from '../../src/ui/Button';
@@ -27,6 +29,8 @@ const alert = (title, msg) => {
 };
 
 export default function TecnicoPerfil() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { profile, signOut, isDark, toggleTheme } = useAuth();
   const [loading, setLoading] = useState(false);
   const [completedCount, setCompletedCount] = useState(0);
@@ -145,7 +149,7 @@ export default function TecnicoPerfil() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1 },
   header: {
     paddingHorizontal: spacing.xl,

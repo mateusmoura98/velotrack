@@ -1,9 +1,13 @@
 import { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Image, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 function PhotosSection({ photos, onAdd, uploading, canEdit }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
+
   if (!photos && !canEdit) return null;
 
   return (
@@ -34,7 +38,7 @@ function PhotosSection({ photos, onAdd, uploading, canEdit }) {
 
 export default memo(PhotosSection);
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,
@@ -60,3 +64,4 @@ const styles = StyleSheet.create({
   },
   addPhotoText: { fontSize: 9, color: colors.textMuted, fontWeight: '600' },
 });
+

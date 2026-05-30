@@ -1,9 +1,13 @@
 import { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 function ServiceVehicle({ service }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
+
   const openMaps = (endereco) => {
     const q = encodeURIComponent(endereco);
     if (Platform.OS === 'web') window.open(`https://www.google.com/maps/search/${q}`, '_blank');
@@ -44,7 +48,7 @@ function ServiceVehicle({ service }) {
 
 export default memo(ServiceVehicle);
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,
@@ -73,3 +77,4 @@ const styles = StyleSheet.create({
   },
   mapsBtnText: { fontSize: 12, fontWeight: '700', color: colors.primary },
 });
+

@@ -1,8 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export function EmptyState({ icon = 'file-tray-outline', title, message, action }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   return (
     <View style={styles.container}>
       <View style={styles.iconWrap}>
@@ -15,7 +18,7 @@ export function EmptyState({ icon = 'file-tray-outline', title, message, action 
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -47,3 +50,4 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
 });
+

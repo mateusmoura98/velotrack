@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 import { historyService } from '../services/history';
 import { Skeleton } from '../ui/Skeleton';
 import { Feather } from '@expo/vector-icons';
@@ -46,6 +47,8 @@ function formatTime(d) {
 }
 
 export default function ServiceTimeline({ serviceId }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -132,7 +135,7 @@ export default function ServiceTimeline({ serviceId }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   wrapper: {
     marginBottom: spacing.xl,
   },
@@ -145,26 +148,26 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   card: {
-    backgroundColor: '#12131C',
+    backgroundColor: colors.surface,
     borderRadius: radii.lg,
     paddingVertical: spacing.lg,
     paddingHorizontal: spacing.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: colors.border,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
   },
   emptyCard: {
-    backgroundColor: '#12131C',
+    backgroundColor: colors.surface,
     borderRadius: radii.lg,
     padding: spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.xs,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
+    borderColor: colors.border,
   },
   emptyText: {
     color: colors.textMuted,
@@ -199,7 +202,7 @@ const styles = StyleSheet.create({
     top: 26,
     bottom: 0,
     width: 1.5,
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: colors.border,
     zIndex: 1,
   },
   contentCol: {
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#ECEFF4',
+    color: colors.text,
     letterSpacing: 0.2,
   },
   time: {
@@ -243,3 +246,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
+

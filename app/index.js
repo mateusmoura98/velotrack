@@ -6,9 +6,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../src/contexts/AuthContext';
-import { colors, radii, spacing } from '../src/theme/colors';
+import { spacing, radii } from '../src/theme/colors';
+import { useThemeColors } from '../src/theme';
+
 
 export default function LoginScreen() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -149,7 +153,7 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   flex: { flex: 1 },
   scroll: {

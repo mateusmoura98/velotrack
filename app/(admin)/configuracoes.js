@@ -12,7 +12,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { colors, typography, radii, spacing } from '../../src/theme/colors';
+import { typography, radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { dashboardService } from '../../src/services/dashboard';
 import { Card, CardSection } from '../../src/ui/Card';
 import Button from '../../src/ui/Button';
@@ -26,6 +28,8 @@ const alert = (title, msg) => {
 };
 
 export default function ConfigsScreen() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { signOut, isDark, toggleTheme, profile } = useAuth();
   const [clearingTest, setClearingTest] = useState(false);
   const [resettingMonth, setResettingMonth] = useState(false);
@@ -192,7 +196,7 @@ export default function ConfigsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1 },
   header: {
     paddingHorizontal: spacing.xl,

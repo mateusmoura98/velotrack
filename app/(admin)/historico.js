@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Tex
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, typography, radii, spacing } from '../../src/theme/colors';
+import { typography, radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { servicosService } from '../../src/services/servicos';
 import { tecnicosService } from '../../src/services/tecnicos';
 import { usePagination } from '../../src/hooks/usePagination';
@@ -14,6 +16,8 @@ import { SkeletonCard } from '../../src/ui/Skeleton';
 import FilterSheet from '../../src/ui/FilterSheet';
 
 export default function HistoricoAdmin() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const router = useRouter();
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 300);
@@ -147,7 +151,7 @@ export default function HistoricoAdmin() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   header: {

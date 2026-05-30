@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { Platform } from 'react-native';
 import { supabase } from '../lib/supabase';
-import { getTheme, setTheme } from '../theme/colors';
+import { useTheme } from '../theme';
 
 const AuthContext = createContext({});
 
@@ -9,19 +9,9 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isDark, setIsDark] = useState(true);
+  const { isDark, toggleTheme } = useTheme();
   const mountedRef = useRef(true);
 
-  // Sync state initially
-  useEffect(() => {
-    setIsDark(getTheme() === 'dark');
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    const nextMode = !isDark ? 'dark' : 'light';
-    setTheme(nextMode);
-    setIsDark(!isDark);
-  }, [isDark]);
 
   const loadProfile = useCallback(async (userId) => {
     try {

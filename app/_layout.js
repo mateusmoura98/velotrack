@@ -3,7 +3,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { AuthProvider, useAuth } from '../src/contexts/AuthContext';
-import { colors } from '../src/theme/colors';
+import { ThemeProvider, useThemeColors, useTheme } from '../src/theme';
 import ScreenWrapper from '../src/ui/ScreenWrapper';
 
 if (Platform.OS !== 'web') {
@@ -15,6 +15,8 @@ function RootLayoutNav() {
   const { user, profile, loading } = useAuth();
   const router = useRouter();
   const segments = useSegments();
+  const colors = useThemeColors();
+  const { isDark } = useTheme();
 
   useEffect(() => {
     if (loading) return;
@@ -38,7 +40,7 @@ function RootLayoutNav() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: colors.bg }]}>
         <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
@@ -46,7 +48,7 @@ function RootLayoutNav() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style={isDark ? "light" : "dark"} />
       <ScreenWrapper>
         <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg }, animation: 'fade' }}>
           <Stack.Screen name="index" />
@@ -60,9 +62,11 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
@@ -71,6 +75,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.bg,
   },
 });
+

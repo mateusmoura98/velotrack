@@ -1,8 +1,10 @@
 import { Tabs, useRouter, useSegments } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { View, Text, StyleSheet, Pressable, useWindowDimensions, Platform } from 'react-native';
-import { colors, spacing, radii } from '../../src/theme/colors';
+import { spacing, radii } from '../../src/theme/colors';
 import { useAuth } from '../../src/contexts/AuthContext';
+import { useThemeColors } from '../../src/theme';
+
 
 const TABS = [
   { name: 'index', title: 'Dashboard', icon: 'view-dashboard-outline', active: 'view-dashboard' },
@@ -13,6 +15,8 @@ const TABS = [
 ];
 
 export default function AdminLayout() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { width } = useWindowDimensions();
   const router = useRouter();
   const segments = useSegments();
@@ -147,7 +151,7 @@ export default function AdminLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',

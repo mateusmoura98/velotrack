@@ -4,7 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { colors, typography, radii, spacing } from '../../src/theme/colors';
+import { typography, radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { supabase } from '../../src/lib/supabase';
 import { useDebounce } from '../../src/hooks/useDebounce';
 import ServiceCard from '../../src/ui/ServiceCard';
@@ -13,6 +15,8 @@ import { SkeletonCard } from '../../src/ui/Skeleton';
 import FilterSheet from '../../src/ui/FilterSheet';
 
 export default function TecnicoHistorico() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { user } = useAuth();
   const router = useRouter();
   const [servicos, setServicos] = useState([]);
@@ -165,7 +169,7 @@ export default function TecnicoHistorico() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   header: {

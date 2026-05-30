@@ -1,10 +1,13 @@
 import { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 import { StatusBadge, PriorityBadge } from './Badge';
 
 function ServiceCard({ service, onPress, compact = false }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   if (!service) return null;
 
   const isAlta = service.priority === 'alta';
@@ -124,7 +127,7 @@ function ServiceCard({ service, onPress, compact = false }) {
 
 export default memo(ServiceCard);
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,

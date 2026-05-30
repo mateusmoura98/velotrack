@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, FlatList, RefreshControl, TouchableOpacity, Scr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, typography, radii, spacing } from '../../src/theme/colors';
+import { typography, radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { tecnicosService } from '../../src/services/tecnicos';
 import { Card } from '../../src/ui/Card';
 import Input from '../../src/ui/Input';
@@ -16,7 +18,7 @@ const alert = (title, msg) => {
   else { const { Alert } = require('react-native'); Alert.alert(title, msg); }
 };
 
-const TecnicoItem = memo(({ item, onEdit, onToggle }) => (
+const TecnicoItem = ({ item, onEdit, onToggle, colors, styles }) => (
   <Card style={{ marginBottom: spacing.sm }}>
     <View style={styles.cardHead}>
       <View style={styles.cardLeft}>
@@ -55,9 +57,11 @@ const TecnicoItem = memo(({ item, onEdit, onToggle }) => (
       </TouchableOpacity>
     </View>
   </Card>
-));
+);
 
 export default function GestaoTecnicos() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const [tecnicos, setTecnicos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -135,10 +139,12 @@ export default function GestaoTecnicos() {
   const renderItem = useCallback(({ item }) => (
     <TecnicoItem
       item={item}
+      colors={colors}
+      styles={styles}
       onEdit={(tec) => { setEditingTecnico(tec); setForm({ nome: tec.nome, telefone: tec.telefone || '', email: tec.email, password: '' }); setShowForm(true); }}
       onToggle={handleToggleActive}
     />
-  ), []);
+  ), [colors, styles]);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -193,7 +199,7 @@ export default function GestaoTecnicos() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   header: {

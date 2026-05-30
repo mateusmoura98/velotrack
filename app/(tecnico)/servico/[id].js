@@ -4,7 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../src/contexts/AuthContext';
-import { colors, typography, radii, spacing } from '../../../src/theme/colors';
+import { typography, radii, spacing } from '../../../src/theme/colors';
+import { useThemeColors } from '../../../src/theme';
+
 import { servicosService, photoService } from '../../../src/services/servicos';
 import { historyService } from '../../../src/services/history';
 import { Card, CardSection } from '../../../src/ui/Card';
@@ -46,6 +48,8 @@ function formatDate(d) {
 }
 
 export default function ServiceDetail() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { user } = useAuth();
@@ -271,7 +275,7 @@ export default function ServiceDetail() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   content: { padding: spacing.xl },

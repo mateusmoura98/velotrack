@@ -3,7 +3,9 @@ import { View, Text, StyleSheet, FlatList, Image, RefreshControl } from 'react-n
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, typography, radii, spacing } from '../../src/theme/colors';
+import { typography, radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { suporteService } from '../../src/services/suporte';
 import { useQuery } from '../../src/hooks/useQuery';
 import { Card } from '../../src/ui/Card';
@@ -11,6 +13,8 @@ import { Skeleton, SkeletonCard } from '../../src/ui/Skeleton';
 import Header from '../../src/ui/Header';
 
 export default function SuporteAdmin() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { data: mensagens, loading, refetch } = useQuery(
     ['suporte-admin'],
     () => suporteService.listAll(),
@@ -94,7 +98,7 @@ export default function SuporteAdmin() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   header: {

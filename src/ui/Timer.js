@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { colors, radii } from '../theme/colors';
+import { radii } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function Timer({ startTime }) {
   const [elapsed, setElapsed] = useState('00:00:00');
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
 
   useEffect(() => {
     if (!startTime) return;
@@ -33,7 +36,7 @@ export default function Timer({ startTime }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: colors.card,
@@ -58,3 +61,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
+

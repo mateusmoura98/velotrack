@@ -13,11 +13,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { colors, spacing, radii } from '../../src/theme/colors';
+import { spacing, radii } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { servicosService } from '../../src/services/servicos';
 import { Card, CardSection } from '../../src/ui/Card';
 
 export default function TecnicoAgenda() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const router = useRouter();
   const { profile } = useAuth();
   const { width } = useWindowDimensions();
@@ -184,7 +188,7 @@ export default function TecnicoAgenda() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1 },
   header: {
     paddingHorizontal: spacing.xl,

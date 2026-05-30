@@ -13,7 +13,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { colors, typography, radii, spacing, shadows } from '../../src/theme/colors';
+import { typography, radii, spacing, shadows } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { dashboardService } from '../../src/services/dashboard';
 import { tecnicosService } from '../../src/services/tecnicos';
 import { useQuery } from '../../src/hooks/useQuery';
@@ -23,6 +25,8 @@ import BarChart from '../../src/ui/BarChart';
 import RankingCard from '../../src/ui/RankingCard';
 
 export default function AdminDashboard() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { signOut, isDark, toggleTheme } = useAuth();
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width > 768;
@@ -507,7 +511,7 @@ export default function AdminDashboard() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1 },
   header: {
     flexDirection: 'row',

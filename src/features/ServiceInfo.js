@@ -1,10 +1,14 @@
 import { memo } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 import { StatusBadge, PriorityBadge } from '../ui/Badge';
 
 function ServiceInfo({ service }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
+
   return (
     <View style={styles.headerCard}>
       <View style={styles.headerRow}>
@@ -28,7 +32,7 @@ function ServiceInfo({ service }) {
 
 export default memo(ServiceInfo);
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   headerCard: {
     backgroundColor: colors.card,
     borderRadius: radii.lg,
@@ -48,3 +52,4 @@ const styles = StyleSheet.create({
   headerType: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
   badges: { flexDirection: 'row', marginTop: spacing.md, gap: 8 },
 });
+

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing } from '../theme/colors';
+import { radii, spacing } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export default function Input({
   label,
@@ -14,6 +15,8 @@ export default function Input({
   ...props
 }) {
   const [focused, setFocused] = useState(false);
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
 
   return (
     <View style={[styles.container, style]}>
@@ -63,7 +66,7 @@ export default function Input({
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   container: { marginBottom: spacing.lg },
   label: {
     fontSize: 10,
@@ -129,3 +132,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+

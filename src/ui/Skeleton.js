@@ -1,9 +1,12 @@
 import { useRef, useEffect } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
-import { colors, radii } from '../theme/colors';
+import { radii } from '../theme/colors';
+import { useThemeColors } from '../theme/useThemeColors';
 
 export function Skeleton({ width = '100%', height = 20, borderRadius = radii.md, style }) {
   const opacity = useRef(new Animated.Value(0.3)).current;
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -28,6 +31,8 @@ export function Skeleton({ width = '100%', height = 20, borderRadius = radii.md,
 }
 
 export function SkeletonCard({ lines = 3, style }) {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   return (
     <View style={[styles.card, style]}>
       {Array.from({ length: lines }).map((_, i) => (
@@ -42,7 +47,7 @@ export function SkeletonCard({ lines = 3, style }) {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   base: {
     backgroundColor: colors.skeleton,
   },
@@ -55,3 +60,4 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
 });
+

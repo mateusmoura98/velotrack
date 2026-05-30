@@ -4,13 +4,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { colors, typography, radii, spacing } from '../../src/theme/colors';
+import { typography, radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { suporteService } from '../../src/services/suporte';
 import { Card } from '../../src/ui/Card';
 import { SkeletonCard } from '../../src/ui/Skeleton';
 import Header from '../../src/ui/Header';
 
 export default function TecnicoSuporte() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { user, profile } = useAuth();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -134,7 +138,7 @@ export default function TecnicoSuporte() {
   );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, justifyContent: 'center', padding: spacing.xl },
   header: {

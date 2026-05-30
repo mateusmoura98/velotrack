@@ -4,7 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/contexts/AuthContext';
-import { colors, typography, radii, spacing } from '../../src/theme/colors';
+import { typography, radii, spacing } from '../../src/theme/colors';
+import { useThemeColors } from '../../src/theme';
+
 import { supabase } from '../../src/lib/supabase';
 import { Card } from '../../src/ui/Card';
 import ServiceCard from '../../src/ui/ServiceCard';
@@ -19,6 +21,8 @@ const TABS = [
 ];
 
 export default function TecnicoHome() {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
   const { user, profile, signOut } = useAuth();
   const router = useRouter();
   const [services, setServices] = useState([]);
@@ -189,7 +193,7 @@ export default function TecnicoHome() {
 
 
 
-const styles = StyleSheet.create({
+const getStyles = (colors) => StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   center: { flex: 1, padding: spacing.xl },
   header: {
