@@ -2,34 +2,28 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, radii } from '../theme/colors';
 
-const STATUS_CONFIG = {
-  pendente: {
-    bg: colors.warningSoft,
-    color: colors.warning,
-    label: 'Pendente',
-    icon: 'time-outline',
-  },
-  em_andamento: {
-    bg: colors.primarySoft,
-    color: colors.primary,
-    label: 'Em Andamento',
-    icon: 'play-circle-outline',
-  },
-  concluido: {
-    bg: colors.successSoft,
-    color: colors.success,
-    label: 'Concluído',
-    icon: 'checkmark-circle-outline',
-  },
-};
-
-const PRIORITY_CONFIG = {
-  alta: { color: colors.error, bg: colors.errorSoft, label: 'Alta' },
-  media: { color: colors.warning, bg: colors.warningSoft, label: 'Média' },
-  baixa: { color: colors.success, bg: colors.successSoft, label: 'Baixa' },
-};
-
 export function StatusBadge({ status, size = 'sm' }) {
+  const STATUS_CONFIG = {
+    pendente: {
+      bg: colors.warningSoft,
+      color: colors.warning,
+      label: 'Pendente',
+      icon: 'time-outline',
+    },
+    em_andamento: {
+      bg: colors.primarySoft,
+      color: colors.primary,
+      label: 'Em Andamento',
+      icon: 'play-circle-outline',
+    },
+    concluido: {
+      bg: colors.successSoft,
+      color: colors.success,
+      label: 'Concluído',
+      icon: 'checkmark-circle-outline',
+    },
+  };
+
   const c = STATUS_CONFIG[status] || { bg: colors.card, color: colors.textMuted, label: status, icon: 'help-circle-outline' };
   const isLg = size === 'lg';
 
@@ -42,6 +36,12 @@ export function StatusBadge({ status, size = 'sm' }) {
 }
 
 export function PriorityBadge({ priority, size = 'sm' }) {
+  const PRIORITY_CONFIG = {
+    alta: { color: colors.error, bg: colors.errorSoft, label: 'Alta' },
+    media: { color: colors.warning, bg: colors.warningSoft, label: 'Média' },
+    baixa: { color: colors.success, bg: colors.successSoft, label: 'Baixa' },
+  };
+
   const p = PRIORITY_CONFIG[priority] || PRIORITY_CONFIG.baixa;
   const isLg = size === 'lg';
 
@@ -53,11 +53,12 @@ export function PriorityBadge({ priority, size = 'sm' }) {
   );
 }
 
-export function CountBadge({ count, color = colors.primary }) {
+export function CountBadge({ count, color }) {
+  const finalColor = color || colors.primary;
   if (count <= 0) return null;
   return (
-    <View style={[styles.countBadge, { backgroundColor: color + '18' }]}>
-      <Text style={[styles.countText, { color }]}>{count > 99 ? '99+' : count}</Text>
+    <View style={[styles.countBadge, { backgroundColor: finalColor + '18' }]}>
+      <Text style={[styles.countText, { color: finalColor }]}>{count > 99 ? '99+' : count}</Text>
     </View>
   );
 }

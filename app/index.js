@@ -47,13 +47,13 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: colors.bg }]}>
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           
           {/* Logo Brand / Subtle cyber ambient */}
           <Animated.View style={[styles.logoBox, { opacity: fade, transform: [{ translateY: slide }] }]}>
-            <View style={styles.glowDot} />
+            <View style={[styles.glowDot, { backgroundColor: 'rgba(230,0,80,0.06)' }]} />
             <Text style={styles.logoText}>
               <Text style={{ color: colors.text }}>VELO</Text>
               <Text style={{ color: colors.primary }}>TRACK</Text>
@@ -62,23 +62,27 @@ export default function LoginScreen() {
           </Animated.View>
 
           {error ? (
-            <Animated.View style={styles.errorBox}>
+            <Animated.View style={[styles.errorBox, { backgroundColor: colors.errorSoft, borderColor: 'rgba(239, 68, 68, 0.2)' }]}>
               <Ionicons name="alert-circle-outline" size={16} color={colors.error} />
               <Text style={styles.errorText}>{error}</Text>
             </Animated.View>
           ) : null}
 
           {/* Premium Card Surface */}
-          <Animated.View style={[styles.card, { opacity: fade }]}>
+          <Animated.View style={[styles.card, { opacity: fade, backgroundColor: colors.surface, borderColor: colors.border }]}>
             <Text style={styles.cardHeaderTitle}>Acessar Conta</Text>
             <Text style={styles.cardHeaderSub}>Bem-vindo! Forneça suas credenciais abaixo</Text>
 
             <View style={styles.field}>
               <Text style={styles.fieldLabel}>E-mail corporativo</Text>
-              <View style={[styles.inputWrap, email ? styles.inputActive : null]}>
+              <View style={[
+                styles.inputWrap, 
+                { backgroundColor: colors.surfaceElevated, borderColor: colors.border },
+                email ? { borderColor: colors.primary, backgroundColor: 'rgba(230,0,80,0.02)' } : null
+              ]}>
                 <Ionicons name="mail-outline" size={16} color={email ? colors.primary : colors.textMuted} style={styles.inputIcon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: colors.text }]}
                   placeholder="name@company.com"
                   placeholderTextColor={colors.textMuted}
                   value={email}
@@ -95,10 +99,14 @@ export default function LoginScreen() {
               <View style={styles.fieldLabelRow}>
                 <Text style={styles.fieldLabel}>Senha de acesso</Text>
               </View>
-              <View style={[styles.inputWrap, password ? styles.inputActive : null]}>
+              <View style={[
+                styles.inputWrap, 
+                { backgroundColor: colors.surfaceElevated, borderColor: colors.border },
+                password ? { borderColor: colors.primary, backgroundColor: 'rgba(230,0,80,0.02)' } : null
+              ]}>
                 <Ionicons name="lock-closed-outline" size={16} color={password ? colors.primary : colors.textMuted} style={styles.inputIcon} />
                 <TextInput
-                  style={[styles.input, { flex: 1 }]}
+                  style={[styles.input, { color: colors.text, flex: 1 }]}
                   placeholder="••••••••"
                   placeholderTextColor={colors.textMuted}
                   value={password}

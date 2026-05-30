@@ -36,10 +36,15 @@ function ServiceCard({ service, onPress, compact = false }) {
   // Select micro colors for action tags
   const getTipoColors = (tipo) => {
     const t = (tipo || '').toLowerCase();
-    if (t.includes('instala')) return { bg: 'rgba(99,91,255,0.06)', text: colors.primary, border: 'rgba(99,91,255,0.15)' };
-    if (t.includes('manuten')) return { bg: 'rgba(245,158,11,0.06)', text: colors.warning, border: 'rgba(245,158,11,0.15)' };
-    if (t.includes('retira')) return { bg: 'rgba(239,68,68,0.06)', text: colors.error, border: 'rgba(239,68,68,0.15)' };
-    return { bg: 'rgba(255,255,255,0.04)', text: colors.textSecondary, border: 'rgba(255,255,255,0.08)' };
+    const isDarkTheme = colors.text === '#FFFFFF';
+    if (t.includes('instala')) return { bg: colors.primarySoft, text: colors.primary, border: 'rgba(230,0,80,0.15)' };
+    if (t.includes('manuten')) return { bg: colors.warningSoft, text: colors.warning, border: 'rgba(245,158,11,0.15)' };
+    if (t.includes('retira')) return { bg: colors.errorSoft, text: colors.error, border: 'rgba(239,68,68,0.15)' };
+    return { 
+      bg: isDarkTheme ? 'rgba(255,255,255,0.04)' : '#E5E7EB', 
+      text: colors.textSecondary, 
+      border: colors.border 
+    };
   };
 
   const tipoColorSet = getTipoColors(service.tipo);
@@ -49,6 +54,7 @@ function ServiceCard({ service, onPress, compact = false }) {
     <TouchableOpacity
       style={[
         styles.card,
+        { backgroundColor: colors.card, borderColor: colors.border },
         isAlta && !isConcluido && styles.cardAlta,
         isConcluido && styles.cardConcluido,
       ]}
@@ -58,7 +64,11 @@ function ServiceCard({ service, onPress, compact = false }) {
     >
       <View style={styles.top}>
         <View style={styles.topLeft}>
-          <View style={[styles.avatar, isConcluido && styles.avatarConcluido]}>
+          <View style={[
+            styles.avatar, 
+            { backgroundColor: colors.primarySoft, borderColor: 'rgba(230,0,80,0.15)' },
+            isConcluido && styles.avatarConcluido
+          ]}>
             <Text style={[styles.avatarText, isConcluido && styles.avatarTextConcluido]}>
               {service.cliente?.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || '--'}
             </Text>

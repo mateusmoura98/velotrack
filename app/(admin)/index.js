@@ -320,10 +320,10 @@ export default function AdminDashboard() {
           </View>
         ) : finStats ? (
           <View style={styles.grid}>
-            <View style={[styles.statCard, styles.finCardSecondary]}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }, styles.finCardSecondary]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>FATURAMENTO COMPLETO</Text>
-                <View style={[styles.statIconDot, { backgroundColor: 'rgba(16,185,129,0.1)' }]}>
+                <View style={[styles.statIconDot, { backgroundColor: colors.successSoft }]}>
                   <Ionicons name="cash-outline" size={15} color={colors.success} />
                 </View>
               </View>
@@ -332,7 +332,7 @@ export default function AdminDashboard() {
               </Text>
               <View style={styles.trendRow}>
                 {finStats.growth_percentage !== 0 && (
-                  <View style={styles.trendBadge}>
+                  <View style={[styles.trendBadge, { backgroundColor: colors.successSoft }]}>
                     <Ionicons 
                       name={finStats.growth_percentage > 0 ? "trending-up" : "trending-down"} 
                       size={12} 
@@ -351,10 +351,10 @@ export default function AdminDashboard() {
               </View>
             </View>
 
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>RECEITA MENSAL</Text>
-                <View style={[styles.statIconDot, { backgroundColor: 'rgba(230,0,80,0.08)' }]}>
+                <View style={[styles.statIconDot, { backgroundColor: colors.primarySoft }]}>
                   <Ionicons name="pulse-outline" size={15} color={colors.primary} />
                 </View>
               </View>
@@ -364,10 +364,10 @@ export default function AdminDashboard() {
               <Text style={styles.statMiniSub}>Mês calendário atual</Text>
             </View>
 
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>TICKET MÉDIO</Text>
-                <View style={[styles.statIconDot, { backgroundColor: 'rgba(99,91,255,0.08)' }]}>
+                <View style={[styles.statIconDot, { backgroundColor: colors.primarySoft }]}>
                   <Ionicons name="calculator-outline" size={15} color={colors.primary} />
                 </View>
               </View>
@@ -377,21 +377,21 @@ export default function AdminDashboard() {
               <Text style={styles.statMiniSub}>Por Ordem concluída</Text>
             </View>
 
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>PAGOS VS PENDENTES</Text>
-                <View style={[styles.statIconDot, { backgroundColor: 'rgba(255,255,255,0.05)' }]}>
+                <View style={[styles.statIconDot, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.05)' : '#E5E7EB' }]}>
                   <Ionicons name="stats-chart-outline" size={15} color={colors.textMuted} />
                 </View>
               </View>
               <View style={styles.splitPaymentsRow}>
                 <View>
-                  <Text style={styles.splitMain}>{finStats.servicosPagos}</Text>
+                  <Text style={[styles.splitMain, { color: colors.text }]}>{finStats.servicosPagos}</Text>
                   <Text style={[styles.splitSub, { color: colors.success }]}>PAGOS</Text>
                 </View>
-                <View style={styles.splitDivider} />
+                <View style={[styles.splitDivider, { backgroundColor: colors.border }]} />
                 <View>
-                  <Text style={styles.splitMain}>{finStats.servicosPendentes}</Text>
+                  <Text style={[styles.splitMain, { color: colors.text }]}>{finStats.servicosPendentes}</Text>
                   <Text style={[styles.splitSub, { color: colors.warning }]}>PENDENTES</Text>
                 </View>
               </View>
@@ -418,19 +418,19 @@ export default function AdminDashboard() {
                   finStats.receitaPorTipo.map((item, idx) => (
                     <View key={idx} style={styles.progressRowContainer}>
                       <View style={styles.progressRowMeta}>
-                        <Text style={styles.progressRowLabel}>{item.tipo}</Text>
-                        <Text style={styles.progressRowValue}>{formatCurrencyValue(item.valor)}</Text>
+                        <Text style={[styles.progressRowLabel, { color: colors.textSecondary }]}>{item.tipo}</Text>
+                        <Text style={[styles.progressRowValue, { color: colors.text }]}>{formatCurrencyValue(item.valor)}</Text>
                       </View>
-                      <View style={styles.progressBarBg}>
+                      <View style={[styles.progressBarBg, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255, 255, 255, 0.05)' : '#E5E7EB' }]}>
                         <View style={[
                           styles.progressBarFill, 
-                          { width: `${Math.min(100, finStats.receitaTotal > 0 ? (item.valor / finStats.receitaTotal) * 100 : 0)}%` }
+                          { width: `${Math.min(100, finStats.receitaTotal > 0 ? (item.valor / finStats.receitaTotal) * 100 : 0)}%`, backgroundColor: colors.primary }
                         ]} />
                       </View>
                     </View>
                   ))
                 ) : (
-                  <Text style={styles.emptyText}>Sem dados de vendas faturadas.</Text>
+                  <Text style={[styles.emptyText, { color: colors.textMuted }]}>Sem dados de vendas faturadas.</Text>
                 )}
               </CardSection>
             </Card>
@@ -443,15 +443,15 @@ export default function AdminDashboard() {
                 <View style={styles.metaHead}>
                   <View>
                     <Text style={[styles.metaPct, { color: colors.primary }]}>{pct}%</Text>
-                    <Text style={styles.metaPeriod}>PROGRESSO MENSAL</Text>
+                    <Text style={[styles.metaPeriod, { color: colors.textMuted }]}>PROGRESSO MENSAL</Text>
                   </View>
-                  <View style={styles.metaCountContainer}>
+                  <View style={[styles.metaCountContainer, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255, 255, 255, 0.04)' : '#F3F4F6', borderColor: colors.border }]}>
                     <Text style={[styles.metaCount, { color: colors.text }]}>
                       {realizadoMes} <Text style={{ color: colors.textMuted }}>/ {metaMensal} OS</Text>
                     </Text>
                   </View>
                 </View>
-                <View style={styles.progressBg}>
+                <View style={[styles.progressBg, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255, 255, 255, 0.05)' : '#E5E7EB' }]}>
                   <View style={[styles.progressFill, { width: `${pct}%`, backgroundColor: colors.primary }]} />
                 </View>
               </CardSection>

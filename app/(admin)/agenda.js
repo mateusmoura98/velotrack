@@ -27,6 +27,7 @@ const MONTHS = [
 ];
 
 export default function CalendarScreen() {
+  const styles = getStyles(colors, radii, spacing);
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width > 768;
   const { user } = useAuth();
@@ -282,9 +283,9 @@ export default function CalendarScreen() {
     });
 
     return (
-      <View style={styles.gridContainer}>
+      <View style={[styles.gridContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         {/* Week Headers */}
-        <View style={styles.gridHeaderRow}>
+        <View style={[styles.gridHeaderRow, { backgroundColor: colors.surfaceElevated, borderBottomColor: colors.border }]}>
           {DAYS_OF_WEEK.map((day, idx) => (
             <View key={idx} style={styles.gridHeaderCell}>
               <Text style={styles.gridHeaderCellText}>{day}</Text>
@@ -295,10 +296,10 @@ export default function CalendarScreen() {
         {/* Calendar Grid */}
         <View style={styles.gridBody}>
           {weeks.map((wk, weekIdx) => (
-            <View key={weekIdx} style={styles.gridWeekRow}>
+            <View key={weekIdx} style={[styles.gridWeekRow, { borderBottomColor: colors.border }]}>
               {wk.map((day, dayIdx) => {
                 if (!day) {
-                  return <View key={dayIdx} style={[styles.gridDayCell, styles.gridDayCellEmpty]} />;
+                  return <View key={dayIdx} style={[styles.gridDayCell, { borderRightColor: colors.border, backgroundColor: colors.bg === '#090A0F' ? 'rgba(0,0,0,0.15)' : '#F3F4F6' }]} />;
                 }
 
                 const dayStr = day.toLocaleDateString('pt-BR');
@@ -306,8 +307,8 @@ export default function CalendarScreen() {
                 const isToday = day.toDateString() === new Date().toDateString();
 
                 return (
-                  <View key={dayIdx} style={[styles.gridDayCell, isToday && styles.gridDayCellToday]}>
-                    <Text style={[styles.gridDayNumber, isToday && styles.gridDayNumberToday]}>
+                  <View key={dayIdx} style={[styles.gridDayCell, { borderRightColor: colors.border }, isToday && { backgroundColor: colors.primarySoft }]}>
+                    <Text style={[styles.gridDayNumber, { color: colors.textMuted }, isToday && { color: colors.primary, backgroundColor: colors.primarySoft }]}>
                       {day.getDate()}
                     </Text>
                     
@@ -320,19 +321,19 @@ export default function CalendarScreen() {
                             onPress={() => handleOpenReschedule(s)}
                             style={[
                               styles.miniServiceBadge,
-                              { borderLeftColor: getStatusColor(s.status) }
+                              { backgroundColor: colors.surfaceElevated, borderColor: colors.border, borderLeftColor: getStatusColor(s.status) }
                             ]}
                           >
                             <View style={styles.badgeLabelContainer}>
-                              <Text style={styles.miniServiceTime} numberOfLines={1}>{s.metadata?.schedule?.time}</Text>
+                              <Text style={[styles.miniServiceTime, { color: colors.text }]} numberOfLines={1}>{s.metadata?.schedule?.time}</Text>
                               {hasHourConflict && (
                                 <MaterialCommunityIcons name="alert-decagram" size={10} color="#D69E2E" style={{ marginLeft: 2 }} />
                               )}
                             </View>
-                            <Text style={styles.miniServiceTech} numberOfLines={1}>
+                            <Text style={[styles.miniServiceTech, { color: colors.textMuted }]} numberOfLines={1}>
                               {s.users?.nome?.split(' ')[0] || 'S/ Técnico'}
                             </Text>
-                            <Text style={styles.miniServiceCliente} numberOfLines={1}>
+                            <Text style={[styles.miniServiceCliente, { color: colors.textSecondary }]} numberOfLines={1}>
                               {s.cliente}
                             </Text>
                           </Pressable>
@@ -363,14 +364,14 @@ export default function CalendarScreen() {
     }
 
     return (
-      <View style={styles.weekContainer}>
-        <View style={styles.weekHeaderRow}>
+      <View style={[styles.weekContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View style={[styles.weekHeaderRow, { backgroundColor: colors.surfaceElevated, borderBottomColor: colors.border }]}>
           {weekDays.map((day, idx) => {
             const isToday = day.toDateString() === new Date().toDateString();
             return (
-              <View key={idx} style={[styles.weekHeadCell, isToday && styles.weekHeadCellToday]}>
+              <View key={idx} style={[styles.weekHeadCell, { borderRightColor: colors.border }, isToday && { backgroundColor: colors.primarySoft }]}>
                 <Text style={styles.weekHeadDayName}>{DAYS_OF_WEEK[day.getDay()]}</Text>
-                <Text style={[styles.weekHeadDayNum, isToday && styles.weekHeadDayNumToday]}>{day.getDate()}</Text>
+                <Text style={[styles.weekHeadDayNum, { color: colors.text }, isToday && { color: colors.primary }]}>{day.getDate()}</Text>
               </View>
             );
           })}
@@ -382,10 +383,10 @@ export default function CalendarScreen() {
             const matchedSvs = filteredServices.filter(s => s.metadata?.schedule?.date === dayStr);
 
             return (
-              <View key={idx} style={styles.weekColumn}>
+              <View key={idx} style={[styles.weekColumn, { borderRightColor: colors.border }]}>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.weekColScroll}>
                   {matchedSvs.length === 0 ? (
-                    <Text style={styles.noWeekItemsText}>Sem OS</Text>
+                    <Text style={[styles.noWeekItemsText, { color: colors.textMuted }]}>Sem OS</Text>
                   ) : (
                     matchedSvs.map(s => {
                       const hasHourConflict = checkServiceConflict(dayStr, s.metadata?.schedule?.time, s.technician_id, s.id);
@@ -393,24 +394,24 @@ export default function CalendarScreen() {
                         <Pressable
                           key={s.id}
                           onPress={() => handleOpenReschedule(s)}
-                          style={[styles.weekServiceCard, { borderLeftColor: getStatusColor(s.status) }]}
+                          style={[styles.weekServiceCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftColor: getStatusColor(s.status) }]}
                         >
                           <View style={styles.weekCardHeader}>
-                            <Text style={styles.weekCardTime}>{s.metadata?.schedule?.time}</Text>
+                            <Text style={[styles.weekCardTime, { color: colors.textSecondary }]}>{s.metadata?.schedule?.time}</Text>
                             {hasHourConflict && (
                               <View style={styles.conflictHeaderBadge}>
                                 <Text style={styles.conflictHeaderBadgeText}>CONFLITO</Text>
                               </View>
                             )}
                           </View>
-                          <Text style={styles.weekCardClient} numberOfLines={1}>{s.cliente}</Text>
+                          <Text style={[styles.weekCardClient, { color: colors.text }]} numberOfLines={1}>{s.cliente}</Text>
                           <View style={styles.weekCardFooter}>
                             <Feather name="user" size={10} color={colors.textMuted} style={{ marginRight: 2 }} />
                             <Text style={styles.weekCardTech} numberOfLines={1}>
                               {s.users?.nome || 'Não atribuído'}
                             </Text>
                           </View>
-                          <Text style={styles.weekCardVehicle} numberOfLines={1}>{s.veiculo} • {s.placa}</Text>
+                          <Text style={[styles.weekCardVehicle, { color: colors.textMuted }]} numberOfLines={1}>{s.veiculo} • {s.placa}</Text>
                         </Pressable>
                       );
                     })
@@ -435,11 +436,11 @@ export default function CalendarScreen() {
     ];
 
     return (
-      <View style={styles.dayViewOuter}>
+      <View style={[styles.dayViewOuter, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         {matchedSvs.length === 0 ? (
           <View style={styles.emptyDayContainer}>
-            <MaterialCommunityIcons name="calendar-clock" size={48} color="rgba(255,255,255,0.1)" />
-            <Text style={styles.emptyDayTitle}>Sem Ordens de Serviço</Text>
+            <MaterialCommunityIcons name="calendar-clock" size={48} color={colors.bg === '#090A0F' ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"} />
+            <Text style={[styles.emptyDayTitle, { color: colors.text }]}>Sem Ordens de Serviço</Text>
             <Text style={styles.emptyDaySubtitle}>Não há agendamentos operacionais para {dayStr}.</Text>
           </View>
         ) : (
@@ -454,9 +455,9 @@ export default function CalendarScreen() {
               });
 
               return (
-                <View key={idx} style={styles.timelineRow}>
+                <View key={idx} style={[styles.timelineRow, { borderBottomColor: colors.border }]}>
                   <View style={styles.timelineHourCol}>
-                    <Text style={styles.timelineHourText}>{hour}</Text>
+                    <Text style={[styles.timelineHourText, { color: colors.textSecondary }]}>{hour}</Text>
                   </View>
                   
                   <View style={styles.timelineContentCol}>
@@ -468,7 +469,7 @@ export default function CalendarScreen() {
                           onPress={() => handleOpenReschedule(s)}
                           style={[
                             styles.timelineCard,
-                            { borderLeftColor: getStatusColor(s.status) },
+                            { backgroundColor: colors.card, borderColor: colors.border, borderLeftColor: getStatusColor(s.status) },
                             hasHourConflict && styles.timelineCardConflict
                           ]}
                         >
@@ -480,26 +481,26 @@ export default function CalendarScreen() {
                           )}
                           
                           <View style={styles.timelineCardMeta}>
-                            <View style={styles.typeBadge}>
-                              <Text style={styles.typeBadgeText}>{s.tipo}</Text>
+                            <View style={[styles.typeBadge, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.04)' : '#F3F4F6', borderColor: colors.border }]}>
+                              <Text style={[styles.typeBadgeText, { color: colors.textMuted }]}>{s.tipo}</Text>
                             </View>
-                            <Text style={styles.timelineCardTimeBadge}>
+                            <Text style={[styles.timelineCardTimeBadge, { color: colors.primary }]}>
                               ⏰ {s.metadata?.schedule?.time} ({s.metadata?.schedule?.duration || '1h30'}m)
                             </Text>
                           </View>
 
-                          <Text style={styles.timelineCardCliente}>{s.cliente}</Text>
-                          <Text style={styles.timelineCardVehicle}>{s.veiculo} • Placa {s.placa}</Text>
-                          <Text style={styles.timelineCardAddress}>📍 {s.endereco}</Text>
+                          <Text style={[styles.timelineCardCliente, { color: colors.text }]}>{s.cliente}</Text>
+                          <Text style={[styles.timelineCardVehicle, { color: colors.textSecondary }]}>{s.veiculo} • Placa {s.placa}</Text>
+                          <Text style={[styles.timelineCardAddress, { color: colors.textMuted }]}>📍 {s.endereco}</Text>
 
-                          <View style={styles.timelineCardFooter}>
+                          <View style={[styles.timelineCardFooter, { borderTopColor: colors.border }]}>
                             <View style={styles.timelineTechRow}>
-                              <View style={styles.techDotAvatar}>
-                                <Text style={styles.techAvatarText}>
+                              <View style={[styles.techDotAvatar, { backgroundColor: colors.primarySoft, borderColor: 'rgba(230,0,80,0.15)' }]}>
+                                <Text style={[styles.techAvatarText, { color: colors.primary }]}>
                                   {s.users?.nome?.substr(0, 2).toUpperCase() || 'UN'}
                                 </Text>
                               </View>
-                              <Text style={styles.timelineTechName}>
+                              <Text style={[styles.timelineTechName, { color: colors.textMuted }]}>
                                 Responsável: <Text style={{ color: colors.text }}>{s.users?.nome || 'Nenhum'}</Text>
                               </Text>
                             </View>
@@ -539,25 +540,25 @@ export default function CalendarScreen() {
   const activeConflicts = countActiveConflicts();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.bg }]}>
       {/* Upper Calendar Filter and View Headers */}
-      <View style={styles.headerPanel}>
+      <View style={[styles.headerPanel, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
         <View style={styles.headerTitleRow}>
           <View>
-            <Text style={styles.headerMainTitle}>Agenda Operacional</Text>
+            <Text style={[styles.headerMainTitle, { color: colors.text }]}>Agenda Operacional</Text>
             <Text style={styles.headerSubtitle}>Centralização do calendário dos técnicos e alocações SaaS</Text>
           </View>
 
           {/* View Toggles */}
-          <View style={styles.viewToggleGroup}>
+          <View style={[styles.viewToggleGroup, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.03)' : '#E5E7EB', borderColor: colors.border }]}>
             {['month', 'week', 'day'].map(view => (
               <Pressable
                 key={view}
                 onPress={() => setViewType(view)}
-                style={[styles.viewToggleBtn, viewType === view && styles.viewToggleBtnActive]}
+                style={[styles.viewToggleBtn, viewType === view && { backgroundColor: colors.primary }]}
                 id={`calendar-view-${view}`}
               >
-                <Text style={[styles.viewToggleText, viewType === view && styles.viewToggleTextActive]}>
+                <Text style={[styles.viewToggleText, { color: colors.textMuted }, viewType === view && { color: '#FFFFFF' }]}>
                   {view === 'month' ? 'Mês' : view === 'week' ? 'Semana' : 'Dia'}
                 </Text>
               </Pressable>
@@ -579,18 +580,18 @@ export default function CalendarScreen() {
         <View style={styles.controlsRow}>
           {/* Navigation Month/Week */}
           <View style={styles.navDateControls}>
-            <Pressable onPress={handlePrev} style={styles.navCircleBtn}>
-              <Feather name="chevron-left" size={18} color="#ECEFF4" />
+            <Pressable onPress={handlePrev} style={[styles.navCircleBtn, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.04)' : '#E5E7EB', borderColor: colors.border }]}>
+              <Feather name="chevron-left" size={18} color={colors.text} />
             </Pressable>
             
-            <Text style={styles.currentDateLabel}>
+            <Text style={[styles.currentDateLabel, { color: colors.text }]}>
               {viewType === 'month' && `${MONTHS[currentDate.getMonth()]} de ${currentDate.getFullYear()}`}
               {viewType === 'week' && `Semana de ${currentDate.getDate()} / ${MONTHS[currentDate.getMonth()]}`}
               {viewType === 'day' && currentDate.toLocaleDateString('pt-BR')}
             </Text>
 
-            <Pressable onPress={handleNext} style={styles.navCircleBtn}>
-              <Feather name="chevron-right" size={18} color="#ECEFF4" />
+            <Pressable onPress={handleNext} style={[styles.navCircleBtn, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.04)' : '#E5E7EB', borderColor: colors.border }]}>
+              <Feather name="chevron-right" size={18} color={colors.text} />
             </Pressable>
           </View>
 
@@ -602,9 +603,9 @@ export default function CalendarScreen() {
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.techChipsScroll}>
                 <Pressable
                   onPress={() => setSelectedTech('all')}
-                  style={[styles.filterChip, selectedTech === 'all' && styles.filterChipActive]}
+                  style={[styles.filterChip, { borderColor: colors.border }, selectedTech === 'all' && { backgroundColor: colors.primarySoft, borderColor: colors.primary }]}
                 >
-                  <Text style={[styles.filterChipText, selectedTech === 'all' && styles.filterChipTextActive]}>
+                  <Text style={[styles.filterChipText, { color: colors.textMuted }, selectedTech === 'all' && { color: colors.primary, fontWeight: '700' }]}>
                     Todos
                   </Text>
                 </Pressable>
@@ -612,9 +613,9 @@ export default function CalendarScreen() {
                   <Pressable
                     key={t.id}
                     onPress={() => setSelectedTech(t.id)}
-                    style={[styles.filterChip, selectedTech === t.id && styles.filterChipActive]}
+                    style={[styles.filterChip, { borderColor: colors.border }, selectedTech === t.id && { backgroundColor: colors.primarySoft, borderColor: colors.primary }]}
                   >
-                    <Text style={[styles.filterChipText, selectedTech === t.id && styles.filterChipTextActive]}>
+                    <Text style={[styles.filterChipText, { color: colors.textMuted }, selectedTech === t.id && { color: colors.primary, fontWeight: '700' }]}>
                       {t.nome.split(' ')[0]}
                     </Text>
                   </Pressable>
@@ -626,10 +627,10 @@ export default function CalendarScreen() {
             <View style={styles.statusFilters}>
               <Pressable
                 onPress={() => setSelectedStatus(selectedStatus === 'all' ? 'pendente' : selectedStatus === 'pendente' ? 'em_andamento' : selectedStatus === 'em_andamento' ? 'concluido' : 'all')}
-                style={styles.statusCycleBtn}
+                style={[styles.statusCycleBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
               >
-                <Feather name="filter" size={12} color="#ECEFF4" style={{ marginRight: 6 }} />
-                <Text style={styles.statusCycleBtnText}>
+                <Feather name="filter" size={12} color={colors.text} style={{ marginRight: 6 }} id="feather-filter-icon" />
+                <Text style={[styles.statusCycleBtnText, { color: colors.text }]}>
                   Status: {selectedStatus === 'all' ? 'Todos' : selectedStatus === 'pendente' ? 'Pendente' : selectedStatus === 'em_andamento' ? 'Em andamento' : 'Concluído'}
                 </Text>
               </Pressable>
@@ -660,14 +661,14 @@ export default function CalendarScreen() {
         onRequestClose={() => setRescheduleModalVisible(false)}
       >
         <View style={styles.modalBg}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <View style={[styles.modalHeader, { backgroundColor: colors.surfaceElevated, borderBottomColor: colors.border }]}>
               <View>
-                <Text style={styles.modalTitle}>Reagendar Ordem de Serviço</Text>
+                <Text style={[styles.modalTitle, { color: colors.text }]}>Reagendar Ordem de Serviço</Text>
                 <Text style={styles.modalSubtitle}>ID: {selectedService?.id?.substring(0, 8)}...</Text>
               </View>
-              <Pressable onPress={() => setRescheduleModalVisible(false)} style={styles.modalCloseBtn}>
-                <Feather name="x" size={18} color="#94A3B8" />
+              <Pressable onPress={() => setRescheduleModalVisible(false)} style={[styles.modalCloseBtn, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.03)' : '#E5E7EB' }]}>
+                <Feather name="x" size={18} color={colors.textMuted} />
               </Pressable>
             </View>
 
@@ -683,9 +684,9 @@ export default function CalendarScreen() {
                   </View>
                 )}
 
-                <View style={[styles.infoRowBlock, { marginBottom: 12 }]}>
+                <View style={[styles.infoRowBlock, { backgroundColor: colors.surfaceElevated, borderColor: colors.border, marginBottom: 12 }]}>
                   <Text style={styles.infoLabel}>Cliente</Text>
-                  <Text style={styles.infoValue}>{selectedService.cliente}</Text>
+                  <Text style={[styles.infoValue, { color: colors.text }]}>{selectedService.cliente}</Text>
                 </View>
 
                 {/* Datepicker mock inputs */}
@@ -693,7 +694,7 @@ export default function CalendarScreen() {
                   <View style={styles.formField}>
                     <Text style={styles.fieldLabel}>Data de Atendimento</Text>
                     <TextInput
-                      style={styles.formInput}
+                      style={[styles.formInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
                       value={newDate}
                       onChangeText={setNewDate}
                       placeholder="DD/MM/AAAA"
@@ -704,7 +705,7 @@ export default function CalendarScreen() {
                   <View style={styles.formField}>
                     <Text style={styles.fieldLabel}>Horário</Text>
                     <TextInput
-                      style={styles.formInput}
+                      style={[styles.formInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.text }]}
                       value={newTime}
                       onChangeText={setNewTime}
                       placeholder="HH:MM"
@@ -718,20 +719,20 @@ export default function CalendarScreen() {
                   <Text style={styles.fieldLabel}>Atribuir Técnico Técnico</Text>
                   <View style={styles.techGridSelection}>
                     <Pressable
-                      style={[styles.techSelectionItem, !newTech && styles.techSelectionItemActive]}
+                      style={[styles.techSelectionItem, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.02)' : '#F5F5F7', borderColor: colors.border }, !newTech && { borderColor: colors.primary, backgroundColor: colors.primarySoft }]}
                       onPress={() => setNewTech('')}
                     >
-                      <Text style={[styles.techSelectionItemText, !newTech && styles.techSelectionItemTextActive]}>
+                      <Text style={[styles.techSelectionItemText, { color: colors.textSecondary }, !newTech && { color: colors.primary, fontWeight: '700' }]}>
                         Nenhum Técnico (Aguardando Alocação)
                       </Text>
                     </Pressable>
                     {technicians.map(t => (
                       <Pressable
                         key={t.id}
-                        style={[styles.techSelectionItem, newTech === t.id && styles.techSelectionItemActive]}
+                        style={[styles.techSelectionItem, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.02)' : '#F5F5F7', borderColor: colors.border }, newTech === t.id && { borderColor: colors.primary, backgroundColor: colors.primarySoft }]}
                         onPress={() => setNewTech(t.id)}
                       >
-                        <Text style={[styles.techSelectionItemText, newTech === t.id && styles.techSelectionItemTextActive]}>
+                        <Text style={[styles.techSelectionItemText, { color: colors.textSecondary }, newTech === t.id && { color: colors.primary, fontWeight: '700' }]}>
                           {t.nome} (Ativo)
                         </Text>
                       </Pressable>
@@ -740,23 +741,23 @@ export default function CalendarScreen() {
                 </View>
 
                 {/* Footer Buttons control */}
-                <View style={styles.modalFooter}>
+                <View style={[styles.modalFooter, { borderTopColor: colors.border }]}>
                   <Pressable
                     onPress={() => setRescheduleModalVisible(false)}
-                    style={styles.cancelBtn}
+                    style={[styles.cancelBtn, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.02)' : '#F3F4F6', borderColor: colors.border }]}
                   >
-                    <Text style={styles.cancelBtnText}>Cancelar</Text>
+                    <Text style={[styles.cancelBtnText, { color: colors.textMuted }]}>Cancelar</Text>
                   </Pressable>
 
                   <Pressable
                     disabled={savingAction}
                     onPress={handleSaveReschedule}
-                    style={styles.saveBtn}
+                    style={[styles.saveBtn, { backgroundColor: colors.primary }]}
                   >
                     {savingAction ? (
-                      <ActivityIndicator size="small" color="#ECEFF4" />
+                      <ActivityIndicator size="small" color="#FFFFFF" />
                     ) : (
-                      <Text style={styles.saveBtnText}>Confirmar Alteração</Text>
+                      <Text style={[styles.saveBtnText, { color: '#FFFFFF' }]}>Confirmar Alteração</Text>
                     )}
                   </Pressable>
                 </View>

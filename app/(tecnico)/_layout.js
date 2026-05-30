@@ -137,6 +137,7 @@ export default function TecnicoLayout() {
               }}
             />
           ))}
+          <Tabs.Screen name="suporte" options={{ href: null }} />
           <Tabs.Screen name="servico/[id]" options={{ href: null }} />
         </Tabs>
       </View>
@@ -242,7 +243,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(99,91,255,0.15)',
+    borderColor: 'rgba(230,0,80,0.15)',
   },
   avatarText: {
     fontSize: 12,

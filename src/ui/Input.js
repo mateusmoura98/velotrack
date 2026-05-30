@@ -17,10 +17,22 @@ export default function Input({
 
   return (
     <View style={[styles.container, style]}>
-      {label && <Text style={[styles.label, focused && styles.labelFocused]}>{label}</Text>}
+      {label && (
+        <Text style={[
+          styles.label, 
+          { color: colors.textMuted }, 
+          focused && [styles.labelFocused, { color: colors.primary }]
+        ]}>
+          {label}
+        </Text>
+      )}
       <View style={[
         styles.box,
-        focused && styles.boxFocused,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+        },
+        focused && [styles.boxFocused, { borderColor: colors.primary, backgroundColor: 'rgba(230, 0, 80, 0.03)' }],
         error && styles.boxError,
         multiline && styles.boxMultiline,
       ]}>
@@ -33,7 +45,7 @@ export default function Input({
           />
         )}
         <TextInput
-          style={[styles.input, multiline && styles.multiline]}
+          style={[styles.input, { color: colors.text }, multiline && styles.multiline]}
           placeholderTextColor={colors.textMuted}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}

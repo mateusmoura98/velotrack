@@ -1,15 +1,6 @@
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, View } from 'react-native';
 import { colors, radii } from '../theme/colors';
 
-const VARIANTS = {
-  primary: { bg: colors.primary, text: '#FFF', border: null },
-  secondary: { bg: 'rgba(255, 255, 255, 0.04)', text: colors.text, border: colors.border },
-  outline: { bg: 'transparent', text: colors.text, border: colors.border },
-  success: { bg: colors.success, text: '#FFF', border: null },
-  danger: { bg: colors.error, text: '#FFF', border: null },
-  ghost: { bg: 'transparent', text: colors.textSecondary, border: null },
-};
-
 const SIZES = {
   sm: { height: 36, paddingHorizontal: 12, fontSize: 13, borderRadius: radii.md },
   md: { height: 44, paddingHorizontal: 18, fontSize: 14, borderRadius: radii.md },
@@ -27,6 +18,21 @@ export default function Button({
   icon,
   fullWidth = false,
 }) {
+  const isDarkTheme = colors.text === '#FFFFFF';
+  
+  const VARIANTS = {
+    primary: { bg: colors.primary, text: '#FFF', border: null },
+    secondary: { 
+      bg: isDarkTheme ? 'rgba(255, 255, 255, 0.04)' : '#E5E7EB', 
+      text: colors.text, 
+      border: colors.border 
+    },
+    outline: { bg: 'transparent', text: colors.text, border: colors.border },
+    success: { bg: colors.success, text: '#FFF', border: null },
+    danger: { bg: colors.error, text: '#FFF', border: null },
+    ghost: { bg: 'transparent', text: colors.textSecondary, border: null },
+  };
+
   const v = VARIANTS[variant] || VARIANTS.primary;
   const s = SIZES[size] || SIZES.lg;
 

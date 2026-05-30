@@ -3,7 +3,12 @@ import { colors, radii, spacing } from '../theme/colors';
 
 export function Card({ children, style, padded = true }) {
   return (
-    <View style={[styles.card, padded && styles.padded, style]}>
+    <View style={[
+      styles.card, 
+      { backgroundColor: colors.card, borderColor: colors.border },
+      padded && styles.padded, 
+      style
+    ]}>
       {children}
     </View>
   );

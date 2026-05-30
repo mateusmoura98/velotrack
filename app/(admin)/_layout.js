@@ -139,6 +139,8 @@ export default function AdminLayout() {
               }}
             />
           ))}
+          <Tabs.Screen name="historico" options={{ href: null }} />
+          <Tabs.Screen name="suporte" options={{ href: null }} />
         </Tabs>
       </View>
     </View>
@@ -243,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(99,91,255,0.15)',
+    borderColor: 'rgba(230,0,80,0.15)',
   },
   avatarText: {
     fontSize: 12,

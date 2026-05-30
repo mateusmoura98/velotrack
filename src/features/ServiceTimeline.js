@@ -6,13 +6,13 @@ import { Skeleton } from '../ui/Skeleton';
 import { Feather } from '@expo/vector-icons';
 
 const ACTION_CONFIG = {
-  created:               { color: '#635BFF', icon: 'plus-circle',      label: 'OS Criada' },
-  technician_assigned:   { color: '#635BFF', icon: 'user-plus',        label: 'Técnico Atribuído' },
+  created:               { color: '#E60050', icon: 'plus-circle',      label: 'OS Criada' },
+  technician_assigned:   { color: '#E60050', icon: 'user-plus',        label: 'Técnico Atribuído' },
   technician_changed:    { color: '#FF7300', icon: 'users',            label: 'Técnico Alterado' },
   status_changed:        { color: '#38A169', icon: 'sliders',          label: 'Status Alterado' },
   started:               { color: '#2B6CB0', icon: 'play-circle',      label: 'Execução Iniciada' },
   finished:              { color: '#319795', icon: 'check-circle',     label: 'OS Finalizada' },
-  checklist_updated:     { color: '#90CDF4', icon: 'clipboard',        label: 'Checklist Atualizado' },
+  checklist_updated:     { color: '#319795', icon: 'clipboard',        label: 'Checklist Atualizado' },
   observation_added:     { color: '#ECC94B', icon: 'message-square',   label: 'Observação Adicionada' },
   photo_added:           { color: '#9F7AEA', icon: 'image',            label: 'Foto Anexada' },
   priority_changed:      { color: '#E53E3E', icon: 'alert-triangle',   label: 'Prioridade Ajustada' },
@@ -67,8 +67,8 @@ export default function ServiceTimeline({ serviceId }) {
   if (loading) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.sectionTitle}>Timeline Operacional</Text>
-        <View style={styles.card}>
+        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>Timeline Operacional</Text>
+        <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           <Skeleton width="100%" height={24} style={{ marginBottom: 12, borderRadius: 6 }} />
           <Skeleton width="80%" height={24} style={{ marginBottom: 12, borderRadius: 6 }} />
           <Skeleton width="60%" height={24} style={{ borderRadius: 6 }} />
@@ -80,10 +80,10 @@ export default function ServiceTimeline({ serviceId }) {
   if (events.length === 0) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.sectionTitle}>Timeline Operacional</Text>
-        <View style={styles.emptyCard}>
-          <Feather name="activity" size={18} color="rgba(255,255,255,0.2)" />
-          <Text style={styles.emptyText}>Sem eventos registrados para esta ordem de serviço.</Text>
+        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>Timeline Operacional</Text>
+        <View style={[styles.emptyCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Feather name="activity" size={18} color={colors.textMuted} />
+          <Text style={[styles.emptyText, { color: colors.textMuted }]}>Sem eventos registrados para esta ordem de serviço.</Text>
         </View>
       </View>
     );
@@ -91,10 +91,10 @@ export default function ServiceTimeline({ serviceId }) {
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.sectionTitle}>Timeline Operacional</Text>
-      <View style={styles.card}>
+      <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>Timeline Operacional</Text>
+      <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         {events.map((event, i) => {
-          const cfg = ACTION_CONFIG[event.action] || { color: '#635BFF', icon: 'info', label: event.action };
+          const cfg = ACTION_CONFIG[event.action] || { color: '#E60050', icon: 'info', label: event.action };
           const userName = event.users?.nome || 'Velotrack System';
           const isLast = i === events.length - 1;
           
@@ -102,26 +102,26 @@ export default function ServiceTimeline({ serviceId }) {
             <View key={event.id || i} style={styles.row}>
               {/* Timeline Track segment */}
               <View style={styles.trackCol}>
-                <View style={[styles.iconContainer, { borderColor: `rgba(255,255,255,0.08)`, backgroundColor: '#171926' }]}>
+                <View style={[styles.iconContainer, { borderColor: colors.border, backgroundColor: colors.card }]}>
                   <Feather name={cfg.icon} size={11} color={cfg.color} />
                 </View>
-                {!isLast && <View style={styles.trackLine} />}
+                {!isLast && <View style={[styles.trackLine, { backgroundColor: colors.border }]} />}
               </View>
 
               {/* Event Info Card */}
               <View style={styles.contentCol}>
                 <View style={styles.titleRow}>
-                  <Text style={styles.label}>{cfg.label}</Text>
+                  <Text style={[styles.label, { color: colors.text }]}>{cfg.label}</Text>
                   <Text style={styles.time}>{formatTime(event.created_at)}</Text>
                 </View>
                 
                 {event.description ? (
-                  <Text style={styles.description}>{event.description}</Text>
+                  <Text style={[styles.description, { color: colors.textSecondary }]}>{event.description}</Text>
                 ) : null}
 
                 <View style={styles.actorRow}>
                   <Feather name="user" size={10} color={colors.textMuted} style={{ marginRight: 4 }} />
-                  <Text style={styles.user}>{userName}</Text>
+                  <Text style={[styles.user, { color: colors.textMuted }]}>{userName}</Text>
                 </View>
               </View>
             </View>
