@@ -50,7 +50,7 @@ export default function AdminDashboard() {
   const pct = metaMensal > 0 ? Math.min(100, Math.round((realizadoMes / metaMensal) * 100)) : 0;
 
   const statCards = stats ? [
-    { icon: 'calendar-outline', value: stats.total, label: 'TOTAL DE ORDEM', color: '#635BFF' },
+    { icon: 'calendar-outline', value: stats.total, label: 'TOTAL DE ORDEM', color: colors.primary },
     { icon: 'alert-circle-outline', value: stats.pendentes, label: 'PENDENTES', color: colors.warning },
     { icon: 'play-outline', value: stats.emAndamento, label: 'EM EXECUÇÃO', color: colors.primary },
     { icon: 'checkmark-done-circle-outline', value: stats.finalizados, label: 'CONCLUÍDAS', color: colors.success },

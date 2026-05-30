@@ -3,34 +3,46 @@ import { View, Text, StyleSheet } from 'react-native';
 import { colors, radii, spacing } from '../theme/colors';
 import { historyService } from '../services/history';
 import { Skeleton } from '../ui/Skeleton';
+import { Feather } from '@expo/vector-icons';
 
 const ACTION_CONFIG = {
-  created:               { color: colors.primary,        label: 'OS criada' },
-  technician_assigned:   { color: colors.primary,        label: 'Técnico atribuído' },
-  technician_changed:    { color: colors.warning,        label: 'Técnico alterado' },
-  status_changed:        { color: colors.primary,        label: 'Status alterado' },
-  started:               { color: colors.success,        label: 'Serviço iniciado' },
-  finished:              { color: colors.success,        label: 'Serviço finalizado' },
-  checklist_updated:     { color: colors.textSecondary,  label: 'Checklist atualizado' },
-  observation_added:     { color: colors.textMuted,      label: 'Observação registrada' },
-  photo_added:           { color: colors.textMuted,      label: 'Foto adicionada' },
-  priority_changed:      { color: colors.warning,        label: 'Prioridade alterada' },
-  edited:                { color: colors.textSecondary,  label: 'OS atualizada' },
+  created:               { color: '#635BFF', icon: 'plus-circle',      label: 'OS Criada' },
+  technician_assigned:   { color: '#635BFF', icon: 'user-plus',        label: 'Técnico Atribuído' },
+  technician_changed:    { color: '#FF7300', icon: 'users',            label: 'Técnico Alterado' },
+  status_changed:        { color: '#38A169', icon: 'sliders',          label: 'Status Alterado' },
+  started:               { color: '#2B6CB0', icon: 'play-circle',      label: 'Execução Iniciada' },
+  finished:              { color: '#319795', icon: 'check-circle',     label: 'OS Finalizada' },
+  checklist_updated:     { color: '#90CDF4', icon: 'clipboard',        label: 'Checklist Atualizado' },
+  observation_added:     { color: '#ECC94B', icon: 'message-square',   label: 'Observação Adicionada' },
+  photo_added:           { color: '#9F7AEA', icon: 'image',            label: 'Foto Anexada' },
+  priority_changed:      { color: '#E53E3E', icon: 'alert-triangle',   label: 'Prioridade Ajustada' },
+  edited:                { color: '#4A5568', icon: 'edit-2',           label: 'Cadastro Atualizado' },
 };
 
 function formatTime(d) {
   if (!d) return '';
   const date = new Date(d);
-  const today = new Date();
-  const isToday = date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear();
+  const now = new Date();
+  
+  const isToday = date.getDate() === now.getDate() &&
+    date.getMonth() === now.getMonth() &&
+    date.getFullYear() === now.getFullYear();
+
+  // Create temporary copy of now to check yesterday
+  const yesterdayCheck = new Date();
+  yesterdayCheck.setDate(yesterdayCheck.getDate() - 1);
+  const isYesterday = yesterdayCheck.toDateString() === date.toDateString();
+
+  const timesStr = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
   if (isToday) {
-    return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return `Hoje às ${timesStr}`;
   }
-  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) +
-    ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  if (isYesterday) {
+    return `Ontem às ${timesStr}`;
+  }
+  
+  return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' às ' + timesStr;
 }
 
 export default function ServiceTimeline({ serviceId }) {
@@ -55,35 +67,62 @@ export default function ServiceTimeline({ serviceId }) {
   if (loading) {
     return (
       <View style={styles.wrapper}>
-        <Text style={styles.sectionTitle}>Atividade</Text>
+        <Text style={styles.sectionTitle}>Timeline Operacional</Text>
         <View style={styles.card}>
-          <Skeleton width="100%" height={10} style={{ marginBottom: 10 }} />
-          <Skeleton width="75%" height={10} style={{ marginBottom: 10 }} />
-          <Skeleton width="50%" height={10} />
+          <Skeleton width="100%" height={24} style={{ marginBottom: 12, borderRadius: 6 }} />
+          <Skeleton width="80%" height={24} style={{ marginBottom: 12, borderRadius: 6 }} />
+          <Skeleton width="60%" height={24} style={{ borderRadius: 6 }} />
         </View>
       </View>
     );
   }
 
-  if (events.length < 2) return null;
+  if (events.length === 0) {
+    return (
+      <View style={styles.wrapper}>
+        <Text style={styles.sectionTitle}>Timeline Operacional</Text>
+        <View style={styles.emptyCard}>
+          <Feather name="activity" size={18} color="rgba(255,255,255,0.2)" />
+          <Text style={styles.emptyText}>Sem eventos registrados para esta ordem de serviço.</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.sectionTitle}>Atividade</Text>
+      <Text style={styles.sectionTitle}>Timeline Operacional</Text>
       <View style={styles.card}>
         {events.map((event, i) => {
-          const cfg = ACTION_CONFIG[event.action] || { color: colors.textMuted, label: event.action };
-          const userName = event.users?.nome || '';
+          const cfg = ACTION_CONFIG[event.action] || { color: '#635BFF', icon: 'info', label: event.action };
+          const userName = event.users?.nome || 'Velotrack System';
+          const isLast = i === events.length - 1;
+          
           return (
             <View key={event.id || i} style={styles.row}>
-              <View style={styles.dotCol}>
-                <View style={[styles.dot, { backgroundColor: cfg.color }]} />
-                {i < events.length - 1 && <View style={styles.line} />}
+              {/* Timeline Track segment */}
+              <View style={styles.trackCol}>
+                <View style={[styles.iconContainer, { borderColor: `rgba(255,255,255,0.08)`, backgroundColor: '#171926' }]}>
+                  <Feather name={cfg.icon} size={11} color={cfg.color} />
+                </View>
+                {!isLast && <View style={styles.trackLine} />}
               </View>
+
+              {/* Event Info Card */}
               <View style={styles.contentCol}>
-                <Text style={styles.label}>{cfg.label}</Text>
-                {userName ? <Text style={styles.user}>{userName}</Text> : null}
-                <Text style={styles.time}>{formatTime(event.created_at)}</Text>
+                <View style={styles.titleRow}>
+                  <Text style={styles.label}>{cfg.label}</Text>
+                  <Text style={styles.time}>{formatTime(event.created_at)}</Text>
+                </View>
+                
+                {event.description ? (
+                  <Text style={styles.description}>{event.description}</Text>
+                ) : null}
+
+                <View style={styles.actorRow}>
+                  <Feather name="user" size={10} color={colors.textMuted} style={{ marginRight: 4 }} />
+                  <Text style={styles.user}>{userName}</Text>
+                </View>
               </View>
             </View>
           );
@@ -95,65 +134,112 @@ export default function ServiceTimeline({ serviceId }) {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing.xl,
   },
   sectionTitle: {
     fontSize: 10,
     fontWeight: '700',
     color: colors.textMuted,
-    letterSpacing: 1.2,
+    letterSpacing: 1.5,
     textTransform: 'uppercase',
     marginBottom: spacing.md,
   },
   card: {
-    backgroundColor: colors.card,
+    backgroundColor: '#12131C',
     borderRadius: radii.lg,
-    padding: spacing.lg,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.lg,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: 'rgba(255,255,255,0.06)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+  },
+  emptyCard: {
+    backgroundColor: '#12131C',
+    borderRadius: radii.lg,
+    padding: spacing.xl,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
+  },
+  emptyText: {
+    color: colors.textMuted,
+    fontSize: 12,
+    textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    position: 'relative',
   },
-  dotCol: {
-    width: 20,
+  trackCol: {
+    width: 32,
     alignItems: 'center',
-    paddingTop: 3,
+    justifyContent: 'flex-start',
   },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 3.5,
+  iconContainer: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  trackLine: {
+    position: 'absolute',
+    top: 26,
+    bottom: 0,
+    width: 1.5,
+    backgroundColor: 'rgba(255,255,255,0.04)',
     zIndex: 1,
   },
-  line: {
-    position: 'absolute',
-    top: 10,
-    left: 9,
-    width: 1,
-    height: '100%',
-    backgroundColor: colors.border,
-  },
   contentCol: {
-    marginLeft: 8,
+    marginLeft: spacing.xs,
     flex: 1,
-    paddingBottom: spacing.md,
+    paddingBottom: spacing.lg,
+    paddingTop: 2,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 4,
   },
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.text,
+    color: '#ECEFF4',
+    letterSpacing: 0.2,
+  },
+  time: {
+    fontSize: 11,
+    color: colors.textMuted,
+    fontWeight: '500',
+  },
+  description: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    marginTop: 4,
+    lineHeight: 16,
+  },
+  actorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
   },
   user: {
     fontSize: 11,
-    color: colors.textSecondary,
-    marginTop: 1,
-  },
-  time: {
-    fontSize: 10,
     color: colors.textMuted,
-    marginTop: 1,
     fontWeight: '500',
   },
 });

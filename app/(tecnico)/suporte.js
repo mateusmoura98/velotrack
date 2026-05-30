@@ -8,6 +8,7 @@ import { colors, typography, radii, spacing } from '../../src/theme/colors';
 import { suporteService } from '../../src/services/suporte';
 import { Card } from '../../src/ui/Card';
 import { SkeletonCard } from '../../src/ui/Skeleton';
+import Header from '../../src/ui/Header';
 
 export default function TecnicoSuporte() {
   const { user, profile } = useAuth();
@@ -44,6 +45,7 @@ export default function TecnicoSuporte() {
   const formatDate = (d) => {
     if (!d) return '';
     const date = new Date(d);
+    if (isNaN(date.getTime())) return '';
     const today = new Date();
     const isToday = date.getDate() === today.getDate() &&
       date.getMonth() === today.getMonth() &&
@@ -55,18 +57,21 @@ export default function TecnicoSuporte() {
       ' • ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   };
 
-  const renderMessage = useCallback(({ item }) => (
-    <Card style={{ marginBottom: spacing.sm }}>
-      <View style={styles.messageHead}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={16} color={colors.primary} />
+  const renderMessage = useCallback(({ item }) => {
+    if (!item) return null;
+    return (
+      <Card style={{ marginBottom: spacing.sm }}>
+        <View style={styles.messageHead}>
+          <View style={styles.avatar}>
+            <Ionicons name="person" size={16} color={colors.primary} />
+          </View>
+          <Text style={styles.messageSender}>{profile?.nome || 'Técnico'}</Text>
+          <Text style={styles.messageDate}>{formatDate(item.created_at)}</Text>
         </View>
-        <Text style={styles.messageSender}>{profile?.nome || 'Técnico'}</Text>
-        <Text style={styles.messageDate}>{formatDate(item.created_at)}</Text>
-      </View>
-      <Text style={styles.messageText}>{item.mensagem}</Text>
-    </Card>
-  ), [profile?.nome]);
+        <Text style={styles.messageText}>{item.mensagem || ''}</Text>
+      </Card>
+    );
+  }, [profile?.nome]);
 
   if (loading) {
     return (
@@ -88,7 +93,7 @@ export default function TecnicoSuporte() {
 
       <FlatList
         data={messages}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item?.id || String(index)}
         renderItem={renderMessage}
         contentContainerStyle={styles.list}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); fetchMessages(); }} tintColor={colors.primary} colors={[colors.primary]} />}

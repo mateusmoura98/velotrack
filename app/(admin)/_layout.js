@@ -7,6 +7,7 @@ import { useAuth } from '../../src/contexts/AuthContext';
 const TABS = [
   { name: 'index', title: 'Dashboard', icon: 'view-dashboard-outline', active: 'view-dashboard' },
   { name: 'criar-servico', title: 'Novo Serviço', icon: 'plus-circle-outline', active: 'plus-circle' },
+  { name: 'agenda', title: 'Calendário', icon: 'calendar-blank-outline', active: 'calendar' },
   { name: 'tecnicos', title: 'Técnicos', icon: 'account-group-outline', active: 'account-group' },
   { name: 'historico', title: 'Histórico', icon: 'clock-outline', active: 'clock' },
   { name: 'suporte', title: 'Suporte', icon: 'lifebuoy', active: 'lifebuoy' },
@@ -24,6 +25,7 @@ export default function AdminLayout() {
   const currentTab = segments.includes('criar-servico') ? 'criar-servico' :
                      segments.includes('tecnicos') ? 'tecnicos' :
                      segments.includes('historico') ? 'historico' :
+                     segments.includes('agenda') ? 'agenda' :
                      segments.includes('suporte') ? 'suporte' : 'index';
 
   const handleTabPress = (name) => {

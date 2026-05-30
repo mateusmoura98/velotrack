@@ -4,8 +4,8 @@ export const colors = {
   card: '#171926',           // Beautiful card surface
   surfaceElevated: '#1E2133',// Elevated context surface
 
-  primary: '#635BFF',        // Stripe premium Indigo/Purple
-  primaryHover: '#4F46E5',   // Focused/Hover states
+  primary: '#635BFF',        // Velotrack premium purple accent (Stripe/Linear style)
+  primaryHover: '#5145E5',   // Focused/Hover states
   primarySoft: 'rgba(99,91,255,0.08)',
 
   text: '#F8FAFC',           // Pure high-contrast off-white

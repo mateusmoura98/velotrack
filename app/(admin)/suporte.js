@@ -20,31 +20,35 @@ export default function SuporteAdmin() {
   const formatDate = (d) => {
     if (!d) return '';
     const date = new Date(d);
+    if (isNaN(date.getTime())) return '';
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) +
       ' • ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   };
 
-  const renderItem = useCallback(({ item }) => (
-    <Card style={{ marginBottom: spacing.sm, padding: spacing.xl }}>
-      <View style={styles.cardHead}>
-        <View style={styles.senderRow}>
-          <View style={styles.avatar}>
-            <Ionicons name="person-outline" size={15} color={colors.primary} />
+  const renderItem = useCallback(({ item }) => {
+    if (!item) return null;
+    return (
+      <Card style={{ marginBottom: spacing.sm, padding: spacing.xl }}>
+        <View style={styles.cardHead}>
+          <View style={styles.senderRow}>
+            <View style={styles.avatar}>
+              <Ionicons name="person-outline" size={15} color={colors.primary} />
+            </View>
+            <View>
+              <Text style={styles.senderName}>{item.users?.nome || 'Desconhecido'}</Text>
+              <Text style={styles.senderRole}>Técnico especializado</Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.senderName}>{item.users?.nome || 'Desconhecido'}</Text>
-            <Text style={styles.senderRole}>Técnico especializado</Text>
-          </View>
+          <Text style={styles.date}>{formatDate(item.created_at)}</Text>
         </View>
-        <Text style={styles.date}>{formatDate(item.created_at)}</Text>
-      </View>
-      <View style={styles.divider} />
-      <Text style={styles.message}>{item.mensagem}</Text>
-      {item.fotos?.[0] && (
-        <Image source={{ uri: item.fotos[0] }} style={styles.image} resizeMode="cover" />
-      )}
-    </Card>
-  ), []);
+        <View style={styles.divider} />
+        <Text style={styles.message}>{item.mensagem || ''}</Text>
+        {item.fotos?.[0] && (
+          <Image source={{ uri: item.fotos[0] }} style={styles.image} resizeMode="cover" />
+        )}
+      </Card>
+    );
+  }, []);
 
   if (loading) {
     return (
@@ -71,7 +75,7 @@ export default function SuporteAdmin() {
       </View>
       <FlatList
         data={mensagens || []}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item?.id || String(index)}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         refreshControl={

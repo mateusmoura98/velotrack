@@ -85,6 +85,9 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='servicos' AND column_name='descricao') THEN
       ALTER TABLE public.servicos ADD COLUMN descricao TEXT DEFAULT '';
     END IF;
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='servicos' AND column_name='metadata') THEN
+      ALTER TABLE public.servicos ADD COLUMN metadata JSONB DEFAULT '{}'::jsonb;
+    END IF;
   END IF;
 END $$;
 
