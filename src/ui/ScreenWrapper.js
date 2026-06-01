@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   innerWide: {
-    maxWidth: 1100,
+    maxWidth: '100%',
     width: '100%',
-    alignSelf: 'center',
+    alignSelf: 'stretch',
     paddingBottom: 0,
   },
 });

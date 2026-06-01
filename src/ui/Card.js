@@ -45,7 +45,7 @@ const getStyles = (colors) => StyleSheet.create({
   sectionLabel: {
     fontSize: 10,
     fontWeight: '800',
-    color: colors.textMuted,
+    color: colors.textSecondary,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
     marginBottom: spacing.lg,

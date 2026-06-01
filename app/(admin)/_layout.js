@@ -217,7 +217,7 @@ const getStyles = (colors) => StyleSheet.create({
   navLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.textMuted,
+    color: colors.textSecondary,
     flex: 1,
   },
   navLabelActive: {

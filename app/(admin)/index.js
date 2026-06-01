@@ -638,7 +638,7 @@ const getStyles = (colors, isDesktop) => StyleSheet.create({
   },
   statLabel: {
     fontSize: 9,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     fontWeight: '800',
     letterSpacing: 1.2,
   },
@@ -663,11 +663,11 @@ const getStyles = (colors, isDesktop) => StyleSheet.create({
   },
   trendSub: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: colors.textSecondary,
   },
   statMiniSub: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     marginTop: spacing.xs,
     fontWeight: '500',
   },
@@ -728,7 +728,7 @@ const getStyles = (colors, isDesktop) => StyleSheet.create({
   },
   filterChipText: {
     fontSize: 12,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     fontWeight: '600',
   },
   filterChipTextActive: {

@@ -59,31 +59,21 @@ export default function LoginScreen() {
       <View style={[styles.desktopContainer, { backgroundColor: colors.bg }]}>
         {/* Left Side: Premium Connected Fleet Telemetry & Smart Tracking Cockpit Visual */}
         <ImageBackground
-          source={require('../src/assets/images/velotrack_hero_1780346232326.png')}
+          source={require('../src/assets/images/velotrack_bg_1780347223899.png')}
           style={styles.desktopLeft}
           resizeMode="cover"
         >
           {/* Subtle overlay to preserve high image quality and neon colors */}
           <View style={styles.desktopLeftOverlay} />
           
-          {/* Brand Overlay */}
-          <View style={styles.desktopBrandRow}>
-            {/* Pulsing signal icon or micro-indicator */}
-            <View style={[styles.signalIconContainer, { borderColor: colors.primary + '44' }]}>
-              <View style={[styles.signalIconInner, { backgroundColor: colors.primary }]} />
-            </View>
-            <Text style={[styles.desktopBrandText, { color: '#FFF' }]}>VELOTRACK</Text>
+          {/* Centered Logo Brand */}
+          <View style={styles.centerBrandContainer}>
+            <Text style={styles.centerBrandText}>
+              <Text style={{ color: '#FFFFFF' }}>VELO</Text>
+              <Text style={{ color: '#E60050' }}>TRACK</Text>
+            </Text>
+            <Text style={styles.centerBrandTagline}>ENTERPRISE OPERATIONS</Text>
           </View>
-
-          {/* Slogan */}
-          <View style={styles.desktopSloganContainer}>
-            <Text style={styles.desktopSloganMain}>Operations</Text>
-            <Text style={styles.desktopSloganMain}>management,</Text>
-            <Text style={[styles.desktopSloganMain, { color: '#E60050' }]}>evolved.</Text>
-          </View>
-
-          {/* Tagline / Subtitle */}
-          <Text style={styles.desktopLeftFooterText}>VELOTRACK PLATFORM © 2026</Text>
         </ImageBackground>
 
         {/* Right Side: Clean login form */}
@@ -180,25 +170,8 @@ export default function LoginScreen() {
                   )}
                 </TouchableOpacity>
 
-                {/* Separator */}
-                <View style={styles.dividerRow}>
-                  <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
-                  <Text style={[styles.dividerText, { color: colors.textMuted }]}>OR CONNECT VIA</Text>
-                  <View style={[styles.dividerLine, { backgroundColor: colors.border }]} />
-                </View>
-
-                {/* Google Button */}
-                <TouchableOpacity
-                  style={[styles.googleBtn, { borderColor: colors.border }]}
-                  onPress={() => alert('Google Login', 'Integração Google SSO ativa apenas no ambiente de produção corporativo.')}
-                  activeOpacity={0.85}
-                >
-                  <Ionicons name="logo-google" size={16} color={colors.primary} />
-                  <Text style={[styles.googleBtnText, { color: colors.text }]}>Sign in with Google</Text>
-                </TouchableOpacity>
-
                 {/* Footer text */}
-                <Text style={[styles.desktopRightFooter, { color: colors.textMuted }]}>
+                <Text style={[styles.desktopRightFooter, { color: colors.textMuted, marginTop: 24 }]}>
                   New to Velotrack? <Text style={{ color: colors.primary, fontWeight: '700' }}>Contact your system admin</Text>
                 </Text>
               </View>
@@ -429,6 +402,28 @@ const getStyles = (colors) => StyleSheet.create({
     fontSize: 14,
     fontWeight: '900',
     letterSpacing: 2,
+  },
+  centerBrandContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  centerBrandText: {
+    fontSize: 58,
+    fontWeight: '950',
+    letterSpacing: 6,
+    textShadowColor: 'rgba(0, 0, 0, 0.45)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 10,
+  },
+  centerBrandTagline: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.65)',
+    fontWeight: '800',
+    letterSpacing: 4,
+    marginTop: 8,
+    textTransform: 'uppercase',
   },
   desktopSloganContainer: {
     marginTop: 'auto',
