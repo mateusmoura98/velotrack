@@ -26,10 +26,10 @@ import RankingCard from '../../src/ui/RankingCard';
 
 export default function AdminDashboard() {
   const colors = useThemeColors();
-  const styles = getStyles(colors);
-  const { signOut, isDark, toggleTheme } = useAuth();
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width > 768;
+  const styles = getStyles(colors, isDesktop);
+  const { signOut, isDark, toggleTheme } = useAuth();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -511,7 +511,7 @@ export default function AdminDashboard() {
   );
 }
 
-const getStyles = (colors) => StyleSheet.create({
+const getStyles = (colors, isDesktop) => StyleSheet.create({
   safe: { flex: 1 },
   header: {
     flexDirection: 'row',
@@ -605,7 +605,7 @@ const getStyles = (colors) => StyleSheet.create({
     marginBottom: spacing.xl,
   },
   statCard: {
-    minWidth: '46%',
+    minWidth: isDesktop ? '23%' : '46%',
     flexGrow: 1,
     flexShrink: 1,
     backgroundColor: colors.card,

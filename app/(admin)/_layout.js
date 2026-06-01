@@ -182,9 +182,9 @@ const getStyles = (colors) => StyleSheet.create({
   },
   badgeEnterprise: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: colors.bg === '#090A0F' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(9, 10, 15, 0.05)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: colors.border,
     borderRadius: radii.sm,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -212,7 +212,7 @@ const getStyles = (colors) => StyleSheet.create({
     backgroundColor: colors.primarySoft,
   },
   navItemHover: {
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    backgroundColor: colors.bg === '#090A0F' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(9, 10, 15, 0.03)',
   },
   navLabel: {
     fontSize: 13,

@@ -59,11 +59,11 @@ export default function LoginScreen() {
       <View style={[styles.desktopContainer, { backgroundColor: colors.bg }]}>
         {/* Left Side: Premium Connected Fleet Telemetry & Smart Tracking Cockpit Visual */}
         <ImageBackground
-          source={{ uri: 'https://images.unsplash.com/photo-1506015391300-4802ef74de2e?auto=format&fit=crop&w=1200&q=80' }}
+          source={require('../src/assets/images/velotrack_hero_1780346232326.png')}
           style={styles.desktopLeft}
           resizeMode="cover"
         >
-          {/* Dark Overlay with color matching the premium blue/dark theme */}
+          {/* Subtle overlay to preserve high image quality and neon colors */}
           <View style={styles.desktopLeftOverlay} />
           
           {/* Brand Overlay */}
@@ -79,7 +79,7 @@ export default function LoginScreen() {
           <View style={styles.desktopSloganContainer}>
             <Text style={styles.desktopSloganMain}>Operations</Text>
             <Text style={styles.desktopSloganMain}>management,</Text>
-            <Text style={[styles.desktopSloganMain, { color: '#A0B1FF' }]}>evolved.</Text>
+            <Text style={[styles.desktopSloganMain, { color: '#E60050' }]}>evolved.</Text>
           </View>
 
           {/* Tagline / Subtitle */}
@@ -87,7 +87,7 @@ export default function LoginScreen() {
         </ImageBackground>
 
         {/* Right Side: Clean login form */}
-        <View style={styles.desktopRight}>
+        <View style={[styles.desktopRight, { backgroundColor: colors.surface }]}>
           <KeyboardAvoidingView behavior="padding" style={styles.flex}>
             <ScrollView
               contentContainerStyle={styles.desktopRightScroll}
@@ -95,8 +95,8 @@ export default function LoginScreen() {
               showsVerticalScrollIndicator={false}
             >
               <View style={styles.desktopFormCol}>
-                <Text style={styles.desktopSecureTitle}>Secure Access</Text>
-                <Text style={styles.desktopSecureSub}>
+                <Text style={[styles.desktopSecureTitle, { color: colors.text }]}>Secure Access</Text>
+                <Text style={[styles.desktopSecureSub, { color: colors.textSecondary }]}>
                   Enter your credentials to access the operational dashboard.
                 </Text>
 
@@ -405,7 +405,7 @@ const getStyles = (colors) => StyleSheet.create({
   },
   desktopLeftOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#070a18e6', // Rich deep-dark blue/gray overlay to mimic mockup
+    backgroundColor: 'rgba(7, 10, 24, 0.25)', // Extremely elegant & subtle shadow overlay
   },
   desktopBrandRow: {
     flexDirection: 'row',
