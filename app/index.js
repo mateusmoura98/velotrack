@@ -22,7 +22,7 @@ export default function LoginScreen() {
   const { signIn } = useAuth();
   const { width } = useWindowDimensions();
 
-  const isDesktop = Platform.OS === 'web' && width > 900;
+  const isDesktop = Platform.OS === 'web' && width > 768;
 
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(15)).current;
@@ -57,9 +57,9 @@ export default function LoginScreen() {
   if (isDesktop) {
     return (
       <View style={[styles.desktopContainer, { backgroundColor: colors.bg }]}>
-        {/* Left Side: Server Datacenter Tech Visual */}
+        {/* Left Side: Premium Connected Fleet Telemetry & Smart Tracking Cockpit Visual */}
         <ImageBackground
-          source={{ uri: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80' }}
+          source={{ uri: 'https://images.unsplash.com/photo-1506015391300-4802ef74de2e?auto=format&fit=crop&w=1200&q=80' }}
           style={styles.desktopLeft}
           resizeMode="cover"
         >
