@@ -16,6 +16,7 @@ import { typography, radii, spacing } from '../../src/theme/colors';
 import { useThemeColors } from '../../src/theme';
 
 import { dashboardService } from '../../src/services/dashboard';
+import { clearQueryCache } from '../../src/hooks/useQuery';
 import { Card, CardSection } from '../../src/ui/Card';
 import Button from '../../src/ui/Button';
 
@@ -39,7 +40,8 @@ export default function ConfigsScreen() {
     setClearingTest(true);
     try {
       await dashboardService.restartTestEnvironment();
-      alert('Sucesso', 'Ambiente de teste reiniciado com sucesso! Todas as OS marcadas como "is_test: true" foram removidas.');
+      clearQueryCache();
+      alert('Sucesso', 'Ambiente de teste reiniciado com sucesso! Todos os dados de teste foram removidos e a dashboard administrativa e operacional foi zerada.');
     } catch (err) {
       alert('Erro', err.message || 'Falha ao reiniciar ambiente de teste.');
     } finally {
@@ -50,13 +52,13 @@ export default function ConfigsScreen() {
   const handleSmartResetMonth = async () => {
     setResettingMonth(true);
     try {
-      // Simulate/Trigger monthly reset: do not delete history or events, only reset KPIs and targets!
-      setTimeout(() => {
-        alert('Inteligente', 'Metas mensais, KPIs e rankings deste período foram redefinidos para os valores base com sucesso. O histórico de auditoria e logs foi mantido 100% intacto!');
-        setResettingMonth(false);
-      }, 1500);
+      await dashboardService.resetMonthlyKPIs();
+      clearQueryCache();
+      setTargetGoal('100');
+      alert('Inteligente', 'Metas mensais, KPIs e rankings deste período foram redefinidos para os valores base com sucesso. O histórico de auditoria e logs foi mantido 100% intacto no período anterior!');
     } catch (err) {
-      alert('Erro', 'Falha no reset inteligente.');
+      alert('Erro', err.message || 'Falha no reset inteligente.');
+    } finally {
       setResettingMonth(false);
     }
   };

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { typography, radii, spacing, shadows } from '../../src/theme/colors';
 import { useThemeColors } from '../../src/theme';
@@ -26,10 +27,10 @@ import RankingCard from '../../src/ui/RankingCard';
 
 export default function AdminDashboard() {
   const colors = useThemeColors();
-  const styles = getStyles(colors);
-  const { signOut, isDark, toggleTheme } = useAuth();
   const { width } = useWindowDimensions();
   const isDesktop = Platform.OS === 'web' && width > 768;
+  const styles = getStyles(colors, isDesktop);
+  const { signOut, isDark, toggleTheme } = useAuth();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -71,6 +72,13 @@ export default function AdminDashboard() {
     ['active-tecnicos-list'],
     () => tecnicosService.listActive(),
     { cacheTime: 40000 }
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetchStats();
+      refetchFin();
+    }, [])
   );
 
   const onRefresh = async () => {
@@ -147,7 +155,7 @@ export default function AdminDashboard() {
         </View>
         
         <View style={styles.headerControls}>
-          {/* Theme Toggler */}
+          {/* Theme Toggler Button */}
           <Pressable
             onPress={toggleTheme}
             style={[styles.iconControlBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
@@ -159,6 +167,22 @@ export default function AdminDashboard() {
             />
           </Pressable>
 
+          {/* Manual Real-Time Refresh Button */}
+          <Pressable
+            onPress={onRefresh}
+            style={[styles.iconControlBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
+          >
+            {refreshing ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <Ionicons 
+                name="refresh-outline" 
+                size={18} 
+                color={colors.text} 
+              />
+            )}
+          </Pressable>
+
           {!isDesktop ? (
             <Pressable
               onPress={async () => { await signOut(); }}
@@ -168,8 +192,9 @@ export default function AdminDashboard() {
               <Text style={styles.logoutLabel}>Sair</Text>
             </Pressable>
           ) : (
-            <View style={styles.desktopBadge}>
-              <Text style={styles.desktopBadgeText}>SaaS Portal</Text>
+            <View style={[styles.desktopBadge, { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, gap: 8, backgroundColor: 'rgba(16,185,129,0.06)', borderColor: 'rgba(16,185,129,0.18)' }]}>
+              <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#10B981' }} />
+              <Text style={[styles.desktopBadgeText, { color: '#10B981', fontSize: 9, fontWeight: '800', letterSpacing: 1.2 }]}>SISTEMA ATIVO</Text>
             </View>
           )}
         </View>
@@ -207,17 +232,17 @@ export default function AdminDashboard() {
           </View>
         ) : stats ? (
           <View style={styles.grid}>
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, { borderLeftWidth: 3, borderLeftColor: colors.primary }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>ORDENS HOJE</Text>
                 <View style={[styles.statIconDot, { backgroundColor: 'rgba(230,0,80,0.08)' }]}>
                   <Ionicons name="calendar-outline" size={15} color={colors.primary} />
                 </View>
               </View>
-              <Text style={[styles.statValue, { color: colors.text }]}>{stats.total}</Text>
+              <Text style={[styles.statValue, { color: colors.text }]}>{stats.ordensHoje}</Text>
             </View>
 
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, { borderLeftWidth: 3, borderLeftColor: colors.warning }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>OS PENDENTES</Text>
                 <View style={[styles.statIconDot, { backgroundColor: 'rgba(245,158,11,0.08)' }]}>
@@ -227,7 +252,7 @@ export default function AdminDashboard() {
               <Text style={[styles.statValue, { color: colors.text }]}>{stats.pendentes}</Text>
             </View>
 
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, { borderLeftWidth: 3, borderLeftColor: colors.primaryHover || colors.primary }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>EM EXECUÇÃO</Text>
                 <View style={[styles.statIconDot, { backgroundColor: 'rgba(230,0,80,0.08)' }]}>
@@ -237,14 +262,14 @@ export default function AdminDashboard() {
               <Text style={[styles.statValue, { color: colors.text }]}>{stats.emAndamento}</Text>
             </View>
 
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, { borderLeftWidth: 3, borderLeftColor: colors.success }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>CONCLUÍDAS</Text>
                 <View style={[styles.statIconDot, { backgroundColor: 'rgba(16,185,129,0.08)' }]}>
                   <Ionicons name="checkmark-done-circle-outline" size={15} color={colors.success} />
                 </View>
               </View>
-              <Text style={[styles.statValue, { color: colors.text }]}>{stats.finalizados}</Text>
+              <Text style={[styles.statValue, { color: colors.text }]}>{stats.concluidasMes}</Text>
             </View>
           </View>
         ) : null}
@@ -324,7 +349,7 @@ export default function AdminDashboard() {
           </View>
         ) : finStats ? (
           <View style={styles.grid}>
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }, styles.finCardSecondary]}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftWidth: 3, borderLeftColor: colors.success }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>FATURAMENTO COMPLETO</Text>
                 <View style={[styles.statIconDot, { backgroundColor: colors.successSoft }]}>
@@ -355,7 +380,7 @@ export default function AdminDashboard() {
               </View>
             </View>
 
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftWidth: 3, borderLeftColor: colors.primary }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>RECEITA MENSAL</Text>
                 <View style={[styles.statIconDot, { backgroundColor: colors.primarySoft }]}>
@@ -368,7 +393,7 @@ export default function AdminDashboard() {
               <Text style={styles.statMiniSub}>Mês calendário atual</Text>
             </View>
 
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftWidth: 3, borderLeftColor: '#FF1A6C' }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>TICKET MÉDIO</Text>
                 <View style={[styles.statIconDot, { backgroundColor: colors.primarySoft }]}>
@@ -381,7 +406,7 @@ export default function AdminDashboard() {
               <Text style={styles.statMiniSub}>Por Ordem concluída</Text>
             </View>
 
-            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <View style={[styles.statCard, { backgroundColor: colors.card, borderColor: colors.border, borderLeftWidth: 3, borderLeftColor: colors.textSecondary }]}>
               <View style={styles.statTop}>
                 <Text style={styles.statLabel}>PAGOS VS PENDENTES</Text>
                 <View style={[styles.statIconDot, { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.05)' : '#E5E7EB' }]}>
@@ -511,7 +536,7 @@ export default function AdminDashboard() {
   );
 }
 
-const getStyles = (colors) => StyleSheet.create({
+const getStyles = (colors, isDesktop) => StyleSheet.create({
   safe: { flex: 1 },
   header: {
     flexDirection: 'row',
@@ -605,7 +630,7 @@ const getStyles = (colors) => StyleSheet.create({
     marginBottom: spacing.xl,
   },
   statCard: {
-    minWidth: '46%',
+    minWidth: isDesktop ? '23%' : '46%',
     flexGrow: 1,
     flexShrink: 1,
     backgroundColor: colors.card,
@@ -638,7 +663,7 @@ const getStyles = (colors) => StyleSheet.create({
   },
   statLabel: {
     fontSize: 9,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     fontWeight: '800',
     letterSpacing: 1.2,
   },
@@ -663,11 +688,11 @@ const getStyles = (colors) => StyleSheet.create({
   },
   trendSub: {
     fontSize: 10,
-    color: colors.textMuted,
+    color: colors.textSecondary,
   },
   statMiniSub: {
     fontSize: 11,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     marginTop: spacing.xs,
     fontWeight: '500',
   },
@@ -728,7 +753,7 @@ const getStyles = (colors) => StyleSheet.create({
   },
   filterChipText: {
     fontSize: 12,
-    color: colors.textMuted,
+    color: colors.textSecondary,
     fontWeight: '600',
   },
   filterChipTextActive: {

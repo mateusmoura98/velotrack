@@ -14,7 +14,6 @@ export function ThemeProvider({ children }) {
   const [themeMode, setThemeMode] = useState('dark');
 
   useEffect(() => {
-    // Initial sync from local storage or previous theme
     const saved = getTheme();
     setThemeMode(saved);
   }, []);
@@ -22,7 +21,7 @@ export function ThemeProvider({ children }) {
   const toggleTheme = useCallback(() => {
     const nextMode = themeMode === 'dark' ? 'light' : 'dark';
     setThemeMode(nextMode);
-    setTheme(nextMode); // Updates window.localStorage and currentTheme inside colors.js
+    setTheme(nextMode);
   }, [themeMode]);
 
   const activeColors = themeMode === 'dark' ? darkColors : lightColors;

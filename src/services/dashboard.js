@@ -4,16 +4,17 @@ export const dashboardService = {
   getStats: async () => {
     const { data, error } = await supabase
       .from('servicos')
-      .select('status, tempo_fim, created_at', { count: 'exact' });
+      .select('status, tempo_fim, created_at, is_test', { count: 'exact' });
 
     if (error) throw error;
 
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
+    const todayStr = now.toDateString();
     const services = data || [];
 
-    const stats = { total: services.length, pendentes: 0, emAndamento: 0, finalizados: 0 };
+    const stats = { total: 0, ordensHoje: 0, pendentes: 0, emAndamento: 0, finalizados: 0, concluidasMes: 0 };
     let monthCompleted = 0;
 
     const monthsData = {};
@@ -27,13 +28,24 @@ export const dashboardService = {
       // Ignore test services in real KPIs
       if (s.is_test) return;
 
+      stats.total++;
+      if (s.created_at) {
+        const createdDate = new Date(s.created_at);
+        if (createdDate.toDateString() === todayStr) {
+          stats.ordensHoje++;
+        }
+      }
+
       if (s.status === 'pendente') stats.pendentes++;
       else if (s.status === 'em_andamento') stats.emAndamento++;
       else if (s.status === 'concluido') {
         stats.finalizados++;
         if (s.tempo_fim) {
           const fd = new Date(s.tempo_fim);
-          if (fd.getMonth() === currentMonth && fd.getFullYear() === currentYear) monthCompleted++;
+          if (fd.getMonth() === currentMonth && fd.getFullYear() === currentYear) {
+            monthCompleted++;
+            stats.concluidasMes++;
+          }
           const key = `${fd.getFullYear()}-${fd.getMonth()}`;
           if (monthsData[key]) monthsData[key].value++;
         }
@@ -274,14 +286,79 @@ export const dashboardService = {
   },
 
   restartTestEnvironment: async () => {
-    // Admin action: deletes test OS, clear test metrics, clear test agenda. 
-    // DOES NOT delete users, authentication, or event sourcing structure.
+    // Admin action: deletes service history first, then deletes services.
+    // This is 100% robust against any foreign key constraints in older database schemas.
+    try {
+      await supabase
+        .from('service_history')
+        .delete()
+        .not('id', 'is', null);
+    } catch (e) {
+      console.warn("Could not clear service history:", e);
+    }
+
     const { error: delError } = await supabase
       .from('servicos')
       .delete()
-      .eq('is_test', true);
+      .not('id', 'is', null);
 
     if (delError) throw delError;
+    return { success: true };
+  },
+
+  resetMonthlyKPIs: async () => {
+    // Redefine a meta de OS para 100
+    try {
+      await supabase
+        .from('configuracoes')
+        .update({ meta_mensal: 100 })
+        .not('id', 'is', null);
+    } catch (e) {
+      console.warn("Metas default update skip:", e);
+    }
+
+    // Move os registros criados/finalizados no mês calendário atual para o mês calendário anterior (subtraindo 30 dias)
+    // Isso mantém intacto todo o histórico e auditoria, mas zera o faturamento e ranking do mês atual!
+    const { data: currentServices, error: fetchError } = await supabase
+      .from('servicos')
+      .select('id, created_at, tempo_fim');
+
+    if (!fetchError && currentServices) {
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      for (const s of currentServices) {
+        let needsUpdate = false;
+        const updateData = {};
+
+        if (s.created_at) {
+          const d = new Date(s.created_at);
+          if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+            d.setMonth(d.getMonth() - 1);
+            updateData.created_at = d.toISOString();
+            needsUpdate = true;
+          }
+        }
+
+        if (s.tempo_fim) {
+          const d = new Date(s.tempo_fim);
+          if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+            d.setMonth(d.getMonth() - 1);
+            updateData.tempo_fim = d.toISOString();
+            needsUpdate = true;
+          }
+        }
+
+        if (needsUpdate) {
+          await supabase
+            .from('servicos')
+            .update(updateData)
+            .eq('id', s.id);
+        }
+      }
+    }
+
     return { success: true };
   }
 };

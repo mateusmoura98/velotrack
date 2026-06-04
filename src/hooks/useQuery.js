@@ -104,3 +104,8 @@ export function useQuery(key, fetchFn, { enabled = true, cacheTime = 30000, deps
 
   return { data, loading, error, refetch, invalidateCache };
 }
+
+export function clearQueryCache() {
+  cache.clear();
+  pendingFetches.clear();
+}

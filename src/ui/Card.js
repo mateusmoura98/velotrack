@@ -35,6 +35,10 @@ const getStyles = (colors) => StyleSheet.create({
     borderColor: colors.border,
     marginBottom: spacing.lg,
     alignSelf: 'stretch',
+    shadowColor: colors.shadowColor,
+    shadowOffset: colors.shadowOffsetDesktop || { width: 0, height: 4 },
+    shadowOpacity: colors.shadowOpacityDesktop || 0.05,
+    shadowRadius: colors.shadowRadiusDesktop || 12,
   },
   padded: {
     padding: spacing.xl,
@@ -45,7 +49,7 @@ const getStyles = (colors) => StyleSheet.create({
   sectionLabel: {
     fontSize: 10,
     fontWeight: '800',
-    color: colors.textMuted,
+    color: colors.textSecondary,
     letterSpacing: 1.5,
     textTransform: 'uppercase',
     marginBottom: spacing.lg,

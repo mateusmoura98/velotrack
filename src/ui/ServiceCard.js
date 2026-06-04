@@ -135,6 +135,10 @@ const getStyles = (colors) => StyleSheet.create({
     borderColor: colors.border,
     padding: spacing.lg,
     marginBottom: spacing.sm,
+    shadowColor: colors.shadowColor,
+    shadowOffset: colors.shadowOffsetDesktop || { width: 0, height: 4 },
+    shadowOpacity: colors.shadowOpacityDesktop || 0.05,
+    shadowRadius: colors.shadowRadiusDesktop || 12,
   },
   cardAlta: {
     borderLeftWidth: 3.5,

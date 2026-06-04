@@ -176,10 +176,11 @@ CREATE POLICY "users_select" ON public.users FOR SELECT TO authenticated USING (
 CREATE POLICY "users_insert" ON public.users FOR INSERT TO authenticated WITH CHECK (true);
 CREATE POLICY "users_update" ON public.users FOR UPDATE TO authenticated USING (true);
 
--- Tabela servicos: todos autenticados podem ler, inserir e atualizar
+-- Tabela servicos: todos autenticados podem ler, inserir, atualizar e deletar
 CREATE POLICY "servicos_select" ON public.servicos FOR SELECT TO authenticated USING (true);
 CREATE POLICY "servicos_insert" ON public.servicos FOR INSERT TO authenticated WITH CHECK (true);
 CREATE POLICY "servicos_update" ON public.servicos FOR UPDATE TO authenticated USING (true);
+CREATE POLICY "servicos_delete" ON public.servicos FOR DELETE TO authenticated USING (true);
 
 -- Tabela mensagens: todos autenticados podem ler e enviar
 CREATE POLICY "mensagens_select" ON public.mensagens_de_suporte FOR SELECT TO authenticated USING (true);

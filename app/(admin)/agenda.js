@@ -21,7 +21,7 @@ import { historyService } from '../../src/services/history';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useFocusEffect } from 'expo-router';
 
-const DAYS_OF_WEEK = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const DAYS_OF_WEEK = ['DOM.', 'SEG.', 'TER.', 'QUA.', 'QUI.', 'SEX.', 'SÁB.'];
 const MONTHS = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
@@ -263,11 +263,29 @@ export default function CalendarScreen() {
     const startOffset = getFirstDayOfMonth(year, month);
 
     const monthDays = [];
-    for (let i = 0; i < startOffset; i++) {
-      monthDays.push(null);
+
+    // Fill previous month trailing days
+    const prevMonthYear = month === 0 ? year - 1 : year;
+    const prevMonth = month === 0 ? 11 : month - 1;
+    const daysInPrevMonth = getDaysInMonth(prevMonthYear, prevMonth);
+    for (let i = startOffset - 1; i >= 0; i--) {
+      monthDays.push(new Date(prevMonthYear, prevMonth, daysInPrevMonth - i));
     }
+
+    // Fill current month days
     for (let i = 1; i <= totalDays; i++) {
       monthDays.push(new Date(year, month, i));
+    }
+
+    // Fill next month leading days to complete full week rows (exactly 42 cells or 35 if it fits to make uniform layout)
+    const totalCellsUsed = monthDays.length;
+    const targetCellCount = totalCellsUsed <= 35 ? 35 : 42;
+    const remainingCells = targetCellCount - totalCellsUsed;
+
+    const nextMonthYear = month === 11 ? year + 1 : year;
+    const nextMonth = month === 11 ? 0 : month + 1;
+    for (let i = 1; i <= remainingCells; i++) {
+      monthDays.push(new Date(nextMonthYear, nextMonth, i));
     }
 
     // Split into chunk weeks
@@ -307,10 +325,23 @@ export default function CalendarScreen() {
                 const dayStr = day.toLocaleDateString('pt-BR');
                 const matchedSvs = filteredServices.filter(s => s.metadata?.schedule?.date === dayStr);
                 const isToday = day.toDateString() === new Date().toDateString();
+                const isCurrentMonth = day.getMonth() === month;
 
                 return (
-                  <View key={dayIdx} style={[styles.gridDayCell, { borderRightColor: colors.border }, isToday && { backgroundColor: colors.primarySoft }]}>
-                    <Text style={[styles.gridDayNumber, { color: colors.textMuted }, isToday && { color: colors.primary, backgroundColor: colors.primarySoft }]}>
+                  <View 
+                    key={dayIdx} 
+                    style={[
+                      styles.gridDayCell, 
+                      { borderRightColor: colors.border }, 
+                      isToday && { backgroundColor: colors.primarySoft },
+                      !isCurrentMonth && { backgroundColor: colors.bg === '#090A0F' ? 'rgba(255,255,255,0.015)' : '#F9FAFB' }
+                    ]}
+                  >
+                    <Text style={[
+                      styles.gridDayNumber, 
+                      { color: isCurrentMonth ? colors.textMuted : colors.textMuted + '66' }, 
+                      isToday && styles.gridDayNumberToday
+                    ]}>
                       {day.getDate()}
                     </Text>
                     
@@ -321,23 +352,18 @@ export default function CalendarScreen() {
                           <Pressable
                             key={s.id}
                             onPress={() => handleOpenReschedule(s)}
-                            style={[
-                              styles.miniServiceBadge,
-                              { backgroundColor: colors.surfaceElevated, borderColor: colors.border, borderLeftColor: getStatusColor(s.status) }
-                            ]}
+                            style={styles.compactAppointmentRow}
                           >
-                            <View style={styles.badgeLabelContainer}>
-                              <Text style={[styles.miniServiceTime, { color: colors.text }]} numberOfLines={1}>{s.metadata?.schedule?.time}</Text>
-                              {hasHourConflict && (
-                                <MaterialCommunityIcons name="alert-decagram" size={10} color="#D69E2E" style={{ marginLeft: 2 }} />
-                              )}
-                            </View>
-                            <Text style={[styles.miniServiceTech, { color: colors.textMuted }]} numberOfLines={1}>
-                              {s.users?.nome?.split(' ')[0] || 'S/ Técnico'}
+                            <View style={[styles.statusDot, { backgroundColor: getStatusColor(s.status) }]} />
+                            <Text style={[styles.compactAppointmentTime, { color: getStatusColor(s.status) }]} numberOfLines={1}>
+                              {s.metadata?.schedule?.time}
                             </Text>
-                            <Text style={[styles.miniServiceCliente, { color: colors.textSecondary }]} numberOfLines={1}>
-                              {s.cliente}
+                            <Text style={[styles.compactAppointmentText, { color: isCurrentMonth ? colors.text : colors.textMuted }]} numberOfLines={1}>
+                              {s.cliente} - {s.users?.nome?.split(' ')[0] || 'S/ Técnico'}
                             </Text>
+                            {hasHourConflict && (
+                              <MaterialCommunityIcons name="alert-decagram" size={10} color="#D69E2E" style={{ marginLeft: 2 }} />
+                            )}
                           </Pressable>
                         );
                       })}
@@ -974,7 +1000,7 @@ const getStyles = (colors) => StyleSheet.create({
   },
   gridWeekRow: {
     flexDirection: 'row',
-    height: 110,
+    height: 154,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.04)',
   },
@@ -1008,33 +1034,29 @@ const getStyles = (colors) => StyleSheet.create({
   gridDayContentScroll: {
     flex: 1,
   },
-  miniServiceBadge: {
-    paddingVertical: 4,
-    paddingHorizontal: 6,
-    backgroundColor: 'rgba(255,255,255,0.02)',
-    borderRadius: radii.sm,
-    borderLeftWidth: 2,
-    marginBottom: 4,
-  },
-  badgeLabelContainer: {
+  compactAppointmentRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 1,
+    paddingHorizontal: 2,
+    gap: 4.5,
+    width: '100%',
+    marginBottom: 2,
   },
-  miniServiceTime: {
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  compactAppointmentTime: {
+    fontSize: 9.5,
+    fontWeight: '700',
+    minWidth: 26,
+  },
+  compactAppointmentText: {
     fontSize: 9,
-    fontWeight: '800',
-    color: '#ECEFF4',
-  },
-  miniServiceTech: {
-    fontSize: 8,
-    color: colors.textMuted,
-    marginTop: 1,
-    fontWeight: '600',
-  },
-  miniServiceCliente: {
-    fontSize: 8,
-    color: colors.textSecondary,
     fontWeight: '500',
+    flex: 1,
   },
   weekContainer: {
     flex: 1,

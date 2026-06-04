@@ -164,6 +164,10 @@ const getStyles = (colors) => StyleSheet.create({
     paddingHorizontal: spacing.lg,
     justifyContent: 'space-between',
     height: '100%',
+    shadowColor: colors.shadowColor,
+    shadowOffset: { width: 1, height: 0 },
+    shadowOpacity: colors.shadowOpacityDesktop,
+    shadowRadius: colors.shadowRadiusDesktop,
   },
   mainContent: {
     flex: 1,
@@ -180,18 +184,18 @@ const getStyles = (colors) => StyleSheet.create({
   },
   badgeRole: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: colors.text === '#FFFFFF' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 23, 42, 0.04)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: colors.border,
     borderRadius: radii.sm,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     marginTop: 4,
   },
   badgeRoleText: {
     fontSize: 9,
-    color: colors.textMuted,
-    fontWeight: '800',
+    color: colors.textSecondary,
+    fontWeight: '850',
     letterSpacing: 1.5,
   },
   navList: {
@@ -210,7 +214,7 @@ const getStyles = (colors) => StyleSheet.create({
     backgroundColor: colors.primarySoft,
   },
   navItemHover: {
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    backgroundColor: colors.text === '#FFFFFF' ? 'rgba(255, 255, 255, 0.04)' : 'rgba(15, 23, 42, 0.035)',
   },
   navLabel: {
     fontSize: 13,

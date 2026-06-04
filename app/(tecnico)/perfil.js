@@ -211,11 +211,13 @@ const getStyles = (colors) => StyleSheet.create({
   },
   roleBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(255,255,255,0.05)',
+    backgroundColor: colors.text === '#FFFFFF' ? 'rgba(255,255,255,0.05)' : 'rgba(15, 23, 42, 0.04)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: radii.sm,
     marginTop: 4,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   roleBadgeText: {
     fontSize: 9,
@@ -233,6 +235,10 @@ const getStyles = (colors) => StyleSheet.create({
     borderRadius: radii.xl,
     borderWidth: 1,
     gap: 4,
+    shadowColor: colors.shadowColor,
+    shadowOffset: colors.shadowOffsetDesktop || { width: 0, height: 4 },
+    shadowOpacity: colors.shadowOpacityDesktop || 0.05,
+    shadowRadius: colors.shadowRadiusDesktop || 12,
   },
   statLabel: {
     fontSize: 9,
