@@ -42,6 +42,11 @@ export default function ConfigsScreen() {
       await dashboardService.restartTestEnvironment();
       clearQueryCache();
       alert('Sucesso', 'Ambiente de teste reiniciado com sucesso! Todos os dados de teste foram removidos e a dashboard administrativa e operacional foi zerada.');
+      if (Platform.OS === 'web') {
+        setTimeout(() => {
+          window.location.reload();
+        }, 800);
+      }
     } catch (err) {
       alert('Erro', err.message || 'Falha ao reiniciar ambiente de teste.');
     } finally {
@@ -56,6 +61,11 @@ export default function ConfigsScreen() {
       clearQueryCache();
       setTargetGoal('100');
       alert('Inteligente', 'Metas mensais, KPIs e rankings deste período foram redefinidos para os valores base com sucesso. O histórico de auditoria e logs foi mantido 100% intacto no período anterior!');
+      if (Platform.OS === 'web') {
+        setTimeout(() => {
+          window.location.reload();
+        }, 800);
+      }
     } catch (err) {
       alert('Erro', err.message || 'Falha no reset inteligente.');
     } finally {

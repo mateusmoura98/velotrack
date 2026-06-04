@@ -1,5 +1,5 @@
 import { Tabs, useRouter, useSegments } from 'expo-router';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { View, Text, StyleSheet, Pressable, useWindowDimensions, Platform } from 'react-native';
 import { spacing, radii } from '../../src/theme/colors';
 import { useAuth } from '../../src/contexts/AuthContext';

@@ -176,9 +176,40 @@ export const servicosService = {
 
     const checkObj = (payload.checklist && Array.isArray(payload.checklist)) ? payload.checklist : [];
 
-    const insertPayload = { ...payload };
+    // Filter properties to only valid columns in the public.servicos table
+    const insertPayload = {};
+    const validColumns = [
+      'cliente',
+      'endereco',
+      'veiculo',
+      'placa',
+      'telefone',
+      'tipo',
+      'descricao',
+      'status',
+      'priority',
+      'technician_id',
+      'checklist',
+      'observations',
+      'fotos',
+      'tempo_inicio',
+      'tempo_fim',
+      'metadata'
+    ];
+
+    validColumns.forEach(col => {
+      if (payload[col] !== undefined) {
+        insertPayload[col] = payload[col];
+      }
+    });
+
     insertPayload.metadata = metaObj;
     insertPayload.checklist = checkObj;
+
+    // Handle empty string for technician_id gracefully to avoid uuid parse issues
+    if (insertPayload.technician_id === '') {
+      insertPayload.technician_id = null;
+    }
 
     let result;
     try {
@@ -190,6 +221,7 @@ export const servicosService = {
       if (error) throw error;
       result = data;
     } catch (dbErr) {
+      console.warn("First insert attempt failed, retrying inside legacy safety path:", dbErr);
       if (metaObj) {
         const oldChecklistPayload = {
           ...metaObj.schedule,
@@ -199,9 +231,18 @@ export const servicosService = {
           attachments: metaObj.attachments,
           equipments: metaObj.equipment
         };
-        const fallbackPayload = { ...payload };
+        const fallbackPayload = {};
+        validColumns.forEach(col => {
+          if (payload[col] !== undefined) {
+            fallbackPayload[col] = payload[col];
+          }
+        });
         fallbackPayload.checklist = oldChecklistPayload;
         delete fallbackPayload.metadata;
+
+        if (fallbackPayload.technician_id === '') {
+          fallbackPayload.technician_id = null;
+        }
 
         const { data, error } = await supabase
           .from('servicos')
@@ -216,26 +257,48 @@ export const servicosService = {
     }
 
     if (result?.id) {
-      await historyService.log(result.id, payload.user_id || payload.created_by,
-        historyService.ACTIONS.CREATED,
-        `OS criada para ${payload.cliente} - ${payload.veiculo}`
-      );
-      if (payload.technician_id) {
-        await historyService.log(result.id, payload.user_id || payload.created_by,
-          historyService.ACTIONS.TECHNICIAN_ASSIGNED,
-          `Técnico atribuído`
+      let userId = payload.user_id || payload.created_by || null;
+      if (!userId) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          userId = session?.user?.id || null;
+        } catch {}
+      }
+
+      try {
+        await historyService.log(result.id, userId,
+          historyService.ACTIONS.CREATED,
+          `OS criada para ${payload.cliente} - ${payload.veiculo}`
         );
+        if (payload.technician_id) {
+          await historyService.log(result.id, userId,
+            historyService.ACTIONS.TECHNICIAN_ASSIGNED,
+            `Técnico atribuído`
+          );
+        }
+      } catch (logErr) {
+        console.warn("Could not record creation history:", logErr);
       }
     }
     return result;
   },
 
   update: async (id, payload) => {
-    const { data: old } = await supabase
-      .from('servicos')
-      .select('technician_id, priority, status')
-      .eq('id', id)
-      .single();
+    // Fetch old record safely for logging without crashing the whole update
+    let old = null;
+    try {
+      const { data } = await supabase
+        .from('servicos')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+      if (data) {
+        data.metadata = parseMetadata(data);
+        old = data;
+      }
+    } catch (e) {
+      console.warn("Could not fetch old record for history logs:", e);
+    }
 
     const metaObj = payload.metadata || (payload.checklist && !Array.isArray(payload.checklist) ? {
       schedule: {
@@ -271,12 +334,42 @@ export const servicosService = {
       equipment: payload.checklist.equipments || payload.checklist.equipment || []
     } : null);
 
-    const updatePayload = { ...payload };
+    // Filter properties to only valid columns in the public.servicos table
+    const updatePayload = {};
+    const validColumns = [
+      'cliente',
+      'endereco',
+      'veiculo',
+      'placa',
+      'telefone',
+      'tipo',
+      'descricao',
+      'status',
+      'priority',
+      'technician_id',
+      'checklist',
+      'observations',
+      'fotos',
+      'tempo_inicio',
+      'tempo_fim',
+      'metadata'
+    ];
+
+    validColumns.forEach(col => {
+      if (payload[col] !== undefined) {
+        updatePayload[col] = payload[col];
+      }
+    });
+
     if (metaObj) {
       updatePayload.metadata = metaObj;
       if (!Array.isArray(payload.checklist)) {
         delete updatePayload.checklist;
       }
+    }
+
+    if (updatePayload.technician_id === '') {
+      updatePayload.technician_id = null;
     }
 
     try {
@@ -286,6 +379,7 @@ export const servicosService = {
         .eq('id', id);
       if (error) throw error;
     } catch (dbErr) {
+      console.warn("First update attempt failed, retrying inside legacy safety path:", dbErr);
       if (metaObj) {
         const oldChecklistPayload = {
           ...metaObj.schedule,
@@ -295,9 +389,18 @@ export const servicosService = {
           attachments: metaObj.attachments,
           equipments: metaObj.equipment
         };
-        const fallbackPayload = { ...payload };
+        const fallbackPayload = {};
+        validColumns.forEach(col => {
+          if (payload[col] !== undefined) {
+            fallbackPayload[col] = payload[col];
+          }
+        });
         fallbackPayload.checklist = oldChecklistPayload;
         delete fallbackPayload.metadata;
+
+        if (fallbackPayload.technician_id === '') {
+          fallbackPayload.technician_id = null;
+        }
 
         const { error } = await supabase
           .from('servicos')
@@ -309,31 +412,70 @@ export const servicosService = {
       }
     }
 
-    const userId = payload.user_id || payload.updated_by;
-
-    if (old && payload.status && payload.status !== old.status) {
-      await historyService.log(id, userId,
-        historyService.ACTIONS.STATUS_CHANGED,
-        `Status alterado de ${old.status} para ${payload.status}`
-      );
-    }
-    if (old && payload.technician_id && payload.technician_id !== old.technician_id) {
-      await historyService.log(id, userId,
-        historyService.ACTIONS.TECHNICIAN_CHANGED,
-        `Técnico alterado`
-      );
-    }
-    if (old && payload.priority && payload.priority !== old.priority) {
-      await historyService.log(id, userId,
-        historyService.ACTIONS.PRIORITY_CHANGED,
-        `Prioridade alterada para ${payload.priority}`
-      );
+    let userId = payload.user_id || payload.updated_by || null;
+    if (!userId) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        userId = session?.user?.id || null;
+      } catch {}
     }
 
-    await historyService.log(id, userId,
-      historyService.ACTIONS.EDITED,
-      'OS atualizada'
-    );
+    try {
+      if (old) {
+        // Log de Status
+        if (payload.status && payload.status !== old.status) {
+          await historyService.log(id, userId,
+            historyService.ACTIONS.STATUS_CHANGED,
+            `Status alterado de "${old.status}" para "${payload.status}"`
+          );
+        }
+        
+        // Log de Técnico Alocado
+        if (payload.technician_id !== undefined && payload.technician_id !== old.technician_id) {
+          let oldTechName = 'Não atribuído';
+          let newTechName = 'Não atribuído';
+          try {
+            if (old.technician_id) {
+              const { data: ot } = await supabase.from('users').select('nome').eq('id', old.technician_id).maybeSingle();
+              if (ot) oldTechName = ot.nome;
+            }
+            if (payload.technician_id) {
+              const { data: nt } = await supabase.from('users').select('nome').eq('id', payload.technician_id).maybeSingle();
+              if (nt) newTechName = nt.nome;
+            }
+          } catch {}
+          await historyService.log(id, userId,
+            historyService.ACTIONS.TECHNICIAN_CHANGED,
+            `Técnico alterado de "${oldTechName}" para "${newTechName}"`
+          );
+        }
+
+        // Log de Alteração de Prioridade
+        if (payload.priority && payload.priority !== old.priority) {
+          await historyService.log(id, userId,
+            historyService.ACTIONS.PRIORITY_CHANGED,
+            `Prioridade alterada de "${old.priority}" para "${payload.priority}"`
+          );
+        }
+
+        // Log de Faturamento de Valor
+        const oldVal = old.metadata?.billing?.valServico || '0,00';
+        const newVal = metaObj?.billing?.valServico || '0,00';
+        if (oldVal !== newVal) {
+          await historyService.log(id, userId,
+            'valor_changed',
+            `Valor alterado de R$ ${oldVal} para R$ ${newVal}`
+          );
+        }
+      }
+
+      await historyService.log(id, userId,
+        historyService.ACTIONS.EDITED,
+        'OS atualizada'
+      );
+    } catch (logErr) {
+      console.warn("Could not record update history:", logErr);
+    }
   },
 
   startService: async (id) => {
@@ -342,6 +484,17 @@ export const servicosService = {
       .update({ status: 'em_andamento', tempo_inicio: new Date().toISOString() })
       .eq('id', id);
     if (error) throw error;
+
+    try {
+      let userId = null;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        userId = session?.user?.id || null;
+      } catch {}
+      await historyService.log(id, userId, historyService.ACTIONS.STARTED, 'Serviço iniciado');
+    } catch (e) {
+      console.warn("Could not log startService in history:", e);
+    }
   },
 
   finishService: async (id, data) => {
@@ -354,6 +507,17 @@ export const servicosService = {
       })
       .eq('id', id);
     if (error) throw error;
+
+    try {
+      let userId = null;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        userId = session?.user?.id || null;
+      } catch {}
+      await historyService.log(id, userId, historyService.ACTIONS.FINISHED, 'Serviço finalizado com sucesso');
+    } catch (e) {
+      console.warn("Could not log finishService in history:", e);
+    }
   },
 
   updateChecklist: async (id, checklist) => {

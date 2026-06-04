@@ -470,6 +470,83 @@ export default function CriarServico() {
         {/* ================= ABA GERAL ================= */}
         {activeTab === 'geral' && (
           <View>
+            {/* Dados Principais Unificados para Criação Rápida e Otimizada */}
+            <Card>
+              <CardSection label="Identificação do Cliente & Veículo (Essencial)">
+                
+                {/* Atalho de Clientes Cadastrados */}
+                <Text style={styles.inputTitle}>Selecionar Cliente Cadastrado (Opcional)</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.presetScroll}>
+                  {DEF_CLIENTES_PRESET.map((c) => {
+                    const matched = form.cliente === c.nome;
+                    return (
+                      <TouchableOpacity
+                        key={c.id}
+                        style={[styles.presetCard, matched && styles.presetCardActive]}
+                        onPress={() => {
+                          updateForm('cliente', c.nome);
+                          updateForm('endereco', c.endereco);
+                          updateForm('telefone', c.telefone);
+                          updateForm('cidade', c.cidade);
+                        }}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={styles.presetName}>{c.nome}</Text>
+                        <Text style={styles.presetSub}>{c.cnpj}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+
+                <Input
+                  label="Nome do Cliente *"
+                  placeholder="Nome do cliente cadastrado ou preencha"
+                  value={form.cliente}
+                  onChangeText={(v) => updateForm('cliente', v)}
+                  icon="person-outline"
+                />
+
+                <Input
+                  label="Endereço Completo *"
+                  placeholder="Avenida, Número, Bairro, Cidade"
+                  value={form.endereco}
+                  onChangeText={(v) => updateForm('endereco', v)}
+                  icon="location-outline"
+                />
+
+                <Input
+                  label="Telefone Corporativo"
+                  placeholder="(00) 00000-0000"
+                  value={form.telefone}
+                  onChangeText={(v) => updateForm('telefone', v)}
+                  keyboardType="phone-pad"
+                  icon="call-outline"
+                />
+
+                <View style={styles.formRow}>
+                  <View style={{ flex: 1, marginRight: 8 }}>
+                    <Input
+                      label="Veículo / Modelo"
+                      placeholder="Chevrolet Onix, Volvo FH, etc."
+                      value={form.veiculo}
+                      onChangeText={(v) => updateForm('veiculo', v)}
+                      icon="car-outline"
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Input
+                      label="Placa do Veículo"
+                      placeholder="ABC1D23"
+                      value={form.placa}
+                      onChangeText={(v) => updateForm('placa', v)}
+                      icon="barcode-outline"
+                    />
+                  </View>
+                </View>
+
+              </CardSection>
+            </Card>
+
             <Card>
               <CardSection label="Agendamento da Operação">
                 {/* Executado por */}
@@ -670,6 +747,70 @@ export default function CriarServico() {
                       onChangeText={(v) => updateForm('keyword', v)}
                     />
                   </View>
+                </View>
+              </CardSection>
+            </Card>
+
+            {/* Faturamento e Valores integrados na criação rápida */}
+            <Card>
+              <CardSection label="Faturamento & Valores (Seus Números)">
+                <Input
+                  label="Valor do Serviço (R$)"
+                  placeholder="0,00"
+                  value={form.valServico}
+                  onChangeText={(v) => updateForm('valServico', v)}
+                  keyboardType="numeric"
+                  icon="cash-outline"
+                />
+
+                <Text style={styles.inputTitle}>Forma de Pagamento Preferencial</Text>
+                <View style={[styles.taskTypeGrid, { marginBottom: 16 }]}>
+                  {FORMAS_PAGAMENTO.map((f) => {
+                    const isSelected = form.formaPagamento === f;
+                    return (
+                      <TouchableOpacity
+                        key={f}
+                        style={[styles.taskTypeChip, isSelected && styles.taskTypeChipSelected]}
+                        onPress={() => updateForm('formaPagamento', f)}
+                        activeOpacity={0.8}
+                      >
+                        <Text
+                          style={[
+                            styles.taskTypeChipText,
+                            isSelected && styles.taskTypeChipTextSelected,
+                          ]}
+                        >
+                          {f}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                <View style={styles.switchRow}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.switchLabel}>Faturamento Processado (Faturado)</Text>
+                    <Text style={styles.switchSub}>Diz se a Ordem de Serviço foi faturada ao cliente</Text>
+                  </View>
+                  <Switch
+                    value={form.isFaturado}
+                    onValueChange={(v) => updateForm('isFaturado', v)}
+                    trackColor={{ false: '#2A2E4B', true: colors.primary }}
+                    thumbColor={colors.text}
+                  />
+                </View>
+
+                <View style={styles.switchRow}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.switchLabel}>Status de Pagamento (Pago)</Text>
+                    <Text style={styles.switchSub}>Marca se o valor já foi recebido pela plataforma</Text>
+                  </View>
+                  <Switch
+                    value={form.isPago}
+                    onValueChange={(v) => updateForm('isPago', v)}
+                    trackColor={{ false: '#2A2E4B', true: colors.primary }}
+                    thumbColor={colors.text}
+                  />
                 </View>
               </CardSection>
             </Card>
